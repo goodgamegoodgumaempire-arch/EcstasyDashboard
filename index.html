@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ECSTASY ROMANIA - Forum</title>
+<title>Forum - G4A Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -55,11 +55,23 @@ nav ul li a {
   font-size: 0.85em;
   transition: 0.2s;
 }
-nav ul li a:hover { color: #ff6600; }
-nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-bottom: 4px; }
+nav ul li a:hover {
+  color: #ff6600;
+}
+nav ul li.active a {
+  color: #ff6600;
+  border-bottom: 2px solid #ff6600;
+  padding-bottom: 4px;
+}
 
 /* Layout */
-#layout { display: flex; max-width: 1300px; margin: 20px auto; gap: 20px; padding: 0 20px; }
+#layout {
+  display: flex;
+  max-width: 1300px;
+  margin: 20px auto;
+  gap: 20px;
+  padding: 0 20px;
+}
 #main { flex: 3; }
 #sidebar { flex: 1; }
 
@@ -82,14 +94,35 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
   box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   transition: transform 0.3s, box-shadow 0.3s;
 }
-.card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
-.card h2 { margin: 0 0 10px; font-size: 1.1em; color: #fff; }
-.card p { margin: 0 0 10px; color: #aaa; }
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+}
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 1.1em;
+  color: #fff;
+}
+.card p {
+  margin: 0 0 10px;
+  color: #aaa;
+}
 
 /* Forum links */
-.forum-links { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.9em; }
-.forum-links a { color: #ff6600; text-decoration: none; transition: 0.2s; }
-.forum-links a:hover { color: #fff; }
+.forum-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 0.9em;
+}
+.forum-links a {
+  color: #ff6600;
+  text-decoration: none;
+  transition: 0.2s;
+}
+.forum-links a:hover {
+  color: #fff;
+}
 
 /* Sidebar */
 .sidebar-box {
@@ -107,37 +140,85 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
   border-bottom: 1px solid #222;
   padding-bottom: 5px;
 }
-.sidebar-box ul { list-style: none; margin: 0; padding: 0; }
-.sidebar-box ul li { padding: 8px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
+.sidebar-box ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sidebar-box ul li {
+  padding: 8px 0;
+  font-size: 0.9em;
+  border-bottom: 1px solid #222;
+}
 .sidebar-box ul li:last-child { border-bottom: none; }
 
 /* Announcements */
-.announcements li { padding: 12px; border-radius: 6px; margin-bottom: 8px; color: #fff; cursor: pointer; font-weight: 600; }
+.announcements li {
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
 .announcements li:nth-child(1) { background: #d2691e; }
 .announcements li:nth-child(2) { background: #a0522d; }
 
 /* Discord Card */
-.discord-box { text-align: center; }
-.discord-box a { display: inline-block; text-decoration: none; color: #fff; font-weight: bold; font-size: 1.2em; text-align: center; padding: 10px 0; transition: transform 0.3s; }
-.discord-box a:hover { color: #ff6600; }
-.discord-box img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+.discord-box {
+  text-align: center;
+}
+.discord-box a {
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.2em;
+  text-align: center;
+  padding: 10px 0;
+  transition: transform 0.3s;
+}
+.discord-box a:hover {
+  color: #ff6600;
+}
+.discord-box img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+}
 
 /* Marketplace */
-.marketplace-box p { color: #ccc; margin: 15px 0; }
-.marketplace-box button { background: #ff6600; border: none; color: #fff; padding: 12px 20px; font-size: 1em; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-.marketplace-box button:hover { background: #cc5200; }
+.marketplace-box p {
+  color: #ccc;
+  margin: 15px 0;
+}
+.marketplace-box button {
+  background: #ff6600;
+  border: none;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.marketplace-box button:hover {
+  background: #cc5200;
+}
 </style>
 </head>
 <body>
 
 <!-- NAVBAR -->
 <nav>
-  <img src="logo.png" alt="ECSTASY Logo">
+  <img src="logo.png" alt="G4A Logo">
   <ul>
-    <li class="active"><a href="index.html"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
-    <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
-    <li><a href="#"><i class="fas fa-trophy"></i><span>Tabel Lideri</span></a></li>
-    <li><a href="#"><i class="fas fa-server"></i><span>Evidența Servere</span></a></li>
+    <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
+    <li><a href="#"><i class="fas fa-users"></i><span>Staff</span></a></li>
+    <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
+    <li><a href="#"><span>Tabel Lideri</span></a></li>
+    <li><a href="#"><span>Evidența Servere</span></a></li>
     <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
   </ul>
 </nav>
@@ -198,8 +279,8 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
     <div class="section">
       <h1>MARKETPLACE</h1>
       <div class="card marketplace-box">
-        <h2>The Marketplace on the ECSTASY Community</h2>
-        <p>Schimb de produse, jocuri și echipamente între gameri cu oportunități sigure.</p>
+        <h2>The Marketplace on the G4A Community</h2>
+        <p>The MarketPlace on the G4A community is a space dedicated to the exchange of products, games and equipment between gamers, providing opportunities for safe transactions and access to exclusive offers.</p>
         <button>Buy</button>
       </div>
     </div>
