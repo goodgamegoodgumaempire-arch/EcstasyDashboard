@@ -3,94 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aplicatii - ECSTASY ROMANIA</title>
+<title>Aplicații - G4A Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { font-family:'Roboto',sans-serif; background:#0b0c17; color:#fff; min-height:100vh; padding:20px;}
-h1,h2 { color:#ff6600; }
-form { background: rgba(17,17,17,0.8); padding:20px; border-radius:10px; margin-bottom:30px; max-width:600px;}
-form input, form select, form textarea { width:100%; padding:10px; margin:8px 0; border-radius:6px; border:none; background:#222; color:#fff;}
-form button { padding:10px; border:none; border-radius:6px; background:#ff6600; font-weight:bold; color:#fff; cursor:pointer; margin-top:10px;}
-form button:hover { background:#cc5200;}
-.list { max-width:900px; margin-top:20px;}
+body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+nav { display: flex; align-items: center; background: transparent; padding: 10px 40px; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
+nav img { height: 40px; margin-right: 50px; }
+nav ul { display: flex; gap: 40px; list-style: none; margin: 0 auto; padding: 0; }
+nav ul li a { color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.85em; transition: 0.2s; }
+nav ul li a:hover { color: #ff6600; }
+nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-bottom: 4px; }
+
+#layout { display: flex; max-width: 1300px; margin: 20px auto; gap: 20px; padding: 0 20px; }
+#main { flex: 3; } #sidebar { flex: 1; }
+
+.card { background: rgba(17,17,17,0.85); border-radius: 10px; padding: 20px; margin: 15px 0; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s; }
+.card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
+.card h2 { margin: 0 0 10px; font-size: 1.1em; color: #fff; }
+.card p { margin: 0 0 10px; color: #aaa; }
+
 .item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;}
 .item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;}
 .accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
 .status { font-weight:bold; margin-left:10px;}
+
+select, input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; }
+button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s;}
+button:hover { background:#cc5200; }
+
+@media(max-width:900px){ #layout { flex-direction: column; } }
 </style>
 </head>
 <body>
 
-<h1>Aplicatii pentru ECSTASY ROMANIA</h1>
+<nav>
+  <img src="logo.png" alt="G4A Logo">
+  <ul>
+    <li class="active"><a href="#"><i class="fas fa-home"></i><span>Acasă</span></a></li>
+    <li><a href="index.html"><span>Forum</span></a></li>
+  </ul>
+</nav>
 
-<form id="applyForm">
-    <h2>Aplică acum</h2>
-    <input type="text" id="appName" placeholder="Nume" required>
-    <input type="email" id="appEmail" placeholder="Email" required>
-    <select id="appType" required>
-        <option value="">Selectează pentru ce aplici</option>
+<div id="layout">
+  <div id="main">
+    <div class="card">
+      <h2>Trimite aplicație</h2>
+      <p>Alege tipul aplicației și completează datele necesare:</p>
+      <select id="aplicatieTip">
+        <option value="">Selectează tip</option>
         <option value="staff">Staff</option>
         <option value="politie">Poliție</option>
         <option value="medici">Medici</option>
-    </select>
-    <textarea id="appMessage" placeholder="Scrie motivul pentru care aplici" required></textarea>
-    <button type="submit">Trimite aplicația</button>
-</form>
+      </select>
+      <input type="text" id="appNume" placeholder="Nume jucător">
+      <textarea id="appMesaj" placeholder="Motivație / Mesaj"></textarea>
+      <button id="trimiteApp">Trimite aplicație</button>
+    </div>
 
-<h2>Lista aplicațiilor</h2>
-<div id="applications" class="list"></div>
+    <div class="card">
+      <h2>Aplicații</h2>
+      <div id="aplicatiiList"></div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div class="card">
+      <h2>Info</h2>
+      <p>Aplicațiile Staff pot fi gestionate de Admin, iar cele pentru Poliție și Medici sunt vizibile public.</p>
+    </div>
+  </div>
+</div>
 
 <script>
-// --- LocalStorage ---
-let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+const aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Render lista pentru toata lumea
-function renderAplicatii() {
-    const container = document.getElementById("applications");
-    container.innerHTML="";
-    aplicatii.forEach((a,i)=>{
-        const div = document.createElement("div");
-        div.classList.add("item");
-        let statusText = a.status || "În așteptare";
-        div.innerHTML = `<div>
-            <strong>${a.name}</strong> (${a.type.toUpperCase()}) - ${a.message}
-            <span class="status">${statusText}</span>
-        </div>`;
-        // Daca esti admin (simulat) adauga butoane
-        if(a.type==="staff") {
-            const actions = document.createElement("div");
-            actions.classList.add("item-actions");
-            const accept = document.createElement("button");
-            accept.className="accept-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{a.status="Acceptat"; saveRender();}
-            const reject = document.createElement("button");
-            reject.className="reject-btn"; reject.innerText="Respinge"; reject.onclick=()=>{a.status="Respins"; saveRender();}
-            const del = document.createElement("button");
-            del.className="delete-btn"; del.innerText="Șterge"; del.onclick=()=>{aplicatii.splice(i,1); saveRender();}
-            actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
-            div.appendChild(actions);
-        }
-        container.appendChild(div);
-    });
+// --- Webhook și parolă PanelPD/MD ---
+const PD_WEBHOOK = "https://discord.com/api/webhooks/1417778936301092914/iIKjC7-P_kjJR0B_3GRV8SkwET3KNV0pcnexbaDaisFx504n4_MMQuQP4JyZuRbLUh8W";
+const MD_WEBHOOK = "https://discord.com/api/webhooks/1417781888323424286/aUXGofKS9VGsRerwePFLfgg9M42xs5lbuOG2zLCpd1itzKC79zA35Zr2wnAi-GRo_eJn";
+
+let parolaPD = "", parolaMD = "";
+function genereazaParola(){ const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; let p=""; for(let i=0;i<12;i++) p+=chars.charAt(Math.floor(Math.random()*chars.length)); return p; }
+function trimiteWebhook(url, parola){ fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({content:"Noua parola: "+parola}) }); }
+function updateParole(){
+  parolaPD = genereazaParola(); trimiteWebhook(PD_WEBHOOK, parolaPD);
+  parolaMD = genereazaParola(); trimiteWebhook(MD_WEBHOOK, parolaMD);
+  console.log("Parole actualizate PD:",parolaPD,"MD:",parolaMD);
+}
+updateParole(); setInterval(updateParole,30*60*1000);
+
+// --- Trimitere aplicație ---
+document.getElementById("trimiteApp").addEventListener("click", ()=>{
+  const tip=document.getElementById("aplicatieTip").value;
+  const nume=document.getElementById("appNume").value.trim();
+  const mesaj=document.getElementById("appMesaj").value.trim();
+  if(!tip||!nume||!mesaj){ alert("Completează toate câmpurile!"); return; }
+  aplicatii.push({type:tip,name:nume,message:mesaj,status:"În așteptare"});
+  localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
+  renderAplicatii();
+  document.getElementById("appNume").value=""; document.getElementById("appMesaj").value=""; document.getElementById("aplicatieTip").value="";
+});
+
+// --- Render aplicații ---
+function renderAplicatii(){
+  const container = document.getElementById("aplicatiiList");
+  container.innerHTML="";
+  aplicatii.forEach((a,i)=>{
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML=`<div><strong>${a.name}</strong> [${a.type}]<br>${a.message}<span class="status">${a.status}</span></div>`;
+    // Butoane doar pentru Staff/Admin (simulat aici cu F9 pentru demo)
+    const actions = document.createElement("div"); actions.className="item-actions";
+    const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{a.status="Acceptat"; saveRender();}
+    const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge"; reject.onclick=()=>{a.status="Respins"; saveRender();}
+    const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge"; del.onclick=()=>{aplicatii.splice(i,1); saveRender();}
+    actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
+    div.appendChild(actions);
+    container.appendChild(div);
+  });
 }
 
 function saveRender(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatii(); }
 
-// --- Submit form ---
-document.getElementById("applyForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const name = document.getElementById("appName").value;
-    const email = document.getElementById("appEmail").value;
-    const type = document.getElementById("appType").value;
-    const message = document.getElementById("appMessage").value;
-    aplicatii.push({name,email,type,message,status:"În așteptare"});
-    saveRender();
-    this.reset();
-});
-
-// --- Initial render ---
 renderAplicatii();
+
+// --- F9 acces PanelPD/MD demo ---
+document.addEventListener("keydown", e=>{
+  if(e.key==="F9"){
+    e.preventDefault();
+    const input = prompt("Introdu parola PanelPD/MD:");
+    if(input===parolaPD||input===parolaMD){ alert("Acces activat!"); renderAplicatii(); }
+    else alert("Parola incorecta!");
+  }
+});
 </script>
 
 </body>
