@@ -6,6 +6,7 @@
 <title>Admin Panel - ECSTASY ROMANIA</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
+/* --- Stilizare generală --- */
 * { box-sizing: border-box; margin:0; padding:0; }
 body {
     font-family: 'Roboto', sans-serif;
@@ -16,17 +17,12 @@ body {
     min-height:100vh;
     display:flex;
 }
-
-@keyframes gradientBG {
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
 /* --- Sidebar --- */
 .sidebar {
     width:220px;
-    background: rgba(17,17,17,0.6); /* Transparent */
+    background: rgba(17,17,17,0.6);
     padding:30px 10px;
     display:flex;
     flex-direction:column;
@@ -35,96 +31,43 @@ body {
     position:fixed;
     top:0;
     left:0;
-    backdrop-filter: blur(10px); /* efect blur pentru transparență */
+    backdrop-filter: blur(10px);
     box-shadow: 2px 0 15px rgba(0,0,0,0.5);
 }
 .sidebar h2 { color:#ff6600; margin-bottom:30px; text-align:center; }
 .sidebar button {
-    background:none;
-    border:none;
-    color:#fff;
-    padding:12px 20px;
-    width:100%;
-    text-align:left;
-    margin:5px 0;
-    border-radius:8px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
+    background:none; border:none; color:#fff;
+    padding:12px 20px; width:100%; text-align:left;
+    margin:5px 0; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.3s;
 }
-.sidebar button.active, .sidebar button:hover {
-    background:#ff6600;
-    color:#000;
-}
+.sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
 
 /* --- Main content --- */
-.main {
-    margin-left:220px;
-    padding:20px;
-    flex:1;
-}
+.main { margin-left:220px; padding:20px; flex:1; }
 
 /* --- Forms --- */
 form {
-    background: rgba(17,17,17,0.7); /* puțin transparent */
-    padding:20px;
-    border-radius:12px;
-    max-width:600px;
-    margin:20px auto;
+    background: rgba(17,17,17,0.7);
+    padding:20px; border-radius:12px; max-width:600px; margin:20px auto;
     box-shadow: 0 4px 15px rgba(0,0,0,0.5);
 }
 form input, form select, form textarea {
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:8px;
-    background:#222;
-    color:#fff;
+    width:100%; padding:12px; margin:10px 0; border:none; border-radius:8px;
+    background:#222; color:#fff;
 }
 form input::placeholder, form textarea::placeholder { color:#bbb; }
-form button {
-    background:#ff6600;
-    border:none;
-    padding:12px;
-    width:100%;
-    border-radius:8px;
-    color:#fff;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-}
+form button { background:#ff6600; border:none; padding:12px; width:100%; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; }
 form button:hover { background:#cc5200; }
 
 /* --- Lists --- */
-.list {
-    max-width:900px;
-    margin:20px auto;
-}
-.item {
-    background: rgba(17,17,17,0.6);
-    margin:10px 0;
-    padding:15px;
-    border-radius:10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    transition:0.3s;
-}
+.list { max-width:900px; margin:20px auto; }
+.item { background: rgba(17,17,17,0.6); margin:10px 0; padding:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; transition:0.3s; }
 .item:hover { background: rgba(17,17,17,0.9); }
 .item img, .item video { border-radius:8px; }
 .item img { width:50px; height:50px; object-fit:cover; }
 .item video { width:120px; }
 .item-info { display:flex; align-items:center; gap:15px; flex-wrap: wrap; }
-.item-actions button {
-    margin-left:8px;
-    border:none;
-    padding:6px 12px;
-    cursor:pointer;
-    border-radius:6px;
-    font-weight:bold;
-    transition:0.2s;
-}
+.item-actions button { margin-left:8px; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; font-weight:bold; transition:0.2s; }
 .delete-btn { background:#ff4444; color:#fff; }
 .delete-btn:hover { background:#cc0000; }
 .edit-btn { background:#ff6600; color:#fff; }
@@ -145,6 +88,7 @@ form button:hover { background:#cc5200; }
     <button onclick="showTab('staff')" id="btn-staff" class="active">Staff</button>
     <button onclick="showTab('updates')" id="btn-updates">Update-uri</button>
     <button onclick="showTab('sneak')" id="btn-sneak">Sneak Peeks</button>
+    <button onclick="showTab('staffApps')" id="btn-staffApps">Aplicații Staff</button>
 </div>
 
 <div class="main">
@@ -199,6 +143,12 @@ form button:hover { background:#cc5200; }
             <button type="submit">Adaugă Sneak Peek</button>
         </form>
         <div id="sneakList" class="list"></div>
+    </div>
+
+    <!-- Staff Applications Section -->
+    <div id="staffApps" class="tab" style="display:none;">
+        <h2>Aplicații Staff</h2>
+        <div id="staffAppsList" class="list"></div>
     </div>
 </div>
 
@@ -318,8 +268,28 @@ sneakForm.addEventListener("submit",function(e){
 function deletePeek(i){ peeksData.splice(i,1); localStorage.setItem("sneakPeeks",JSON.stringify(peeksData)); renderPeeks();}
 function editPeek(i){ const p=peeksData[i]; document.getElementById("sneakMessage").value=p.message; document.getElementById("sneakUrl").value=p.url; document.getElementById("sneakType").value=p.type; editPeekIndex=i; sneakForm.querySelector("button").innerText="Salvează Modificările"; }
 
+/* --- Staff Applications --- */
+let aplicatiiStaff = JSON.parse(localStorage.getItem("aplicatii")) || [];
+function renderStaffApps(){
+    const container = document.getElementById("staffAppsList");
+    container.innerHTML="";
+    aplicatiiStaff.forEach((a,i)=>{
+        if(a.type!=="staff") return;
+        const div=document.createElement("div");
+        div.className="item";
+        div.innerHTML=`<div><strong>${a.name}</strong><br>${a.message}<br>Status: ${a.status||"În așteptare"}</div>`;
+        const actions = document.createElement("div"); actions.className="item-actions";
+        const accept = document.createElement("button"); accept.className="edit-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{a.status="Acceptat"; saveRenderStaff();}
+        const reject = document.createElement("button"); reject.className="delete-btn"; reject.innerText="Respinge"; reject.onclick=()=>{a.status="Respins"; saveRenderStaff();}
+        const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge"; del.onclick=()=>{aplicatiiStaff.splice(i,1); saveRenderStaff();}
+        actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
+        div.appendChild(actions); container.appendChild(div);
+    });
+}
+function saveRenderStaff(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatiiStaff)); renderStaffApps(); }
+
 /* --- Init --- */
-renderMembers(); renderUpdates(); renderPeeks();
+renderMembers(); renderUpdates(); renderPeeks(); renderStaffApps();
 </script>
 </body>
 </html>
