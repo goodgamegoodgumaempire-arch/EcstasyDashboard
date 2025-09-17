@@ -13,11 +13,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <style>
-/* BODY & BACKGROUND */
 body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation:gradientBG 20s ease infinite; color:#fff; min-height:100vh; }
-@keyframes gradientBG {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-
-/* NAVBAR */
+@keyframes gradientBG {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%;}}
 nav {display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
 nav img {height:40px; margin-right:50px;}
 nav ul {display:flex; gap:40px; list-style:none; margin:0 auto; padding:0;}
@@ -25,16 +22,10 @@ nav ul li a {color:#fff; text-decoration:none; display:flex; flex-direction:colu
 nav ul li a:hover {color:#ff6600;}
 nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bottom:4px;}
 #profile {margin-left:20px; font-weight:700;}
-
-/* LAYOUT */
 #layout {display:flex; max-width:1300px; margin:20px auto; gap:20px; padding:0 20px;}
 #main {flex:3;}
 #sidebar {flex:1;}
-
-/* SECTION TITLES */
 .section>h1 {font-size:1.2em; color:#ff6600; border-bottom:2px solid #222; padding:8px 0; margin:20px 0 10px;}
-
-/* CARDS */
 .card {background: rgba(17,17,17,0.85); border-radius:10px; padding:20px; margin:15px 0; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s;}
 .card:hover {transform:translateY(-5px); box-shadow:0 8px 25px rgba(0,0,0,0.7);}
 .card h2 {margin:0 0 10px; font-size:1.1em; color:#fff;}
@@ -42,15 +33,11 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
 .forum-links {display:flex; flex-wrap:wrap; gap:15px; font-size:0.9em;}
 .forum-links a {color:#ff6600; text-decoration:none; transition:0.2s;}
 .forum-links a:hover {color:#fff;}
-
-/* SIDEBAR */
 .sidebar-box {background: rgba(17,17,17,0.85); border-radius:10px; margin-bottom:20px; padding:15px; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5);}
 .sidebar-box h3 {font-size:1em; color:#ff6600; margin-bottom:10px; border-bottom:1px solid #222; padding-bottom:5px;}
 .sidebar-box ul {list-style:none; margin:0; padding:0;}
 .sidebar-box ul li {padding:8px 0; font-size:0.9em; border-bottom:1px solid #222;}
 .sidebar-box ul li:last-child {border-bottom:none;}
-
-/* LOGIN/AUTH */
 #authContainer {display:flex; flex-direction:column; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999;}
 #authContainer input {padding:10px; margin:10px 0; border-radius:8px; border:none; width:250px;}
 #authContainer button {padding:10px 20px; margin:10px 5px; border:none; border-radius:8px; font-weight:700; cursor:pointer; background-color:#4fc3f7; color:#0b0c17; transition:0.2s;}
@@ -59,7 +46,6 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav>
   <img src="logo.png" alt="G4A Logo">
   <ul>
@@ -73,7 +59,6 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
   </ul>
 </nav>
 
-<!-- AUTH -->
 <div id="authContainer">
   <h2>Autentificare / Înregistrare</h2>
   <input type="text" id="displayName" placeholder="Nume de utilizator">
@@ -85,10 +70,8 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
 <div id="layout" style="display:none;">
   <div id="main">
-    <!-- ADMINISTRATION -->
     <div class="section">
       <h1>ADMINISTRAȚIE ȘI DEZVOLTARE</h1>
       <div class="card">
@@ -121,7 +104,6 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
       </div>
     </div>
 
-    <!-- COMMUNITY SERVERS -->
     <div class="section">
       <h1>COMMUNITY SERVERS</h1>
       <div class="card discord-box">
@@ -130,18 +112,16 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
       </div>
     </div>
 
-    <!-- MARKETPLACE -->
     <div class="section">
       <h1>MARKETPLACE</h1>
       <div class="card marketplace-box">
         <h2>The Marketplace on the G4A Community</h2>
-        <p>The MarketPlace on the G4A community is a space dedicated to the exchange of products, games and equipment between gamers, providing opportunities for safe transactions and access to exclusive offers.</p>
+        <p>Schimb de produse, jocuri și echipamente între gameri, tranzacții sigure și oferte exclusive.</p>
         <button>Buy</button>
       </div>
     </div>
   </div>
 
-  <!-- SIDEBAR -->
   <div id="sidebar">
     <div class="sidebar-box">
       <h3>Announcements</h3>
@@ -172,7 +152,6 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
 </div>
 
 <script>
-// CONFIG FIREBASE CORECT
 const firebaseConfig = {
   apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
   authDomain: "ecstassy-44277.firebaseapp.com",
@@ -187,7 +166,6 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-// GRADE
 const grades = {
   "COMMUNITY_OWNER":"Community Owner 🌟",
   "CO_FOUNDER":"Co Founder 🔥",
@@ -203,7 +181,6 @@ const grades = {
   "MEMBRU":"Membru 👤"
 };
 
-// LOGIN/REGISTER
 const authContainer = document.getElementById("authContainer");
 const layout = document.getElementById("layout");
 const profileLi = document.getElementById("profile");
@@ -212,9 +189,9 @@ auth.onAuthStateChanged(user => {
   if(user){
     authContainer.style.display="none";
     layout.style.display="flex";
-    db.ref("users/"+user.uid).once("value").then(snapshot=>{
+    db.ref("users/"+user.uid).on("value", snapshot=>{
       const data = snapshot.val();
-      let roleText = grades[data?.role || "MEMBRU"];
+      const roleText = grades[data?.role || "MEMBRU"];
       profileLi.innerHTML=`<i class="fas fa-user"></i> ${user.displayName || user.email} - ${roleText} <button onclick="logout()" style="margin-left:10px;padding:2px 6px;border:none;border-radius:5px;background:#ffdd57;cursor:pointer;">Logout</button>`;
     });
   } else {
@@ -231,12 +208,10 @@ document.getElementById("signupBtn").addEventListener("click", ()=>{
   if(!displayName){ alert("Trebuie să introduci un nume de utilizator!"); return; }
 
   auth.createUserWithEmailAndPassword(email,password)
-  .then(userCredential => {
-    userCredential.user.updateProfile({displayName:displayName});
-    // creeaza user in database cu rol MEMBRU
-    db.ref("users/"+userCredential.user.uid).set({role:"MEMBRU"});
-  })
-  .catch(e=>alert(e.message));
+    .then(userCredential=>{
+      userCredential.user.updateProfile({displayName:displayName});
+      db.ref("users/"+userCredential.user.uid).set({role:"MEMBRU"});
+    }).catch(e=>alert(e.message));
 });
 
 document.getElementById("loginBtn").addEventListener("click", ()=>{
