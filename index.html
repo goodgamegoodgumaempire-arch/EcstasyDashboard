@@ -20,7 +20,8 @@ body {
 
 /* AUTH LOGIN/REGISTER */
 #authContainer {
-  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  display:none; /* ascuns initial pentru flicker */
+  flex-direction:column; justify-content:center; align-items:center;
   position:fixed; top:0; left:0; width:100%; height:100%;
   background: rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box;
 }
@@ -35,6 +36,9 @@ body {
 
 /* Ascunde site până la login */
 #content { display:none; }
+
+/* Loading */
+#loading { position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); color:white; font-size:1.2em; }
 
 /* Copiem toate stilurile originale */
 nav { display: flex; align-items: center; background: transparent; padding: 10px 40px; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
@@ -72,6 +76,8 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 </head>
 <body>
 
+<div id="loading">Loading...</div>
+
 <!-- LOGIN / REGISTER -->
 <div id="authContainer">
   <h2>Autentificare / Înregistrare</h2>
@@ -86,117 +92,21 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 
 <!-- SITE CONTENT ORIGINAL -->
 <div id="content">
-<nav>
-  <img src="logo.png" alt="G4A Logo">
-  <ul>
-    <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
-    <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
-    <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
-    <li><a href="#"><span>Tabel Lideri</span></a></li>
-    <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
-    <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
-    <li id="profile"></li>
-  </ul>
-</nav>
-
-<div id="layout">
-
-  <!-- MAIN -->
-  <div id="main">
-
-    <!-- Administratie si Dezvoltare -->
-    <div class="section">
-      <h1>ADMINISTRAȚIE ȘI DEZVOLTARE</h1>
-
-      <div class="card">
-        <h2>ZONA ADMINISTRATIVĂ</h2>
-        <p>Zonă pentru informații și știri despre forum, comunitate și parteneriate.</p>
-        <div class="forum-links">
-          <a href="rginf.html">Regulament & Informații</a>
-          <a href="anunturi.html">Anunțuri</a>
-          <a href="parteners.html">Parteneriate</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>ZONA MEMBRILOR</h2>
-        <p>Zonă destinată utilizatorilor forumului.</p>
-        <div class="forum-links">
-          <a href="#">Prezintă-te</a>
-          <a href="#">Schimbare Nume</a>
-          <a href="#">Aplicații pentru grad</a>
-          <a href="#">Reclamații STAFF</a>
-          <a href="#">Propuneri & Sugestii</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>AFILIERE & MANAGEMENT</h2>
-        <p>Doriți ca serverul dvs. să facă parte din comunitate?</p>
-        <div class="forum-links">
-          <a href="#">Cerere DNS</a>
-          <a href="#">Management</a>
-        </div>
-      </div>
-    </div>
-
-    <!-- Community Servers -->
-    <div class="section">
-      <h1>COMMUNITY SERVERS</h1>
-
-      <div class="card discord-box">
-        <a href="https://discord.gg/" target="_blank">DISCORD - CLICK ME! 💬</a>
-        <img src="discord.gif" alt="Discord GIF">
-      </div>
-    </div>
-
-    <!-- Marketplace -->
-    <div class="section">
-      <h1>MARKETPLACE</h1>
-      <div class="card marketplace-box">
-        <h2>The Marketplace on the G4A Community</h2>
-        <p>The MarketPlace on the G4A community is a space dedicated to the exchange of products, games and equipment between gamers, providing opportunities for safe transactions and access to exclusive offers.</p>
-        <button>Buy</button>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- SIDEBAR -->
-  <div id="sidebar">
-
-    <div class="sidebar-box">
-      <h3>Announcements</h3>
-      <ul class="announcements">
-        <li><a href="updates.html" style="color: inherit; text-decoration: none;">🟠 Update-uri</a></li>
-        <li><a href="sneakpeaks.html" style="color: inherit; text-decoration: none;">🔍 Sneak Peaks</a></li>
-      </ul>
-    </div>
-
-    <div class="sidebar-box">
-      <h3>Contact cu Administrația</h3>
-      <ul>
-        <li>Faby A. - Founder</li>
-        <li>FoxX - Founder</li>
-      </ul>
-    </div>
-
-    <div class="sidebar-box">
-      <h3>Server Status</h3>
-      <ul>
-        <li>Discord - 120 online 💬</li>
-        <li>FiveM Server - Online ✅</li>
-      </ul>
-    </div>
-
-    <div class="sidebar-box">
-      <h3>Online acum</h3>
-      <p>0 Membri, 0 Anonim, 1 Vizitator</p>
-    </div>
-
-  </div>
-
-</div>
+  <!-- ... aici conținutul tău original (nav, layout, main, sidebar) ... -->
+  <!-- am omis pentru claritate, dar îl păstrezi exact cum ai deja -->
+  <nav>
+    <img src="logo.png" alt="G4A Logo">
+    <ul>
+      <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
+      <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+      <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
+      <li><a href="#"><span>Tabel Lideri</span></a></li>
+      <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
+      <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
+      <li id="profile"></li>
+    </ul>
+  </nav>
+  <div id="layout"> ... restul conținutului ... </div>
 </div>
 
 <!-- Firebase -->
@@ -221,8 +131,13 @@ const db = firebase.database();
 const authContainer = document.getElementById("authContainer");
 const content = document.getElementById("content");
 const profileLi = document.getElementById("profile");
+const loading = document.getElementById("loading");
+
+// Forțează persistenta locală
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(e => console.error(e));
 
 auth.onAuthStateChanged(user => {
+  loading.style.display = "none";
   if(user){
     authContainer.style.display="none";
     content.style.display="block";
