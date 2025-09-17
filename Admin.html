@@ -3,323 +3,148 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel - ECSTASY ROMANIA</title>
+<title>Forum - G4A Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-* { box-sizing: border-box; margin:0; padding:0; }
 body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7);
-    background-size: 400% 400%;
-    animation: gradientBG 20s ease infinite;
-    color:#fff;
-    min-height:100vh;
-    display:flex;
+  margin:0;
+  font-family:'Roboto',sans-serif;
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
+  background-size:400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color:#fff;
+  min-height:100vh;
 }
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
-@keyframes gradientBG {
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
+#authContainer {
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box;
 }
+#authContainer input { padding:10px; margin:5px 0; border-radius:8px; border:none; width:250px; }
+#authContainer button { padding:10px 20px; margin:5px; border:none; border-radius:8px; font-weight:700; cursor:pointer; background:#4fc3f7; color:#0b0c17; }
+#authContainer button:hover { background:#ffdd57; }
 
-/* --- Sidebar --- */
-.sidebar {
-    width:220px;
-    background: rgba(17,17,17,0.6); /* Transparent */
-    padding:30px 10px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    height:100vh;
-    position:fixed;
-    top:0;
-    left:0;
-    backdrop-filter: blur(10px); /* efect blur pentru transparență */
-    box-shadow: 2px 0 15px rgba(0,0,0,0.5);
-}
-.sidebar h2 { color:#ff6600; margin-bottom:30px; text-align:center; }
-.sidebar button {
-    background:none;
-    border:none;
-    color:#fff;
-    padding:12px 20px;
-    width:100%;
-    text-align:left;
-    margin:5px 0;
-    border-radius:8px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-}
-.sidebar button.active, .sidebar button:hover {
-    background:#ff6600;
-    color:#000;
-}
+#content { display:none; }
 
-/* --- Main content --- */
-.main {
-    margin-left:220px;
-    padding:20px;
-    flex:1;
-}
-
-/* --- Forms --- */
-form {
-    background: rgba(17,17,17,0.7); /* puțin transparent */
-    padding:20px;
-    border-radius:12px;
-    max-width:600px;
-    margin:20px auto;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-form input, form select, form textarea {
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:8px;
-    background:#222;
-    color:#fff;
-}
-form input::placeholder, form textarea::placeholder { color:#bbb; }
-form button {
-    background:#ff6600;
-    border:none;
-    padding:12px;
-    width:100%;
-    border-radius:8px;
-    color:#fff;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-}
-form button:hover { background:#cc5200; }
-
-/* --- Lists --- */
-.list {
-    max-width:900px;
-    margin:20px auto;
-}
-.item {
-    background: rgba(17,17,17,0.6);
-    margin:10px 0;
-    padding:15px;
-    border-radius:10px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    transition:0.3s;
-}
-.item:hover { background: rgba(17,17,17,0.9); }
-.item img, .item video { border-radius:8px; }
-.item img { width:50px; height:50px; object-fit:cover; }
-.item video { width:120px; }
-.item-info { display:flex; align-items:center; gap:15px; flex-wrap: wrap; }
-.item-actions button {
-    margin-left:8px;
-    border:none;
-    padding:6px 12px;
-    cursor:pointer;
-    border-radius:6px;
-    font-weight:bold;
-    transition:0.2s;
-}
-.delete-btn { background:#ff4444; color:#fff; }
-.delete-btn:hover { background:#cc0000; }
-.edit-btn { background:#ff6600; color:#fff; }
-.edit-btn:hover { background:#cc5200; }
-
-/* Responsive */
-@media(max-width:800px){
-    .sidebar { width:100%; height:auto; flex-direction:row; justify-content:space-around; padding:10px;}
-    .main { margin-left:0; }
-    .item-info { flex-direction:column; align-items:flex-start; }
-}
+nav { display: flex; align-items: center; background: transparent; padding: 10px 40px; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
+nav img { height: 40px; margin-right: 50px; }
+nav ul { display: flex; gap: 40px; list-style: none; margin: 0 auto; padding: 0; }
+nav ul li a { color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.85em; transition: 0.2s; }
+nav ul li a:hover { color: #ff6600; }
+nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-bottom: 4px; }
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <h2>ECSTASY ADMIN</h2>
-    <button onclick="showTab('staff')" id="btn-staff" class="active">Staff</button>
-    <button onclick="showTab('updates')" id="btn-updates">Update-uri</button>
-    <button onclick="showTab('sneak')" id="btn-sneak">Sneak Peeks</button>
+<div id="authContainer">
+  <h2>Autentificare / Înregistrare</h2>
+  <input type="text" id="displayName" placeholder="Nume de utilizator">
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Parola">
+  <div>
+    <button id="loginBtn">Loghează-te</button>
+    <button id="signupBtn">Înregistrează-te</button>
+  </div>
 </div>
 
-<div class="main">
-    <h1>Admin Panel - ECSTASY ROMANIA</h1>
+<div id="content">
+<nav>
+  <img src="logo.png" alt="G4A Logo">
+  <ul id="menu">
+    <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
+    <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+    <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
+    <li><a href="#"><span>Tabel Lideri</span></a></li>
+    <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
+    <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
+    <li id="profile"></li>
+  </ul>
+</nav>
 
-    <!-- Staff Section -->
-    <div id="staff" class="tab">
-        <h2>Staff Manager</h2>
-        <form id="staffForm">
-            <input type="text" id="name" placeholder="Nume jucător" required>
-            <input type="text" id="rank" placeholder="Grad (ex: Moderator)" required>
-            <input type="text" id="img" placeholder="Link poză/GIF" required>
-            <select id="group" required>
-                <option value="">Selectează grup</option>
-                <option value="COMMUNITY OWNERS">Community Owners</option>
-                <option value="CO FOUNDERS">Co Founders</option>
-                <option value="MANAGER STAFF">Manager Staff</option>
-                <option value="ADMINISTRATORS">Administrators</option>
-                <option value="MODERATORS">Moderators</option>
-                <option value="HELPERS">Helpers</option>
-                <option value="TRYAL HELPERS">Tryal Helpers</option>
-            </select>
-            <button type="submit">Adaugă Membru</button>
-        </form>
-        <div id="members" class="list"></div>
-    </div>
-
-    <!-- Updates Section -->
-    <div id="updates" class="tab" style="display:none;">
-        <h2>Update-uri Manager</h2>
-        <form id="updateForm">
-            <input type="text" id="updateTitle" placeholder="Titlu update" required>
-            <textarea id="updateMessage" placeholder="Mesaj update" required></textarea>
-            <input type="text" id="updateImg" placeholder="Link poză/video (opțional)">
-            <button type="submit">Adaugă Update</button>
-        </form>
-        <div id="updatesList" class="list"></div>
-    </div>
-
-    <!-- Sneak Peeks Section -->
-    <div id="sneak" class="tab" style="display:none;">
-        <h2>Sneak Peeks Manager</h2>
-        <form id="sneakForm">
-            <textarea id="sneakMessage" placeholder="Mesaj sneak peek"></textarea>
-            <input type="text" id="sneakUrl" placeholder="Link poză/video/link">
-            <select id="sneakType">
-                <option value="message">Doar mesaj</option>
-                <option value="image">Imagine</option>
-                <option value="video">Video</option>
-                <option value="link">Link</option>
-            </select>
-            <button type="submit">Adaugă Sneak Peek</button>
-        </form>
-        <div id="sneakList" class="list"></div>
-    </div>
+<div id="mainContent">
+  <h1>Bine ai venit în comunitatea G4A România!</h1>
 </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-/* --- Tabs --- */
-function showTab(tab){
-    document.querySelectorAll(".tab").forEach(div=>div.style.display="none");
-    document.querySelectorAll(".sidebar button").forEach(btn=>btn.classList.remove("active"));
-    document.getElementById(tab).style.display="block";
-    document.getElementById("btn-"+tab).classList.add("active");
+const firebaseConfig = {
+  apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
+  authDomain: "ecstassy-44277.firebaseapp.com",
+  databaseURL: "https://ecstassy-44277-default-rtdb.firebaseio.com",
+  projectId: "ecstassy-44277",
+  storageBucket: "ecstassy-44277.firebasestorage.app",
+  messagingSenderId: "557171186889",
+  appId: "1:557171186889:web:0cae151137b761b2660118"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+
+const authContainer = document.getElementById("authContainer");
+const content = document.getElementById("content");
+const profileLi = document.getElementById("profile");
+const menu = document.getElementById("menu");
+
+function showContent(user){
+  authContainer.style.display = "none";
+  content.style.display = "block";
+  profileLi.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} 
+    <button onclick="logout()" style="margin-left:10px;">Logout</button>`;
+
+  // Verifică admin
+  db.ref('users/' + user.uid + '/isAdmin').get().then(snapshot=>{
+    if(snapshot.exists() && snapshot.val() === true){
+      const li = document.createElement("li");
+      li.innerHTML = `<a href="admin.html"><i class="fas fa-user-shield"></i><span>Admin</span></a>`;
+      menu.appendChild(li);
+    }
+  });
 }
 
-/* --- Staff --- */
-let staffData = JSON.parse(localStorage.getItem("staffMembers")) || [];
-const staffForm = document.getElementById("staffForm");
-const membersDiv = document.getElementById("members");
-let editStaffIndex = null;
-
-function renderMembers() {
-    membersDiv.innerHTML = "";
-    staffData.forEach((m,i)=>{
-        const div=document.createElement("div");
-        div.classList.add("item");
-        div.innerHTML=`<div class="item-info">
-            <img src="${m.img}" alt="${m.name}">
-            <div><strong>${m.name}</strong> - ${m.rank} (${m.group})</div>
-        </div>
-        <div class="item-actions">
-            <button class="edit-btn" onclick="editMember(${i})">Editează</button>
-            <button class="delete-btn" onclick="deleteMember(${i})">Șterge</button>
-        </div>`;
-        membersDiv.appendChild(div);
-    });
-}
-
-staffForm.addEventListener("submit", function(e){
-    e.preventDefault();
-    const name=document.getElementById("name").value;
-    const rank=document.getElementById("rank").value;
-    const img=document.getElementById("img").value;
-    const group=document.getElementById("group").value;
-    if(editStaffIndex===null) staffData.push({name,rank,img,group});
-    else { staffData[editStaffIndex]={name,rank,img,group}; editStaffIndex=null; staffForm.querySelector("button").innerText="Adaugă Membru";}
-    localStorage.setItem("staffMembers",JSON.stringify(staffData));
-    renderMembers(); staffForm.reset();
+auth.onAuthStateChanged(user=>{
+  if(user){
+    showContent(user);
+  } else {
+    authContainer.style.display="flex";
+    content.style.display="none";
+    profileLi.innerHTML="";
+  }
 });
-function deleteMember(i){ staffData.splice(i,1); localStorage.setItem("staffMembers",JSON.stringify(staffData)); renderMembers();}
-function editMember(i){ const m=staffData[i]; document.getElementById("name").value=m.name; document.getElementById("rank").value=m.rank; document.getElementById("img").value=m.img; document.getElementById("group").value=m.group; editStaffIndex=i; staffForm.querySelector("button").innerText="Salvează Modificările"; }
 
-/* --- Updates --- */
-let updatesData = JSON.parse(localStorage.getItem("updates"))||[];
-const updateForm=document.getElementById("updateForm");
-const updatesList=document.getElementById("updatesList");
-let editUpdateIndex=null;
+document.getElementById("signupBtn").addEventListener("click", ()=>{
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const displayName = document.getElementById("displayName").value.trim();
+  if(!displayName){ alert("Trebuie să introduci un nume!"); return; }
 
-function renderUpdates(){
-    updatesList.innerHTML="";
-    updatesData.forEach((u,i)=>{
-        const div=document.createElement("div");
-        div.classList.add("item");
-        let content=`<div><strong>${u.title}</strong> - ${u.message}`;
-        if(u.img) content+=`<br><img src="${u.img}" width="60">`;
-        content+="</div>";
-        div.innerHTML=`<div class="item-info">${content}</div>
-        <div class="item-actions">
-        <button class="edit-btn" onclick="editUpdate(${i})">Editează</button>
-        <button class="delete-btn" onclick="deleteUpdate(${i})">Șterge</button></div>`;
-        updatesList.appendChild(div);
-    });
-}
-updateForm.addEventListener("submit",function(e){
-    e.preventDefault();
-    const title=document.getElementById("updateTitle").value;
-    const message=document.getElementById("updateMessage").value;
-    const img=document.getElementById("updateImg").value;
-    if(editUpdateIndex===null) updatesData.push({title,message,img});
-    else { updatesData[editUpdateIndex]={title,message,img}; editUpdateIndex=null; updateForm.querySelector("button").innerText="Adaugă Update";}
-    localStorage.setItem("updates",JSON.stringify(updatesData));
-    renderUpdates(); updateForm.reset();
+  auth.createUserWithEmailAndPassword(email,password)
+    .then(userCredential=>{
+      const user = userCredential.user;
+      return user.updateProfile({displayName}).then(()=>{
+        // Setează user în DB
+        db.ref('users/'+user.uid).set({username:displayName,email,isAdmin:false});
+      });
+    })
+    .then(()=> auth.currentUser.reload()) // Reload pentru a actualiza displayName
+    .catch(e=>alert(e.message));
 });
-function deleteUpdate(i){ updatesData.splice(i,1); localStorage.setItem("updates",JSON.stringify(updatesData)); renderUpdates();}
-function editUpdate(i){ const u=updatesData[i]; document.getElementById("updateTitle").value=u.title; document.getElementById("updateMessage").value=u.message; document.getElementById("updateImg").value=u.img; editUpdateIndex=i; updateForm.querySelector("button").innerText="Salvează Modificările"; }
 
-/* --- Sneak Peeks --- */
-let peeksData=JSON.parse(localStorage.getItem("sneakPeeks"))||[];
-const sneakForm=document.getElementById("sneakForm");
-const sneakList=document.getElementById("sneakList");
-let editPeekIndex=null;
-
-function renderPeeks(){
-    sneakList.innerHTML="";
-    peeksData.forEach((p,i)=>{
-        const div=document.createElement("div");
-        div.classList.add("item");
-        let content=`<div><strong>${p.message||""}</strong>`;
-        if(p.type==="image") content+=`<br><img src="${p.url}" width="60">`;
-        if(p.type==="video") content+=`<br><video width="120" controls><source src="${p.url}" type="video/mp4"></video>`;
-        if(p.type==="link") content+=`<br><a href="${p.url}" target="_blank">${p.url}</a>`;
-        content+="</div>";
-        div.innerHTML=`<div class="item-info">${content}</div>
-        <div class="item-actions">
-        <button class="edit-btn" onclick="editPeek(${i})">Editează</button>
-        <button class="delete-btn" onclick="deletePeek(${i})">Șterge</button></div>`;
-        sneakList.appendChild(div);
-    });
-}
-sneakForm.addEventListener("submit",function(e){
-    e.preventDefault();
-    const message=document.getElementById("sneakMessage").value;
-    const url=document.getElementById("sneakUrl").value;
-    const type=document.getElementById("sneakType").value;
-    if(editPeekIndex===null) peeksData.push({message,url,type});
-    else { peeksData[editPeekIndex]={message,url,type}; editPeekIndex=null; sneakForm.querySelector("button").innerText="Adaugă Sneak Peek";}
-    localStorage.setItem("sneakPeeks",JSON.stringify(peeksData));
-    renderPeeks(); sneakForm.reset();
+document.getElementById("loginBtn").addEventListener("click", ()=>{
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  auth.signInWithEmailAndPassword(email,password)
+      .then(()=> auth.currentUser.reload())
+      .catch(e=>alert(e.message));
 });
-function deletePeek(i){ peeksData.splice(i,1); localStorage.setItem("sneakPeeks",JSON.stringify(peeksData)); renderPeeks();}
-function editPeek(i){ const p=peeksData[i]; document.getElementById("sneakMessage").value=p.message; document.getElementById("sneakUrl").value=p.url; document.getElementById("sneakType").value=p.type; editPeekIndex=i; sneakForm.querySelector("button").innerText="Salvează Modificările"; }
 
-/* --- Init --- */
-renderMembers(); renderUpdates(); renderPeeks();
+function logout(){ auth.signOut(); }
 </script>
 </body>
 </html>
