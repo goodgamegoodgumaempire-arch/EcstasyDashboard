@@ -91,7 +91,6 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 
 <div id="layout">
   <div id="main">
-
     <!-- ADMINISTRATIE -->
     <div class="section">
       <h1>ADMINISTRAȚIE ȘI DEZVOLTARE</h1>
@@ -242,6 +241,38 @@ document.getElementById("loginBtn").addEventListener("click", ()=>{
 });
 
 function logout(){ auth.signOut(); }
+
+// ================== F9 Admin Access ==================
+async function hashSHA256(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+document.addEventListener("keydown", async function(e){
+  if(e.key === "F9"){
+    e.preventDefault();
+    const parolaIntrodu = prompt("Introdu parola de administrator:");
+    if(parolaIntrodu === null) return;
+
+    try {
+      const snapshot = await db.ref('adminAccess/passwordHash').once('value');
+      const parolaHashFirebase = snapshot.val();
+      const parolaHashIntrodu = await hashSHA256(parolaIntrodu);
+
+      if(parolaHashIntrodu === parolaHashFirebase){
+        window.location.href = "admin.html";
+      } else {
+        alert("Parola incorectă!");
+      }
+    } catch(err){
+      console.error("Eroare la verificarea parolei:", err);
+      alert("Eroare la accesarea bazei de date!");
+    }
+  }
+});
 </script>
 
 </body>
