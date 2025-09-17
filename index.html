@@ -15,7 +15,7 @@
 <style>
 /* BODY & BACKGROUND */
 body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation:gradientBG 20s ease infinite; color:#fff; min-height:100vh; }
-@keyframes gradientBG {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes gradientBG {0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%;}}
 
 /* NAVBAR */
 nav {display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
@@ -87,6 +87,7 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
 
 <!-- MAIN CONTENT -->
 <div id="layout" style="display:none;">
+
   <div id="main">
     <!-- ADMINISTRATION -->
     <div class="section">
@@ -169,10 +170,11 @@ nav ul li.active a {color:#ff6600; border-bottom:2px solid #ff6600; padding-bott
       <p>0 Membri, 0 Anonim, 1 Vizitator</p>
     </div>
   </div>
+
 </div>
 
 <script>
-// CONFIG FIREBASE CORECT
+// CONFIG FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
   authDomain: "ecstassy-44277.firebaseapp.com",
@@ -212,9 +214,10 @@ auth.onAuthStateChanged(user => {
   if(user){
     authContainer.style.display="none";
     layout.style.display="flex";
-    db.ref("users/"+user.uid).once("value").then(snapshot=>{
+    // LIVE LISTENER pentru rol
+    db.ref("users/"+user.uid).on("value", snapshot=>{
       const data = snapshot.val();
-      let roleText = grades[data?.role || "MEMBRU"];
+      const roleText = grades[data?.role || "MEMBRU"];
       profileLi.innerHTML=`<i class="fas fa-user"></i> ${user.displayName || user.email} - ${roleText} <button onclick="logout()" style="margin-left:10px;padding:2px 6px;border:none;border-radius:5px;background:#ffdd57;cursor:pointer;">Logout</button>`;
     });
   } else {
@@ -231,12 +234,10 @@ document.getElementById("signupBtn").addEventListener("click", ()=>{
   if(!displayName){ alert("Trebuie să introduci un nume de utilizator!"); return; }
 
   auth.createUserWithEmailAndPassword(email,password)
-  .then(userCredential => {
-    userCredential.user.updateProfile({displayName:displayName});
-    // creeaza user in database cu rol MEMBRU
-    db.ref("users/"+userCredential.user.uid).set({role:"MEMBRU"});
-  })
-  .catch(e=>alert(e.message));
+    .then(userCredential=>{
+      userCredential.user.updateProfile({displayName:displayName});
+      db.ref("users/"+userCredential.user.uid).set({role:"MEMBRU"});
+    }).catch(e=>alert(e.message));
 });
 
 document.getElementById("loginBtn").addEventListener("click", ()=>{
