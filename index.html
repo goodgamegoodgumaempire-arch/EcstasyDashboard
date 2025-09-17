@@ -92,7 +92,7 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
       <div class="card" id="adminCard" style="display:none;">
         <h2>ADMIN PANEL</h2>
         <p>Zona rezervata administratorilor</p>
-        <a href="admin.htm" style="color:#ff6600;">Acceseaza Admin Panel</a>
+        <a href="admin.htmll" style="color:#ff6600;">Acceseaza Admin Panel</a>
       </div>
     </div>
 
@@ -159,7 +159,7 @@ auth.onAuthStateChanged(user => {
 
       let profileHtml = `<i class="fas fa-user"></i> ${user.displayName || user.email} <button onclick="logout()" style="margin-left:10px;">Logout</button>`;
       if(data && data.isAdmin){
-        profileHtml += ` | <a href="admin.html" style="color:#ff6600; margin-left:10px;">Admin Panel</a>`;
+        profileHtml += ` | <a href="admin.htmll" style="color:#ff6600; margin-left:10px;">Admin Panel</a>`;
       }
       profileLi.innerHTML = profileHtml;
     });
@@ -240,6 +240,7 @@ document.addEventListener("keydown", function(e){
 
 </body>
 </html>
+
 
 
 
