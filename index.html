@@ -21,12 +21,6 @@ nav ul li:hover i, nav ul li:hover span { color:#ffdd57; }
 nav ul li a { text-decoration:none; display:flex; flex-direction:column; align-items:center; }
 #profile { margin-left:20px; font-weight:700; }
 
-/* Hero */
-.hero { display:flex; flex-direction:column; align-items:center; text-align:center; max-width:900px; padding:40px 20px; background-color:rgba(20,22,35,0.8); border-radius:15px; box-shadow:0 0 25px rgba(0,0,0,0.6); margin:20px auto; }
-.hero .logo { width:180px; margin-bottom:25px; }
-.hero h1 { font-size:2em; color:#4fc3f7; margin-bottom:20px; }
-.hero p { font-size:1.2em; line-height:1.6; color:#fff; margin-bottom:20px; }
-
 /* Auth Container */
 #authContainer {
   text-align:center; margin:20px auto; padding:20px; max-width:350px; 
@@ -38,22 +32,11 @@ nav ul li a { text-decoration:none; display:flex; flex-direction:column; align-i
 
 /* Hide content until login */
 #content { display:none; }
+
+/* Site styling (navbar, cards etc.) poate fi aici, copiați codul vostru original */
 </style>
 </head>
 <body style="visibility:hidden">
-
-<!-- NAVBAR -->
-<nav>
-  <ul>
-    <li><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
-    <li><a href="Staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
-    <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
-    <li><a href="#"><span>Tabel Lideri</span></a></li>
-    <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
-    <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
-    <li id="profile"></li>
-  </ul>
-</nav>
 
 <!-- AUTH LOGIN/REGISTER -->
 <div id="authContainer">
@@ -67,7 +50,31 @@ nav ul li a { text-decoration:none; display:flex; flex-direction:column; align-i
 
 <!-- SITE CONTENT -->
 <div id="content">
-  <!-- Aici pui tot codul tău original: layout, card-uri, sidebar etc. -->
+  <!-- Navbar & Forum -->
+  <nav>
+    <ul>
+      <li><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
+      <li><a href="Staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+      <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
+      <li><a href="#"><span>Tabel Lideri</span></a></li>
+      <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
+      <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
+      <li id="profile"></li>
+    </ul>
+  </nav>
+
+  <!-- Aici pui restul codului forumului tău: layout, card-uri, sidebar etc. -->
+  <div id="layout">
+    <!-- MAIN CONTENT -->
+    <div id="main">
+      <!-- Aici adaugi card-urile tale originale -->
+    </div>
+
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+      <!-- Sidebar-ul tău original -->
+    </div>
+  </div>
 </div>
 
 <!-- Firebase -->
