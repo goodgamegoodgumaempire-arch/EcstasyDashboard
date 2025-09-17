@@ -3,37 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forum - Ecstasy Romania</title>
+<title>Forum - G4A Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
 <style>
-body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7); color:#fff; min-height:100vh; }
-
-/* Navbar */
-nav { display:flex; justify-content:center; background-color:rgba(20,22,35,0.95); padding:10px 20px; box-shadow:0 2px 10px rgba(0,0,0,0.5); border-radius:8px; margin-bottom:20px; }
-nav ul { list-style:none; display:flex; gap:30px; align-items:center; margin:0; padding:0; }
-nav ul li { display:flex; flex-direction:column; align-items:center; transition:0.2s; }
-nav ul li:hover { transform:translateY(-3px); }
-nav ul li i { font-size:1.2em; margin-bottom:5px; color:#a0a0a0; transition:0.2s; }
-nav ul li span { font-weight:700; font-size:0.9em; color:#fff; letter-spacing:0.5px; transition:0.2s; }
-nav ul li:hover i, nav ul li:hover span { color:#ffdd57; }
-nav ul li a { text-decoration:none; display:flex; flex-direction:column; align-items:center; }
-#profile { margin-left:20px; font-weight:700; }
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #0b0c17, #1b1f38, #4fc3f7, #0b0c17);
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color: #fff;
+  min-height: 100vh;
+}
+@keyframes gradientBG { 0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
 /* Auth Container */
 #authContainer {
-  text-align:center; margin:20px auto; padding:20px; max-width:350px; 
-  background-color:rgba(20,22,35,0.85); border-radius:12px; box-shadow:0 0 20px rgba(0,0,0,0.5);
+  text-align:center; margin:50px auto; padding:30px; max-width:350px;
+  background-color: rgba(20,22,35,0.95); border-radius:12px; box-shadow:0 0 25px rgba(0,0,0,0.5);
 }
 #authContainer input { padding:10px; margin:10px 0; border-radius:8px; border:none; width:100%; }
 #authContainer button { padding:10px 20px; margin:10px 5px; border:none; border-radius:8px; font-weight:700; cursor:pointer; background-color:#4fc3f7; color:#0b0c17; transition:0.2s; }
 #authContainer button:hover { background-color:#ffdd57; }
 
-/* Hide content until login */
+/* Hide main content until login */
 #content { display:none; }
 
-/* Site styling (navbar, cards etc.) poate fi aici, copiați codul vostru original */
+/* Copiem stilurile tale originale pentru navbar, layout, cards etc. */
+nav { display: flex; align-items: center; background: transparent; padding: 10px 40px; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
+nav img { height: 40px; margin-right: 50px; }
+nav ul { display: flex; gap: 40px; list-style: none; margin: 0 auto; padding: 0; }
+nav ul li a { color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.85em; transition: 0.2s; }
+nav ul li a:hover { color: #ff6600; }
+nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-bottom: 4px; }
+
+/* Layout */
+#layout { display: flex; max-width: 1300px; margin: 20px auto; gap: 20px; padding: 0 20px; }
+#main { flex: 3; } #sidebar { flex: 1; }
+
+/* Section titles */
+.section > h1 { font-size: 1.2em; color: #ff6600; border-bottom: 2px solid #222; padding: 8px 0; margin: 20px 0 10px; }
+
+/* Universal Card */
+.card { background: rgba(17,17,17,0.85); border-radius: 10px; padding: 20px; margin: 15px 0; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s; }
+.card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
+.card h2 { margin: 0 0 10px; font-size: 1.1em; color: #fff; }
+.card p { margin: 0 0 10px; color: #aaa; }
+
+/* Forum links */
+.forum-links { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.9em; }
+.forum-links a { color: #ff6600; text-decoration: none; transition: 0.2s; }
+.forum-links a:hover { color: #fff; }
+
+/* Sidebar */
+.sidebar-box { background: rgba(17,17,17,0.85); border-radius: 10px; margin-bottom: 20px; padding: 15px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+.sidebar-box h3 { font-size: 1em; color: #ff6600; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
+.sidebar-box ul { list-style: none; margin: 0; padding: 0; }
+.sidebar-box ul li { padding: 8px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
+.sidebar-box ul li:last-child { border-bottom: none; }
 </style>
 </head>
 <body style="visibility:hidden">
@@ -50,11 +78,12 @@ nav ul li a { text-decoration:none; display:flex; flex-direction:column; align-i
 
 <!-- SITE CONTENT -->
 <div id="content">
-  <!-- Navbar & Forum -->
+  <!-- NAVBAR -->
   <nav>
+    <img src="logo.png" alt="G4A Logo">
     <ul>
-      <li><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
-      <li><a href="Staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+      <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
+      <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
       <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
       <li><a href="#"><span>Tabel Lideri</span></a></li>
       <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
@@ -63,16 +92,69 @@ nav ul li a { text-decoration:none; display:flex; flex-direction:column; align-i
     </ul>
   </nav>
 
-  <!-- Aici pui restul codului forumului tău: layout, card-uri, sidebar etc. -->
+  <!-- LAYOUT -->
   <div id="layout">
-    <!-- MAIN CONTENT -->
     <div id="main">
-      <!-- Aici adaugi card-urile tale originale -->
+      <!-- Card-uri și secțiuni originale -->
+      <div class="section">
+        <h1>ADMINISTRAȚIE ȘI DEZVOLTARE</h1>
+        <div class="card">
+          <h2>ZONA ADMINISTRATIVĂ</h2>
+          <p>Zonă pentru informații și știri despre forum, comunitate și parteneriate.</p>
+          <div class="forum-links">
+            <a href="rginf.html">Regulament & Informații</a>
+            <a href="anunturi.html">Anunțuri</a>
+            <a href="parteners.html">Parteneriate</a>
+          </div>
+        </div>
+        <div class="card">
+          <h2>ZONA MEMBRILOR</h2>
+          <p>Zonă destinată utilizatorilor forumului.</p>
+          <div class="forum-links">
+            <a href="#">Prezintă-te</a>
+            <a href="#">Schimbare Nume</a>
+            <a href="#">Aplicații pentru grad</a>
+            <a href="#">Reclamații STAFF</a>
+            <a href="#">Propuneri & Sugestii</a>
+          </div>
+        </div>
+        <div class="card">
+          <h2>AFILIERE & MANAGEMENT</h2>
+          <p>Doriți ca serverul dvs. să facă parte din comunitate?</p>
+          <div class="forum-links">
+            <a href="#">Cerere DNS</a>
+            <a href="#">Management</a>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- SIDEBAR -->
     <div id="sidebar">
-      <!-- Sidebar-ul tău original -->
+      <div class="sidebar-box">
+        <h3>Announcements</h3>
+        <ul class="announcements">
+          <li><a href="updates.html" style="color: inherit; text-decoration: none;">🟠 Update-uri</a></li>
+          <li><a href="sneakpeaks.html" style="color: inherit; text-decoration: none;">🔍 Sneak Peaks</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-box">
+        <h3>Contact cu Administrația</h3>
+        <ul>
+          <li>Faby A. - Founder</li>
+          <li>FoxX - Founder</li>
+        </ul>
+      </div>
+      <div class="sidebar-box">
+        <h3>Server Status</h3>
+        <ul>
+          <li>Discord - 120 online 💬</li>
+          <li>FiveM Server - Online ✅</li>
+        </ul>
+      </div>
+      <div class="sidebar-box">
+        <h3>Online acum</h3>
+        <p>0 Membri, 0 Anonim, 1 Vizitator</p>
+      </div>
     </div>
   </div>
 </div>
@@ -107,33 +189,4 @@ auth.onAuthStateChanged(user => {
         profileLi.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <button onclick="logout()" style="margin-left:10px;padding:2px 6px;border:none;border-radius:5px;background:#ffdd57;cursor:pointer;">Logout</button>`;
     } else {
         authContainer.style.display = "block";
-        content.style.display = "none";
-        profileLi.innerHTML = '';
-    }
-    document.body.style.visibility = "visible";
-});
-
-document.getElementById("signupBtn").addEventListener("click", ()=>{
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const displayName = document.getElementById("displayName").value.trim();
-    if(!displayName){ alert("Trebuie să introduci un nume de utilizator!"); return; }
-    auth.createUserWithEmailAndPassword(email,password)
-    .then(userCredential => {
-        return userCredential.user.updateProfile({ displayName: displayName })
-            .then(()=>db.ref('users/'+userCredential.user.uid).set({ username: displayName, email }));
-    })
-    .catch(e=>alert(e.message));
-});
-
-document.getElementById("loginBtn").addEventListener("click", ()=>{
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    auth.signInWithEmailAndPassword(email,password).catch(e=>alert(e.message));
-});
-
-function logout(){ auth.signOut(); }
-</script>
-
-</body>
-</html>
+        content.style.display = "none
