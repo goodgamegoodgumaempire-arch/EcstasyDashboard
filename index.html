@@ -10,7 +10,7 @@
 body {
   margin:0;
   font-family:'Roboto',sans-serif;
-  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7);
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
   background-size:400% 400%;
   animation: gradientBG 20s ease infinite;
   color:#fff;
@@ -18,7 +18,7 @@ body {
 }
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
-/* Auth container */
+/* AUTH LOGIN/REGISTER */
 #authContainer {
   display:flex; flex-direction:column; justify-content:center; align-items:center;
   position:fixed; top:0; left:0; width:100%; height:100%;
@@ -33,8 +33,41 @@ body {
 }
 #authContainer button:hover { background:#ffdd57; }
 
-/* Hide main content until login */
+/* Ascunde site până la login */
 #content { display:none; }
+
+/* Copiem toate stilurile originale */
+nav { display: flex; align-items: center; background: transparent; padding: 10px 40px; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
+nav img { height: 40px; margin-right: 50px; }
+nav ul { display: flex; gap: 40px; list-style: none; margin: 0 auto; padding: 0; }
+nav ul li a { color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.85em; transition: 0.2s; }
+nav ul li a:hover { color: #ff6600; }
+nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-bottom: 4px; }
+#layout { display: flex; max-width: 1300px; margin: 20px auto; gap: 20px; padding: 0 20px; }
+#main { flex: 3; } #sidebar { flex: 1; }
+.section > h1 { font-size: 1.2em; color: #ff6600; border-bottom: 2px solid #222; padding: 8px 0; margin: 20px 0 10px; }
+.card { background: rgba(17,17,17,0.85); border-radius: 10px; padding: 20px; margin: 15px 0; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s; }
+.card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
+.card h2 { margin: 0 0 10px; font-size: 1.1em; color: #fff; }
+.card p { margin: 0 0 10px; color: #aaa; }
+.forum-links { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.9em; }
+.forum-links a { color: #ff6600; text-decoration: none; transition: 0.2s; }
+.forum-links a:hover { color: #fff; }
+.sidebar-box { background: rgba(17,17,17,0.85); border-radius: 10px; margin-bottom: 20px; padding: 15px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+.sidebar-box h3 { font-size: 1em; color: #ff6600; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
+.sidebar-box ul { list-style: none; margin: 0; padding: 0; }
+.sidebar-box ul li { padding: 8px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
+.sidebar-box ul li:last-child { border-bottom: none; }
+.announcements li { padding: 12px; border-radius: 6px; margin-bottom: 8px; color: #fff; cursor: pointer; font-weight: 600; }
+.announcements li:nth-child(1) { background: #d2691e; }
+.announcements li:nth-child(2) { background: #a0522d; }
+.discord-box { text-align: center; }
+.discord-box a { display: inline-block; text-decoration: none; color: #fff; font-weight: bold; font-size: 1.2em; text-align: center; padding: 10px 0; transition: transform 0.3s; }
+.discord-box a:hover { color: #ff6600; }
+.discord-box img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
+.marketplace-box p { color: #ccc; margin: 15px 0; }
+.marketplace-box button { background: #ff6600; border: none; color: #fff; padding: 12px 20px; font-size: 1em; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+.marketplace-box button:hover { background: #cc5200; }
 </style>
 </head>
 <body>
@@ -51,19 +84,119 @@ body {
   </div>
 </div>
 
-<!-- SITE CONTENT -->
+<!-- SITE CONTENT ORIGINAL -->
 <div id="content">
-  <nav>
-    <img src="logo.png" alt="G4A Logo" style="height:40px;margin-right:20px;">
-    <ul style="display:flex;gap:20px;list-style:none;">
-      <li><a href="#"><i class="fas fa-home"></i> Forumuri</a></li>
-      <li><a href="staff.html"><i class="fas fa-users"></i> Staff</a></li>
-      <li><a href="#"><i class="fas fa-wifi"></i> Online</a></li>
-      <li id="profile"></li>
-    </ul>
-  </nav>
-  <h1 style="text-align:center;margin-top:50px;">Bine ai venit pe G4A Romania</h1>
-  <!-- Aici poți pune tot codul tău original (#layout etc.) -->
+<nav>
+  <img src="logo.png" alt="G4A Logo">
+  <ul>
+    <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
+    <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+    <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
+    <li><a href="#"><span>Tabel Lideri</span></a></li>
+    <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
+    <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
+    <li id="profile"></li>
+  </ul>
+</nav>
+
+<div id="layout">
+
+  <!-- MAIN -->
+  <div id="main">
+
+    <!-- Administratie si Dezvoltare -->
+    <div class="section">
+      <h1>ADMINISTRAȚIE ȘI DEZVOLTARE</h1>
+
+      <div class="card">
+        <h2>ZONA ADMINISTRATIVĂ</h2>
+        <p>Zonă pentru informații și știri despre forum, comunitate și parteneriate.</p>
+        <div class="forum-links">
+          <a href="rginf.html">Regulament & Informații</a>
+          <a href="anunturi.html">Anunțuri</a>
+          <a href="parteners.html">Parteneriate</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>ZONA MEMBRILOR</h2>
+        <p>Zonă destinată utilizatorilor forumului.</p>
+        <div class="forum-links">
+          <a href="#">Prezintă-te</a>
+          <a href="#">Schimbare Nume</a>
+          <a href="#">Aplicații pentru grad</a>
+          <a href="#">Reclamații STAFF</a>
+          <a href="#">Propuneri & Sugestii</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>AFILIERE & MANAGEMENT</h2>
+        <p>Doriți ca serverul dvs. să facă parte din comunitate?</p>
+        <div class="forum-links">
+          <a href="#">Cerere DNS</a>
+          <a href="#">Management</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Community Servers -->
+    <div class="section">
+      <h1>COMMUNITY SERVERS</h1>
+
+      <div class="card discord-box">
+        <a href="https://discord.gg/" target="_blank">DISCORD - CLICK ME! 💬</a>
+        <img src="discord.gif" alt="Discord GIF">
+      </div>
+    </div>
+
+    <!-- Marketplace -->
+    <div class="section">
+      <h1>MARKETPLACE</h1>
+      <div class="card marketplace-box">
+        <h2>The Marketplace on the G4A Community</h2>
+        <p>The MarketPlace on the G4A community is a space dedicated to the exchange of products, games and equipment between gamers, providing opportunities for safe transactions and access to exclusive offers.</p>
+        <button>Buy</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+
+    <div class="sidebar-box">
+      <h3>Announcements</h3>
+      <ul class="announcements">
+        <li><a href="updates.html" style="color: inherit; text-decoration: none;">🟠 Update-uri</a></li>
+        <li><a href="sneakpeaks.html" style="color: inherit; text-decoration: none;">🔍 Sneak Peaks</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>Contact cu Administrația</h3>
+      <ul>
+        <li>Faby A. - Founder</li>
+        <li>FoxX - Founder</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>Server Status</h3>
+      <ul>
+        <li>Discord - 120 online 💬</li>
+        <li>FiveM Server - Online ✅</li>
+      </ul>
+    </div>
+
+    <div class="sidebar-box">
+      <h3>Online acum</h3>
+      <p>0 Membri, 0 Anonim, 1 Vizitator</p>
+    </div>
+
+  </div>
+
+</div>
 </div>
 
 <!-- Firebase -->
