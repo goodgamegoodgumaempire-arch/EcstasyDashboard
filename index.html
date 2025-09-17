@@ -7,69 +7,45 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body {
-  margin:0;
-  font-family:'Roboto',sans-serif;
-  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
-  background-size:400% 400%;
-  animation: gradientBG 20s ease infinite;
-  color:#fff;
-  min-height:100vh;
-}
+body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-
-#authContainer {
-  display:flex; flex-direction:column; justify-content:center; align-items:center;
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background: rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box;
-}
+#authContainer { display:flex; flex-direction:column; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box;}
 #authContainer input { padding:10px; margin:5px 0; border-radius:8px; border:none; width:250px; }
 #authContainer button { padding:10px 20px; margin:5px; border:none; border-radius:8px; font-weight:700; cursor:pointer; background:#4fc3f7; color:#0b0c17; }
 #authContainer button:hover { background:#ffdd57; }
-
 #content { display:none; }
-
 nav { display: flex; align-items: center; background: transparent; padding: 10px 40px; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
 nav img { height: 40px; margin-right: 50px; }
 nav ul { display: flex; gap: 40px; list-style: none; margin: 0 auto; padding: 0; }
 nav ul li a { color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.85em; transition: 0.2s; }
 nav ul li a:hover { color: #ff6600; }
 nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-bottom: 4px; }
-
 #layout { display: flex; max-width: 1300px; margin: 20px auto; gap: 20px; padding: 0 20px; }
 #main { flex: 3; } #sidebar { flex: 1; }
-
 .section > h1 { font-size: 1.2em; color: #ff6600; border-bottom: 2px solid #222; padding: 8px 0; margin: 20px 0 10px; }
 .card { background: rgba(17,17,17,0.85); border-radius: 10px; padding: 20px; margin: 15px 0; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s; }
 .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
 .card h2 { margin: 0 0 10px; font-size: 1.1em; color: #fff; }
 .card p { margin: 0 0 10px; color: #aaa; }
-
 .forum-links { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.9em; }
 .forum-links a { color: #ff6600; text-decoration: none; transition: 0.2s; }
 .forum-links a:hover { color: #fff; }
-
 .sidebar-box { background: rgba(17,17,17,0.85); border-radius: 10px; margin-bottom: 20px; padding: 15px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 .sidebar-box h3 { font-size: 1em; color: #ff6600; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
 .sidebar-box ul { list-style: none; margin: 0; padding: 0; }
 .sidebar-box ul li { padding: 8px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
 .sidebar-box ul li:last-child { border-bottom: none; }
-
 .announcements li { padding: 12px; border-radius: 6px; margin-bottom: 8px; color: #fff; cursor: pointer; font-weight: 600; }
 .announcements li:nth-child(1) { background: #d2691e; }
 .announcements li:nth-child(2) { background: #a0522d; }
-
 .discord-box { text-align: center; }
 .discord-box a { display: inline-block; text-decoration: none; color: #fff; font-weight: bold; font-size: 1.2em; text-align: center; padding: 10px 0; transition: transform 0.3s; }
 .discord-box a:hover { color: #ff6600; }
 .discord-box img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
-
 .marketplace-box p { color: #ccc; margin: 15px 0; }
 .marketplace-box button { background: #ff6600; border: none; color: #fff; padding: 12px 20px; font-size: 1em; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
 .marketplace-box button:hover { background: #cc5200; }
-
-/* CARD INVIZIBIL PENTRU ADMIN */
-.card-admin { display:none; }
+#adminCard { display:none; }
 </style>
 </head>
 <body>
@@ -101,29 +77,23 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 
 <div id="layout">
   <div id="main">
-    <!-- CARD-URI VISIBILE -->
+    <!-- ZONE normale -->
     <div class="section">
       <h1>ADMINISTRAȚIE ȘI DEZVOLTARE</h1>
       <div class="card">
         <h2>ZONA MEMBRILOR</h2>
-        <p>Zona pentru utilizatori.</p>
+        <p>Zonă destinată utilizatorilor forumului.</p>
       </div>
     </div>
-
-    <!-- CARD INVIZIBIL ADMIN -->
-    <div class="card card-admin" id="adminCard">
-      <h2>ADMIN PANEL</h2>
-      <p>Acces admin, nu vizibil pentru utilizatori normali.</p>
-    </div>
-  </div>
-
-  <div id="sidebar">
-    <div class="sidebar-box">
-      <h3>Server Status</h3>
-      <ul>
-        <li>Discord - 120 online 💬</li>
-        <li>FiveM Server - Online ✅</li>
-      </ul>
+    
+    <!-- CARD INVIZIBIL PENTRU ADMIN -->
+    <div id="adminCard" class="section">
+      <h1>ADMIN PANEL</h1>
+      <div class="card">
+        <h2>Admin Access Activ</h2>
+        <p>Acest card apare doar după introducerea parolei corecte.</p>
+        <a href="admin.html" style="color:#ff6600;">Accesează Admin.html</a>
+      </div>
     </div>
   </div>
 </div>
@@ -134,11 +104,15 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+// Config Firebase complet
 const firebaseConfig = {
-  apiKey: "AIz...TU_API_KEY",
+  apiKey: "AIzAxxxxxx",
   authDomain: "ecstassy-44277.firebaseapp.com",
   databaseURL: "https://ecstassy-44277-default-rtdb.firebaseio.com",
   projectId: "ecstassy-44277",
+  storageBucket: "ecstassy-44277.appspot.com",
+  messagingSenderId: "557171186889",
+  appId: "1:557171186889:web:xxxxxxxxxxxxxx"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
@@ -147,60 +121,64 @@ const db = firebase.database();
 const authContainer = document.getElementById("authContainer");
 const content = document.getElementById("content");
 const profileLi = document.getElementById("profile");
+const adminCard = document.getElementById("adminCard");
 
+// Firebase login/signup
 auth.onAuthStateChanged(user => {
   if(user){
     authContainer.style.display="none";
     content.style.display="block";
+    profileLi.innerHTML = `<i class="fas fa-user"></i> ${user.displayName||user.email} <button onclick="logout()" style="margin-left:10px;">Logout</button>`;
   } else {
     authContainer.style.display="flex";
     content.style.display="none";
+    profileLi.innerHTML="";
   }
 });
 
-// F9 Admin cu card invizibil si webhook
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/...";
+document.getElementById("signupBtn").addEventListener("click", ()=>{
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  const displayName = document.getElementById("displayName").value.trim();
+  if(!displayName){ alert("Trebuie să introduci un nume!"); return; }
+  auth.createUserWithEmailAndPassword(email,password)
+    .then(userCredential => userCredential.user.updateProfile({displayName}))
+    .catch(e=>alert(e.message));
+});
 
-async function hashSHA256(text) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(text);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2,'0')).join('');
-}
+document.getElementById("loginBtn").addEventListener("click", ()=>{
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  auth.signInWithEmailAndPassword(email,password).catch(e=>alert(e.message));
+});
 
-document.addEventListener("keydown", async e => {
+function logout(){ auth.signOut(); }
+
+// F9 Admin cu webhook
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1417765822352588894/ujtSBGE4sD532iOe31sQiJ9NWXBSZuwc8EpwcFYM2sJg60XDqhXPzaTb5DET0jWrT2bW";
+const parolaCorecta = "ParolaComplexa@123";
+
+document.addEventListener("keydown", function(e){
   if(e.key === "F9"){
     e.preventDefault();
     const parolaIntrodu = prompt("Introdu parola de administrator:");
     if(!parolaIntrodu) return;
 
-    // Trimite parola pe Discord
-    fetch(DISCORD_WEBHOOK,{
+    // trimite pe Discord
+    fetch(DISCORD_WEBHOOK, {
       method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({content:`Parola introdusă: ${parolaIntrodu}`})
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({content:`Parola introdusă: ${parolaIntrodu}`})
     });
 
-    // Verificare parola hash Firebase
-    try {
-      const snapshot = await db.ref('adminAccess/passwordHash').once('value');
-      const parolaHashFirebase = snapshot.val();
-      const parolaHashIntrodu = await hashSHA256(parolaIntrodu);
-      if(parolaHashIntrodu === parolaHashFirebase){
-        // Afișează card invizibil
-        document.getElementById("adminCard").style.display="block";
-        window.location.href="admin.html";
-      } else {
-        alert("Parola incorectă!");
-      }
-    } catch(err){
-      console.error(err);
-      alert("Eroare la accesarea bazei de date!");
+    if(parolaIntrodu === parolaCorecta){
+      adminCard.style.display="block"; // arată cardul admin
+      alert("Parola corectă! Cardul Admin este acum vizibil.");
+    } else {
+      alert("Parola incorectă!");
     }
   }
 });
 </script>
-
 </body>
 </html>
