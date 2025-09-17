@@ -20,7 +20,7 @@ body {
 
 /* AUTH LOGIN/REGISTER */
 #authContainer {
-  display:none; /* ascuns initial pentru flicker */
+  display:none; /* ascuns initial */
   flex-direction:column; justify-content:center; align-items:center;
   position:fixed; top:0; left:0; width:100%; height:100%;
   background: rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box;
@@ -92,21 +92,23 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 
 <!-- SITE CONTENT ORIGINAL -->
 <div id="content">
-  <!-- ... aici conținutul tău original (nav, layout, main, sidebar) ... -->
-  <!-- am omis pentru claritate, dar îl păstrezi exact cum ai deja -->
-  <nav>
-    <img src="logo.png" alt="G4A Logo">
-    <ul>
-      <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
-      <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
-      <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
-      <li><a href="#"><span>Tabel Lideri</span></a></li>
-      <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
-      <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
-      <li id="profile"></li>
-    </ul>
-  </nav>
-  <div id="layout"> ... restul conținutului ... </div>
+<nav>
+  <img src="logo.png" alt="G4A Logo">
+  <ul>
+    <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
+    <li><a href="staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
+    <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
+    <li><a href="#"><span>Tabel Lideri</span></a></li>
+    <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
+    <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
+    <li id="profile"></li>
+  </ul>
+</nav>
+
+<div id="layout">
+  <!-- MAIN și SIDEBAR păstrezi exact cum ai deja -->
+  <!-- poți lipi conținutul tău complet aici -->
+</div>
 </div>
 
 <!-- Firebase -->
