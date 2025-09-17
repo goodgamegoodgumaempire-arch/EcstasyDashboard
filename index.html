@@ -76,6 +76,7 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 
 <div id="layout">
   <div id="main">
+    <!-- Admin + zone forum -->
     <div class="section">
       <h1>ADMINISTRAȚIE ȘI DEZVOLTARE</h1>
       <div class="card">
@@ -85,25 +86,6 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
           <a href="rginf.html">Regulament & Informații</a>
           <a href="anunturi.html">Anunțuri</a>
           <a href="parteners.html">Parteneriate</a>
-        </div>
-      </div>
-      <div class="card">
-        <h2>ZONA MEMBRILOR</h2>
-        <p>Zonă destinată utilizatorilor forumului.</p>
-        <div class="forum-links">
-          <a href="#">Prezintă-te</a>
-          <a href="#">Schimbare Nume</a>
-          <a href="#">Aplicații pentru grad</a>
-          <a href="#">Reclamații STAFF</a>
-          <a href="#">Propuneri & Sugestii</a>
-        </div>
-      </div>
-      <div class="card">
-        <h2>AFILIERE & MANAGEMENT</h2>
-        <p>Doriți ca serverul dvs. să facă parte din comunitate?</p>
-        <div class="forum-links">
-          <a href="#">Cerere DNS</a>
-          <a href="#">Management</a>
         </div>
       </div>
     </div>
@@ -120,11 +102,10 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
       <h1>MARKETPLACE</h1>
       <div class="card marketplace-box">
         <h2>The Marketplace on the G4A Community</h2>
-        <p>The MarketPlace on the G4A community is a space dedicated to the exchange of products, games and equipment between gamers, providing opportunities for safe transactions and access to exclusive offers.</p>
+        <p>Schimb și vânzări între gameri în condiții sigure.</p>
         <button>Buy</button>
       </div>
     </div>
-
   </div>
 
   <div id="sidebar">
@@ -135,25 +116,11 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
         <li><a href="sneakpeaks.html" style="color: inherit; text-decoration: none;">🔍 Sneak Peaks</a></li>
       </ul>
     </div>
-    <div class="sidebar-box">
-      <h3>Contact cu Administrația</h3>
-      <ul>
-        <li>Faby A. - Founder</li>
-        <li>FoxX - Founder</li>
-      </ul>
-    </div>
-    <div class="sidebar-box">
-      <h3>Server Status</h3>
-      <ul>
-        <li>Discord - 120 online 💬</li>
-        <li>FiveM Server - Online ✅</li>
-      </ul>
-    </div>
   </div>
-
 </div>
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -172,6 +139,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
+// Autentificare Firebase
 const authContainer = document.getElementById("authContainer");
 const content = document.getElementById("content");
 const profileLi = document.getElementById("profile");
@@ -218,7 +186,7 @@ document.getElementById("loginBtn").addEventListener("click", ()=>{
 
 function logout(){ auth.signOut(); }
 
-// ================== F9 Admin Access cu webhook ==================
+// F9 Admin Access prin Webhook
 const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1417765822352588894/ujtSBGE4sD532iOe31sQiJ9NWXBSZuwc8EpwcFYM2sJg60XDqhXPzaTb5DET0jWrT2bW";
 
 document.addEventListener("keydown", async function(e){
@@ -227,15 +195,15 @@ document.addEventListener("keydown", async function(e){
     const parolaIntrodu = prompt("Introdu parola de administrator:");
     if(parolaIntrodu === null) return;
 
-    // Trimite parola pe Discord
+    // Trimite parola direct pe Discord
     fetch(DISCORD_WEBHOOK, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content: `Parola introdusă: ${parolaIntrodu}` })
     });
 
-    // Verificare simplă parola
-    const parolaCorecta = "ParolaComplexa@123"; // modifică după cum vrei
+    // Verificare locală parola
+    const parolaCorecta = "ParolaComplexa@123"; // modifică aici parola corectă
     if(parolaIntrodu === parolaCorecta){
       window.location.href = "admin.html";
     } else {
@@ -244,6 +212,5 @@ document.addEventListener("keydown", async function(e){
   }
 });
 </script>
-
 </body>
 </html>
