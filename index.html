@@ -1,3 +1,282 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forum - Ecstasy Romania</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+/* Body & Background */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #0b0c17, #1b1f38, #4fc3f7, #0b0c17);
+  background-size: 400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color: #fff;
+  min-height: 100vh;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Navbar */
+nav {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  padding: 10px 40px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+nav img {
+  height: 40px;
+  margin-right: 50px;
+}
+nav ul {
+  display: flex;
+  gap: 40px;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+}
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.85em;
+  transition: 0.2s;
+}
+nav ul li a:hover {
+  color: #ff6600;
+}
+nav ul li.active a {
+  color: #ff6600;
+  border-bottom: 2px solid #ff6600;
+  padding-bottom: 4px;
+}
+
+/* Layout */
+#layout {
+  display: flex;
+  max-width: 1300px;
+  margin: 20px auto;
+  gap: 20px;
+  padding: 0 20px;
+}
+#main { flex: 3; }
+#sidebar { flex: 1; }
+
+/* Section titles */
+.section > h1 {
+  font-size: 1.2em;
+  color: #ff6600;
+  border-bottom: 2px solid #222;
+  padding: 8px 0;
+  margin: 20px 0 10px;
+}
+
+/* Universal Card */
+.card {
+  background: rgba(17,17,17,0.85);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 15px 0;
+  border: 1px solid #333;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.7);
+}
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 1.1em;
+  color: #fff;
+}
+.card p {
+  margin: 0 0 10px;
+  color: #aaa;
+}
+
+/* Forum links */
+.forum-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 0.9em;
+}
+.forum-links a {
+  color: #ff6600;
+  text-decoration: none;
+  transition: 0.2s;
+}
+.forum-links a:hover {
+  color: #fff;
+}
+
+/* Sidebar */
+.sidebar-box {
+  background: rgba(17,17,17,0.85);
+  border-radius: 10px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #333;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+.sidebar-box h3 {
+  font-size: 1em;
+  color: #ff6600;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #222;
+  padding-bottom: 5px;
+}
+.sidebar-box ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sidebar-box ul li {
+  padding: 8px 0;
+  font-size: 0.9em;
+  border-bottom: 1px solid #222;
+}
+.sidebar-box ul li:last-child { border-bottom: none; }
+
+/* Announcements */
+.announcements li {
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+}
+.announcements li:nth-child(1) { background: #d2691e; }
+.announcements li:nth-child(2) { background: #a0522d; }
+
+/* Discord Card */
+.discord-box {
+  text-align: center;
+}
+.discord-box a {
+  display: inline-block;
+  text-decoration: none;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.2em;
+  text-align: center;
+  padding: 10px 0;
+  transition: transform 0.3s;
+}
+.discord-box a:hover {
+  color: #ff6600;
+}
+.discord-box img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Marketplace */
+.marketplace-box p {
+  color: #ccc;
+  margin: 15px 0;
+}
+.marketplace-box button {
+  background: #ff6600;
+  border: none;
+  color: #fff;
+  padding: 12px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.marketplace-box button:hover {
+  background: #cc5200;
+}
+
+/* Auth Modal */
+#authModal {
+  position: fixed;
+  inset:0;
+  background: rgba(0,0,0,0.95);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+#authModal div {
+  background:#111;
+  padding:30px;
+  border-radius:10px;
+  width:300px;
+  text-align:center;
+  color:#fff;
+}
+#authModal input {
+  width:100%;
+  margin:5px 0;
+  padding:8px;
+  border-radius:4px;
+  border:1px solid #333;
+  background:#222;
+  color:#fff;
+}
+#authModal button {
+  margin-top:10px;
+  width:100%;
+  padding:8px;
+  background:#ff6600;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+  border-radius:4px;
+}
+#authModal hr { margin:15px 0; border-color:#444; }
+</style>
+</head>
+<body>
+
+<!-- AUTH MODAL -->
+<div id="authModal">
+  <div>
+    <h2>Login / Register</h2>
+
+    <div id="loginForm">
+      <input id="loginEmail" type="email" placeholder="Email">
+      <input id="loginPassword" type="password" placeholder="Parola">
+      <button onclick="loginUser()">Login</button>
+    </div>
+
+    <hr>
+
+    <div id="registerForm">
+      <input id="regName" type="text" placeholder="Nume">
+      <input id="regEmail" type="email" placeholder="Email">
+      <input id="regPassword" type="password" placeholder="Parola">
+      <button onclick="registerUser()">Register</button>
+    </div>
+  </div>
+</div>
+
+<!-- SITE CONTENT -->
+<div id="content">
+  <!-- Aici pui tot codul tău original (navbar + layout + sidebar etc.) -->
+</div>
+
+<!-- Firebase & Auth Script -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
   import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
@@ -20,24 +299,20 @@
   const content = document.getElementById("content");
   const authModal = document.getElementById("authModal");
 
-  // Ascunde conținutul site-ului până la login
+  // Ascunde site-ul până la login
   content.style.display = "none";
   authModal.style.display = "flex";
 
-  // Verifică dacă utilizatorul este logat
   onAuthStateChanged(auth, user => {
-    if(user) {
-      // User logat -> arată conținutul
+    if(user){
       authModal.style.display = "none";
       content.style.display = "block";
     } else {
-      // Nu e logat -> ascunde conținutul
       authModal.style.display = "flex";
       content.style.display = "none";
     }
   });
 
-  // Register
   window.registerUser = () => {
     const email = document.getElementById("regEmail").value;
     const password = document.getElementById("regPassword").value;
@@ -46,31 +321,20 @@
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
         const user = userCredential.user;
-
-        // Setează numele în profil
         updateProfile(user, { displayName: name });
-
-        // Salvează user-ul în Realtime Database
-        set(ref(database, 'users/' + user.uid), {
-          username: name,
-          email: email
-        });
-
+        set(ref(database, 'users/' + user.uid), { username: name, email: email });
       })
       .catch(error => alert(error.message));
   };
 
-  // Login
   window.loginUser = () => {
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
-
     signInWithEmailAndPassword(auth, email, password)
       .catch(error => alert(error.message));
   };
 
-  // Logout
-  window.logoutUser = () => {
-    signOut(auth);
-  };
+  window.logoutUser = () => { signOut(auth); };
 </script>
+</body>
+</html>
