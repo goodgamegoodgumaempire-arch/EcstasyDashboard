@@ -34,14 +34,14 @@ form button.save-model:hover { background:#cc5200; }
 <div id="applications" class="list"></div>
 
 <script>
-// --- Preluare aplicații ---
+// Preluare aplicații
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// --- Preluare model ---
+// Preluare model
 let modelMedici = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
 document.getElementById("modelMediciTextarea").value = modelMedici.join("\n");
 
-// --- Salvează model ---
+// Salvare model
 document.getElementById("modelForm").addEventListener("submit", function(e){
     e.preventDefault();
     const text = document.getElementById("modelMediciTextarea").value.trim();
@@ -50,7 +50,7 @@ document.getElementById("modelForm").addEventListener("submit", function(e){
     alert("Modelul aplicației Medici a fost salvat!");
 });
 
-// --- Render aplicații ---
+// Render aplicații
 function renderAplicatii(){
     const container = document.getElementById("applications");
     container.innerHTML="";
@@ -59,6 +59,7 @@ function renderAplicatii(){
         const div = document.createElement("div");
         div.classList.add("item");
         div.innerHTML = `<div><strong>${a.name}</strong> - ${a.message} <span class="status">${a.status||"În așteptare"}</span></div>`;
+
         const actions = document.createElement("div");
         actions.classList.add("item-actions");
 
@@ -82,13 +83,13 @@ function renderAplicatii(){
     });
 }
 
-// --- Salvează și rerandează ---
+// Salvare și rerandare
 function saveRender(){
     localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
     renderAplicatii();
 }
 
-// --- Init ---
+// Init
 renderAplicatii();
 </script>
 
