@@ -7,61 +7,30 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin:0; padding:0; }
-body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7);
-    background-size: 400% 400%;
-    animation: gradientBG 20s ease infinite;
-    color:#fff;
-    min-height:100vh;
-    display:flex;
-}
+body { font-family: 'Roboto', sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7); background-size: 400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh; display:flex;}
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-.sidebar {
-    width:220px;
-    background: rgba(17,17,17,0.6);
-    padding:30px 10px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    height:100vh;
-    position:fixed;
-    top:0;
-    left:0;
-    backdrop-filter: blur(10px);
-    box-shadow: 2px 0 15px rgba(0,0,0,0.5);
-}
+.sidebar { width:220px; background: rgba(17,17,17,0.6); padding:30px 10px; display:flex; flex-direction:column; align-items:center; height:100vh; position:fixed; top:0; left:0; backdrop-filter: blur(10px); box-shadow: 2px 0 15px rgba(0,0,0,0.5);}
 .sidebar h2 { color:#ff6600; margin-bottom:30px; text-align:center; }
-.sidebar button {
-    background:none; border:none; color:#fff;
-    padding:12px 20px; width:100%; text-align:left;
-    margin:5px 0; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.3s;
-}
+.sidebar button { background:none; border:none; color:#fff; padding:12px 20px; width:100%; text-align:left; margin:5px 0; border-radius:8px; font-weight:bold; cursor:pointer; transition:0.3s;}
 .sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
 .main { margin-left:220px; padding:20px; flex:1; }
-form, .list { background: rgba(17,17,17,0.7); padding:20px; border-radius:12px; max-width:900px; margin:20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+form, .list { background: rgba(17,17,17,0.7); padding:20px; border-radius:12px; max-width:900px; margin:20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
 form input, form select, form textarea { width:100%; padding:12px; margin:10px 0; border:none; border-radius:8px; background:#222; color:#fff; }
 form input::placeholder, form textarea::placeholder { color:#bbb; }
-form button { background:#ff6600; border:none; padding:12px; width:100%; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; }
+form button { background:#ff6600; border:none; padding:12px; width:100%; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s;}
 form button:hover { background:#cc5200; }
-.item { background: rgba(17,17,17,0.6); margin:10px 0; padding:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; transition:0.3s; }
-.item:hover { background: rgba(17,17,17,0.9); }
-.item img, .item video { border-radius:8px; }
-.item img { width:50px; height:50px; object-fit:cover; }
-.item video { width:120px; }
+.item { background: rgba(17,17,17,0.6); margin:10px 0; padding:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; transition:0.3s; flex-direction:column; }
+.item:hover { background: rgba(17,17,17,0.9);}
+.item img, .item video { border-radius:8px;}
+.item img { width:50px; height:50px; object-fit:cover;}
+.item video { width:120px;}
 .item-info { display:flex; align-items:center; gap:15px; flex-wrap: wrap; }
 .item-actions button { margin-left:8px; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; font-weight:bold; transition:0.2s; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
 .edit-btn { background:#ff6600; color:#fff; } .edit-btn:hover { background:#cc5200; }
-@media(max-width:800px){
-    .sidebar { width:100%; height:auto; flex-direction:row; justify-content:space-around; padding:10px;}
-    .main { margin-left:0; }
-    .item-info { flex-direction:column; align-items:flex-start; }
-}
-.model-card { display:flex; align-items:center; margin-bottom:10px; background: rgba(34,34,34,0.8); padding:8px; border-radius:8px; }
-.model-card input { flex:1; }
-.model-card button { margin-left:10px; background:#ff4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
-.add-btn { margin-top:12px; background:#28a745; color:#fff; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; }
+.save-model { background:#ff6600; width:auto; padding:10px 20px; margin-top:10px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;}
+.save-model:hover { background:#cc5200;}
+@media(max-width:800px){ .sidebar { width:100%; height:auto; flex-direction:row; justify-content:space-around; padding:10px;} .main { margin-left:0; } .item-info { flex-direction:column; align-items:flex-start; }}
 </style>
 </head>
 <body>
@@ -139,14 +108,14 @@ form button:hover { background:#cc5200; }
     <div id="modelStaff" class="tab" style="display:none;">
         <h2>Setează Model Aplicație Staff</h2>
         <form id="modelStaffForm">
-            <div id="modelFields"></div>
-            <button type="submit">Salvează Model Aplicație</button>
+            <textarea id="modelStaffTextarea" placeholder="Scrie fiecare întrebare pe câte un rând..."></textarea>
+            <button type="submit" class="save-model">Salvează Model Aplicație</button>
         </form>
     </div>
 </div>
 
 <script>
-/* --- TAB NAV --- */
+// --- TAB NAV ---
 function showTab(tab){
     document.querySelectorAll(".tab").forEach(div=>div.style.display="none");
     document.querySelectorAll(".sidebar button").forEach(btn=>btn.classList.remove("active"));
@@ -154,7 +123,7 @@ function showTab(tab){
     document.getElementById("btn-"+tab).classList.add("active");
 }
 
-/* --- Staff Manager --- */
+/* --- STAFF --- */
 let staffData = JSON.parse(localStorage.getItem("staffMembers")) || [];
 const staffForm = document.getElementById("staffForm");
 const membersDiv = document.getElementById("members");
@@ -189,7 +158,7 @@ staffForm.addEventListener("submit", function(e){
 function deleteMember(i){ staffData.splice(i,1); localStorage.setItem("staffMembers",JSON.stringify(staffData)); renderMembers();}
 function editMember(i){ const m=staffData[i]; document.getElementById("name").value=m.name; document.getElementById("rank").value=m.rank; document.getElementById("img").value=m.img; document.getElementById("group").value=m.group; editStaffIndex=i; staffForm.querySelector("button").innerText="Salvează Modificările"; }
 
-/* --- Updates Manager --- */
+/* --- UPDATES --- */
 let updatesData = JSON.parse(localStorage.getItem("updates"))||[];
 const updateForm=document.getElementById("updateForm");
 const updatesList=document.getElementById("updatesList");
@@ -222,7 +191,7 @@ updateForm.addEventListener("submit",function(e){
 function deleteUpdate(i){ updatesData.splice(i,1); localStorage.setItem("updates",JSON.stringify(updatesData)); renderUpdates();}
 function editUpdate(i){ const u=updatesData[i]; document.getElementById("updateTitle").value=u.title; document.getElementById("updateMessage").value=u.message; document.getElementById("updateImg").value=u.img; editUpdateIndex=i; updateForm.querySelector("button").innerText="Salvează Modificările"; }
 
-/* --- Sneak Peeks --- */
+/* --- SNEAK PEEKS --- */
 let peeksData=JSON.parse(localStorage.getItem("sneakPeeks"))||[];
 const sneakForm=document.getElementById("sneakForm");
 const sneakList=document.getElementById("sneakList");
@@ -257,7 +226,7 @@ sneakForm.addEventListener("submit",function(e){
 function deletePeek(i){ peeksData.splice(i,1); localStorage.setItem("sneakPeeks",JSON.stringify(peeksData)); renderPeeks();}
 function editPeek(i){ const p=peeksData[i]; document.getElementById("sneakMessage").value=p.message; document.getElementById("sneakUrl").value=p.url; document.getElementById("sneakType").value=p.type; editPeekIndex=i; sneakForm.querySelector("button").innerText="Salvează Modificările"; }
 
-/* --- Toate Aplicațiile --- */
+/* --- TOATE APLICAȚIILE --- */
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 function renderAplicatii(){
     const container = document.getElementById("aplicatiiList");
@@ -267,13 +236,9 @@ function renderAplicatii(){
         div.className="item";
         let content = `<div><strong>${a.name}</strong> - Status: ${a.status||"În așteptare"}<br>`;
         if(a.answers){
-            const q = JSON.parse(localStorage.getItem("modelStaff")) || [];
-            a.answers.forEach((ans,j)=>{
-                content += `<strong>${q[j] || "Întrebare "+(j+1)}:</strong> ${ans}<br>`;
-            });
-        } else {
-            content += `${a.message || ""}<br>`;
-        }
+            const model = JSON.parse(localStorage.getItem("modelStaff")) || [];
+            a.answers.forEach((ans,j)=>{ content += `<strong>${model[j]||"Întrebare "+(j+1)}:</strong> ${ans}<br>`; });
+        } else { content += `${a.message || ""}<br>`;}
         content += `Tip: ${a.type}</div>`;
         div.innerHTML = content;
 
@@ -299,50 +264,22 @@ function renderAplicatii(){
 }
 function saveAplicatii(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatii(); }
 
-/* --- Model aplicație Staff --- */
-let modelStaffFields = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
-const modelFieldsContainer = document.getElementById("modelFields");
-
-function renderModelStaffInputs() {
-    modelFieldsContainer.innerHTML = "";
-
-    modelStaffFields.forEach((field,index)=>{
-        const wrapper = document.createElement("div");
-        wrapper.className = "model-card";
-
-        const input = document.createElement("input");
-        input.type="text";
-        input.value = field;
-        input.placeholder = "Întrebare "+(index+1);
-        input.oninput = e => modelStaffFields[index]=e.target.value;
-
-        const delBtn = document.createElement("button");
-        delBtn.type="button";
-        delBtn.innerText="🗑 Șterge";
-        delBtn.onclick = ()=>{ modelStaffFields.splice(index,1); renderModelStaffInputs(); };
-
-        wrapper.appendChild(input);
-        wrapper.appendChild(delBtn);
-        modelFieldsContainer.appendChild(wrapper);
-    });
-
-    const addBtn = document.createElement("button");
-    addBtn.type="button";
-    addBtn.innerText="➕ Adaugă întrebare";
-    addBtn.className = "add-btn";
-    addBtn.onclick = ()=>{ modelStaffFields.push(""); renderModelStaffInputs(); };
-    modelFieldsContainer.appendChild(addBtn);
-}
-
+/* --- MODEL APLICAȚIE STAFF --- */
+let modelStaff = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Grad dorit"];
+document.getElementById("modelStaffTextarea").value = modelStaff.join("\n");
 document.getElementById("modelStaffForm").addEventListener("submit", function(e){
     e.preventDefault();
-    modelStaffFields = modelStaffFields.map(f=>f.trim()).filter(f=>f!=="");
-    localStorage.setItem("modelStaff",JSON.stringify(modelStaffFields));
+    const text = document.getElementById("modelStaffTextarea").value.trim();
+    modelStaff = text.split("\n").map(t=>t.trim()).filter(t=>t!=="");
+    localStorage.setItem("modelStaff",JSON.stringify(modelStaff));
     alert("Model aplicație Staff salvat!");
 });
 
 /* --- INIT --- */
-renderMembers(); renderUpdates(); renderPeeks(); renderAplicatii(); renderModelStaffInputs();
+renderMembers();
+renderUpdates();
+renderPeeks();
+renderAplicatii();
 </script>
 
 </body>
