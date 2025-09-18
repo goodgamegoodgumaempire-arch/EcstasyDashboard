@@ -6,43 +6,24 @@
 <title>Aplicații - G4A Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {
-  margin:0; font-family:'Roboto',sans-serif;
-  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
-  background-size:400% 400%; animation: gradientBG 20s ease infinite;
-  color:#fff; min-height:100vh;
-}
-@keyframes gradientBG {
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
-nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100; }
-nav img { height:40px; margin-right:50px; }
-nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0; }
-nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s; }
-nav ul li a:hover, nav ul li.active a { color:#ff6600; }
-#layout { display:flex; max-width:1300px; margin:20px auto; gap:20px; padding:0 20px; }
-#main { flex:3; } #sidebar { flex:1; }
-.card {
-  background: rgba(17,17,17,0.85);
-  border-radius: 10px;
-  padding:20px;
-  margin:15px 0;
-  border:1px solid #333;
-  box-shadow:0 4px 15px rgba(0,0,0,0.5);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-.card:hover { transform: translateY(-5px); box-shadow:0 8px 25px rgba(0,0,0,0.7); }
-.card h2 { margin:0 0 10px; font-size:1.1em; color:#fff; }
-.card p { margin:0 0 10px; color:#aaa; }
-.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; }
-.status { font-weight:bold; margin-left:10px; color:#ffcc00; }
-
-select, input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%; }
-button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; }
-button:hover { background:#cc5200; }
-
+body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
+nav img { height:40px; margin-right:50px;}
+nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0;}
+nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s;}
+nav ul li a:hover, nav ul li.active a { color:#ff6600;}
+#layout { display:flex; max-width:1300px; margin:20px auto; gap:20px; padding:0 20px;}
+#main { flex:3;} #sidebar { flex:1;}
+.card { background: rgba(17,17,17,0.85); border-radius: 10px; padding:20px; margin:15px 0; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s;}
+.card:hover { transform: translateY(-5px); box-shadow:0 8px 25px rgba(0,0,0,0.7);}
+.card h2 { margin:0 0 10px; font-size:1.1em; color:#fff;}
+.card p { margin:0 0 10px; color:#aaa;}
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px;}
+.status { font-weight:bold; margin-left:10px; color:#ffcc00;}
+select, input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
+button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s;}
+button:hover { background:#cc5200;}
 @media(max-width:900px){ #layout { flex-direction: column; } }
 </style>
 </head>
@@ -67,39 +48,24 @@ button:hover { background:#cc5200; }
     <!-- Poliție -->
     <div class="card">
       <h2>Aplică pentru Poliție</h2>
-      <select id="templatePolitie" onchange="aplicaTemplate('politie')">
-        <option value="">Alege un model...</option>
-        <option value="Sunt motivat și vreau să ajut comunitatea ca polițist.">Motivație standard</option>
-        <option value="Am experiență în roleplay și vreau să fiu parte din Poliție.">Experiență roleplay</option>
-      </select>
       <input type="text" id="numePolitie" placeholder="Nume jucător">
-      <textarea id="mesajPolitie" placeholder="Motivație / Mesaj"></textarea>
+      <textarea id="mesajPolitie"></textarea>
       <button onclick="trimiteAplicatie('politie')">Trimite aplicație</button>
     </div>
 
     <!-- Medici -->
     <div class="card">
       <h2>Aplică pentru Medici</h2>
-      <select id="templateMedici" onchange="aplicaTemplate('medici')">
-        <option value="">Alege un model...</option>
-        <option value="Sunt dedicat și vreau să ajut jucătorii ca medic.">Motivație standard</option>
-        <option value="Am experiență medicală și vreau să ofer suport în joc.">Experiență / Roleplay</option>
-      </select>
       <input type="text" id="numeMedici" placeholder="Nume jucător">
-      <textarea id="mesajMedici" placeholder="Motivație / Mesaj"></textarea>
+      <textarea id="mesajMedici"></textarea>
       <button onclick="trimiteAplicatie('medici')">Trimite aplicație</button>
     </div>
 
     <!-- Staff -->
     <div class="card">
       <h2>Aplică pentru Staff</h2>
-      <select id="templateStaff" onchange="aplicaTemplate('staff')">
-        <option value="">Alege un model...</option>
-        <option value="Am experiență și doresc să contribui la server ca staff.">Motivație standard</option>
-        <option value="Sunt activ și responsabil, pot gestiona comunitatea.">Activitate și responsabilitate</option>
-      </select>
       <input type="text" id="numeStaff" placeholder="Nume jucător">
-      <textarea id="mesajStaff" placeholder="Motivație / Mesaj"></textarea>
+      <textarea id="mesajStaff"></textarea>
       <button onclick="trimiteAplicatie('staff')">Trimite aplicație</button>
     </div>
 
@@ -126,14 +92,15 @@ button:hover { background:#cc5200; }
 <script>
 const aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Adaugă template în textarea
-function aplicaTemplate(tip){
-  let select, textarea;
-  if(tip==='politie'){ select=document.getElementById("templatePolitie"); textarea=document.getElementById("mesajPolitie"); }
-  if(tip==='medici'){ select=document.getElementById("templateMedici"); textarea=document.getElementById("mesajMedici"); }
-  if(tip==='staff'){ select=document.getElementById("templateStaff"); textarea=document.getElementById("mesajStaff"); }
-  if(select.value) textarea.value = select.value;
-}
+// Modele prestabilite (poți modifica ce vrei tu)
+const modelPolitie = "Sunt motivat și vreau să ajut comunitatea ca polițist.";
+const modelMedici = "Sunt dedicat și vreau să ajut jucătorii ca medic.";
+const modelStaff = "Am experiență și doresc să contribui la server ca staff.";
+
+// Setează modelul în textarea la încărcare
+document.getElementById("mesajPolitie").value = modelPolitie;
+document.getElementById("mesajMedici").value = modelMedici;
+document.getElementById("mesajStaff").value = modelStaff;
 
 // Trimite aplicație
 function trimiteAplicatie(tip){
@@ -141,15 +108,16 @@ function trimiteAplicatie(tip){
   if(tip==='politie'){ nume=document.getElementById("numePolitie").value.trim(); mesaj=document.getElementById("mesajPolitie").value.trim(); }
   if(tip==='medici'){ nume=document.getElementById("numeMedici").value.trim(); mesaj=document.getElementById("mesajMedici").value.trim(); }
   if(tip==='staff'){ nume=document.getElementById("numeStaff").value.trim(); mesaj=document.getElementById("mesajStaff").value.trim(); }
+
   if(!nume || !mesaj){ alert("Completează toate câmpurile!"); return; }
 
   aplicatii.push({type:tip, name:nume, message:mesaj, status:"În așteptare"});
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
   renderAplicatii();
 
-  if(tip==='politie'){ document.getElementById("numePolitie").value=''; document.getElementById("mesajPolitie").value=''; document.getElementById("templatePolitie").value=''; }
-  if(tip==='medici'){ document.getElementById("numeMedici").value=''; document.getElementById("mesajMedici").value=''; document.getElementById("templateMedici").value=''; }
-  if(tip==='staff'){ document.getElementById("numeStaff").value=''; document.getElementById("mesajStaff").value=''; document.getElementById("templateStaff").value=''; }
+  if(tip==='politie'){ document.getElementById("numePolitie").value=''; document.getElementById("mesajPolitie").value=modelPolitie; }
+  if(tip==='medici'){ document.getElementById("numeMedici").value=''; document.getElementById("mesajMedici").value=modelMedici; }
+  if(tip==='staff'){ document.getElementById("numeStaff").value=''; document.getElementById("mesajStaff").value=modelStaff; }
 }
 
 // Render aplicații
