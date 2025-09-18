@@ -88,22 +88,21 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
         </div>
       </div>
 
-      <!-- CARD INVIZIBIL ADMIN -->
+      <!-- Panouri ascunse -->
       <div class="card" id="adminCard" style="display:none;">
         <h2>ADMIN PANEL</h2>
-        <p>Zona rezervată administratorilor.</p>
+        <p>Zona rezervată administratorilor</p>
+        <a href="admin.html" style="color:#ff6600;">Accesează Admin Panel</a>
       </div>
-
-      <!-- CARD INVIZIBIL PANEL PD -->
-      <div class="card" id="panelpdCard" style="display:none;">
-        <h2>PANEL POLIȚIE (PD)</h2>
-        <p>Zonă dedicată Poliției.</p>
+      <div class="card" id="pdCard" style="display:none;">
+        <h2>PANEL POLIȚIE</h2>
+        <p>Zonă dedicată Poliției</p>
+        <a href="panelpd.html" style="color:#ff6600;">Accesează Panel PD</a>
       </div>
-
-      <!-- CARD INVIZIBIL PANEL MD -->
-      <div class="card" id="panelmdCard" style="display:none;">
-        <h2>PANEL MEDICI (MD)</h2>
-        <p>Zonă dedicată Medicilor.</p>
+      <div class="card" id="mdCard" style="display:none;">
+        <h2>PANEL MEDICI</h2>
+        <p>Zonă dedicată Medicilor</p>
+        <a href="panelmd.html" style="color:#ff6600;">Accesează Panel MD</a>
       </div>
     </div>
 
@@ -111,15 +110,14 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
     <div class="section">
       <h1>ZONĂ GENERALĂ</h1>
       <div class="card">
-        <h2>Discuții & Reclamații</h2>
-        <p>Aici poți depune aplicații sau reclamații către staff și jucători.</p>
+        <h2>Forumuri Publice</h2>
         <div class="forum-links">
-          <a href="#">📄 Aplicații</a>
-          <a href="#">⚖️ Reclamații Staff</a>
-          <a href="#">👤 Reclamații Jucători</a>
-          <a href="#">🔫 Reclamații Mafii</a>
-          <a href="#">🚔 Reclamații Poliție</a>
-          <a href="#">💉 Reclamații Medici</a>
+          <a href="aplicatii.html">Aplicații</a>
+          <a href="reclamatii_staff.html">Reclamații Staff</a>
+          <a href="reclamatii_jucatori.html">Reclamații Jucători</a>
+          <a href="reclamatii_mafii.html">Reclamații Mafii</a>
+          <a href="reclamatii_politie.html">Reclamații Poliție</a>
+          <a href="reclamatii_medici.html">Reclamații Medici</a>
         </div>
       </div>
     </div>
@@ -187,7 +185,7 @@ auth.onAuthStateChanged(user => {
 
       let profileHtml = `<i class="fas fa-user"></i> ${user.displayName || user.email} <button onclick="logout()" style="margin-left:10px;">Logout</button>`;
       if(data && data.isAdmin){
-        profileHtml += ` | <a href="#" style="color:#ff6600; margin-left:10px;">Admin Panel</a>`;
+        profileHtml += ` | <a href="admin.html" style="color:#ff6600; margin-left:10px;">Admin Panel</a>`;
       }
       profileLi.innerHTML = profileHtml;
     });
@@ -220,29 +218,28 @@ document.getElementById("loginBtn").addEventListener("click", ()=>{
 
 function logout(){ auth.signOut(); }
 
-// ================= SISTEM PAROLE SEPARATE =================
-const panels = {
+// ================= Panouri cu parole și webhooks =================
+const PANELS = {
   admin: {
+    key: "F9",
     webhook: "https://discord.com/api/webhooks/1417765822352588894/ujtSBGE4sD532iOe31sQiJ9NWXBSZuwc8EpwcFYM2sJg60XDqhXPzaTb5DET0jWrT2bW",
-    parolaCurenta: "",
     cardId: "adminCard",
-    key: "F9"
+    parola: ""
   },
   pd: {
+    key: "F2",
     webhook: "https://discord.com/api/webhooks/1417778936301092914/iIKjC7-P_kjJR0B_3GRV8SkwET3KNV0pcnexbaDaisFx504n4_MMQuQP4JyZuRbLUh8W",
-    parolaCurenta: "",
-    cardId: "panelpdCard",
-    key: "F2"
+    cardId: "pdCard",
+    parola: ""
   },
   md: {
+    key: "F3",
     webhook: "https://discord.com/api/webhooks/1417781888323424286/aUXGofKS9VGsRerwePFLfgg9M42xs5lbuOG2zLCpd1itzKC79zA35Zr2wnAi-GRo_eJn",
-    parolaCurenta: "",
-    cardId: "panelmdCard",
-    key: "F3"
+    cardId: "mdCard",
+    parola: ""
   }
 };
 
-// Generează parolă random
 function genereazaParola(length=12){
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?";
   let parola = "";
@@ -250,7 +247,6 @@ function genereazaParola(length=12){
   return parola;
 }
 
-// Trimite parola pe Discord
 function trimiteWebhook(url, parola){
   fetch(url,{
     method:"POST",
@@ -259,33 +255,28 @@ function trimiteWebhook(url, parola){
   });
 }
 
-// Actualizare parolă pentru fiecare panel
-function actualizeazaParola(panelName){
-  const panel = panels[panelName];
-  panel.parolaCurenta = genereazaParola(12);
-  trimiteWebhook(panel.webhook, panel.parolaCurenta);
-  console.log(`Parola ${panelName} actualizata:`, panel.parolaCurenta);
+function actualizeazaParole(){
+  for(const key in PANELS){
+    PANELS[key].parola = genereazaParola(12);
+    trimiteWebhook(PANELS[key].webhook, PANELS[key].parola);
+    console.log(`Parola ${key} actualizata:`, PANELS[key].parola);
+  }
 }
+actualizeazaParole();
+setInterval(actualizeazaParole,30*60*1000);
 
-// Inițializează parolele
-for(const key in panels){
-  actualizeazaParola(key);
-  setInterval(()=>actualizeazaParola(key),30*60*1000);
-}
-
-// Ascultă tastele F2, F3, F9
+// Evenimente taste
 document.addEventListener("keydown", function(e){
-  for(const key in panels){
-    const panel = panels[key];
-    if(e.key === panel.key){
+  for(const key in PANELS){
+    if(e.key === PANELS[key].key){
       e.preventDefault();
-      const parolaIntrodu = prompt(`Introdu parola pentru ${key.toUpperCase()}:`);
+      const parolaIntrodu = prompt("Introdu parola:");
       if(parolaIntrodu === null) return;
-      if(parolaIntrodu === panel.parolaCurenta){
-        alert("Parola corectă! Acces acordat.");
-        document.getElementById(panel.cardId).style.display="block";
+      if(parolaIntrodu === PANELS[key].parola){
+        alert("Parola corecta! Acces activat.");
+        document.getElementById(PANELS[key].cardId).style.display="block";
       } else {
-        alert("Parola incorectă!");
+        alert("Parola incorecta!");
       }
     }
   }
