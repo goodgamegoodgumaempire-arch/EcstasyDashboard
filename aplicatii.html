@@ -20,7 +20,7 @@ nav ul li a:hover, nav ul li.active a { color:#ff6600;}
 .card h2 { margin:0 0 10px; font-size:1.1em; color:#fff;}
 .item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px;}
 .status { font-weight:bold; margin-left:10px; color:#ffcc00;}
-input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
+input, textarea, select, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
 button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s;}
 button:hover { background:#cc5200;}
 .hidden { display:none; }
@@ -44,10 +44,7 @@ button:hover { background:#cc5200;}
 
 <div id="layout">
   <div id="main">
-    <!-- Container aplicații -->
-    <div id="aplicatiiContainer"></div>
-
-    <!-- Lista aplicații trimise -->
+    <div id="cardsContainer"></div>
     <div class="card">
       <h2>Aplicațiile tale</h2>
       <div id="aplicatiiList"></div>
@@ -68,96 +65,78 @@ button:hover { background:#cc5200;}
 </div>
 
 <script>
-// Preluăm modelul fiecărei aplicații
-const modelPolitie = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
-const modelMedici  = JSON.parse(localStorage.getItem("modelMedici"))  || ["Nume jucător","Motivație / Mesaj"];
-const modelStaff   = JSON.parse(localStorage.getItem("modelStaff"))   || ["Nume jucător","Motivație / Mesaj"];
+// --- Preluare aplicații și modele ---
+const aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+const modele = JSON.parse(localStorage.getItem("modeleAplicatii")) || {
+  politie: ["Nume jucător","Motivație / Mesaj"],
+  medici: ["Nume jucător","Motivație / Mesaj"],
+  staff: ["Nume jucător","Motivație / Mesaj"]
+};
 
-let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
-
-// Generare carduri pentru fiecare aplicație
-function renderAplicatiiForm(){
-  const container = document.getElementById("aplicatiiContainer");
-  container.innerHTML = "";
-
-  const aplicatiiConfig = [
-    {type:"politie", title:"Aplică pentru Poliție", model:modelPolitie},
-    {type:"medici", title:"Aplică pentru Medici", model:modelMedici},
-    {type:"staff", title:"Aplică pentru Staff", model:modelStaff}
-  ];
-
-  aplicatiiConfig.forEach(conf=>{
+// --- Generare carduri din model ---
+function renderCards() {
+  const container = document.getElementById("cardsContainer");
+  container.innerHTML="";
+  Object.keys(modele).forEach(tip=>{
     const card = document.createElement("div");
     card.className="card";
-
-    const h2 = document.createElement("h2");
-    h2.innerText = conf.title;
-    card.appendChild(h2);
-
-    const btn = document.createElement("button");
-    btn.innerText="Aplică";
-    card.appendChild(btn);
-
-    const formDiv = document.createElement("div");
-    formDiv.className="hidden";
-
-    // Construim formularul din model
-    conf.model.forEach((field,index)=>{
-      if(field.toLowerCase().includes("mesaj") || field.toLowerCase().includes("motiv")){
-        const ta = document.createElement("textarea");
-        ta.placeholder = field;
-        ta.id = `field_${conf.type}_${index}`;
-        formDiv.appendChild(ta);
-      } else {
-        const input = document.createElement("input");
-        input.type="text";
-        input.placeholder=field;
-        input.id = `field_${conf.type}_${index}`;
-        formDiv.appendChild(input);
-      }
-    });
-
-    const submit = document.createElement("button");
-    submit.innerText="Trimite aplicație";
-    submit.onclick = ()=>{ trimiteAplicatie(conf.type, conf.model.length); };
-    formDiv.appendChild(submit);
-
-    card.appendChild(formDiv);
+    card.innerHTML=`<h2>Aplică pentru ${tip.charAt(0).toUpperCase()+tip.slice(1)}</h2>
+      <button onclick="toggleForm('${tip}')">Aplică</button>
+      <div id="form${tip}" class="hidden"></div>`;
     container.appendChild(card);
 
-    // Toggle formular
-    btn.onclick = ()=>{ formDiv.classList.toggle("hidden"); };
+    const formDiv = card.querySelector(`#form${tip}`);
+    modele[tip].forEach(field=>{
+      const el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
+      el.placeholder = field;
+      el.dataset.field = field;
+      formDiv.appendChild(el);
+    });
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText="Trimite aplicație";
+    submitBtn.onclick = ()=> trimiteAplicatie(tip);
+    formDiv.appendChild(submitBtn);
   });
 }
 
-// Trimite aplicație
-function trimiteAplicatie(type, fieldsCount){
-  let values=[];
-  for(let i=0;i<fieldsCount;i++){
-    const val = document.getElementById(`field_${type}_${i}`).value.trim();
-    if(!val){ alert("Completează toate câmpurile!"); return; }
-    values.push(val);
-  }
-  const message = values.slice(1).join(" | "); // concatenăm restul câmpurilor în mesaj
-  aplicatii.push({type:type, name:values[0], message:message, status:"În așteptare"});
-  localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
-  renderAplicatii();
-  renderAplicatiiForm(); // resetează formularele
+// --- Arată/ascunde formular ---
+function toggleForm(tip) {
+  const div = document.getElementById(`form${tip}`);
+  div.classList.toggle('hidden');
 }
 
-// Render aplicații trimise
+// --- Trimite aplicație ---
+function trimiteAplicatie(tip){
+  const formDiv = document.getElementById(`form${tip}`);
+  const inputs = Array.from(formDiv.querySelectorAll("input,textarea"));
+  const data = {};
+  for(let inp of inputs){
+    if(!inp.value.trim()){ alert("Completează toate câmpurile!"); return; }
+    data[inp.dataset.field] = inp.value.trim();
+  }
+  aplicatii.push({type:tip,data,status:"În așteptare"});
+  localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
+  renderAplicatii();
+  inputs.forEach(i=>i.value="");
+  toggleForm(tip);
+}
+
+// --- Render aplicațiile tale ---
 function renderAplicatii(){
-  const container=document.getElementById("aplicatiiList");
+  const container = document.getElementById("aplicatiiList");
   container.innerHTML="";
   aplicatii.forEach(a=>{
-    const div=document.createElement("div");
+    const div = document.createElement("div");
     div.className="item";
-    div.innerHTML=`<strong>${a.name}</strong> [${a.type}]<br>${a.message}<br><span class="status">${a.status}</span>`;
+    let content = `<strong>${a.type.toUpperCase()}</strong><br>`;
+    Object.keys(a.data).forEach(k=>{ content += `<strong>${k}:</strong> ${a.data[k]}<br>`; });
+    content += `<span class="status">${a.status}</span>`;
+    div.innerHTML = content;
     container.appendChild(div);
   });
 }
 
-renderAplicatiiForm();
+renderCards();
 renderAplicatii();
 </script>
 
