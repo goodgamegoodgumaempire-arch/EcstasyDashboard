@@ -14,11 +14,10 @@ body {
   animation: gradientBG 20s ease infinite;
   color:#fff;
   min-height:100vh;
-  padding:20px;
 }
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
-h1,h2 { color:#ff6600; }
+h1,h2 { color:#ff6600; margin-bottom:10px; }
 .list { max-width:900px; margin-top:20px;}
 .item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; flex-direction:column;}
 .item-actions { margin-top:8px; }
@@ -36,13 +35,17 @@ form button.save-model:hover { background:#cc5200; }
 
 .tab { display:none; }
 .tab.active { display:block; }
+
+/* Sidebar */
 .sidebar {
   width:220px;
-  background: rgba(17,17,17,0.85);
+  background: rgba(17,17,17,0.95);
   padding:20px;
   position:fixed;
+  top:0; left:0;
   height:100%;
   box-shadow:0 0 10px rgba(0,0,0,0.5);
+  z-index:1000;
 }
 .sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
 .sidebar button {
@@ -51,6 +54,18 @@ form button.save-model:hover { background:#cc5200; }
   cursor:pointer; font-weight:bold;
 }
 .sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
+
+/* Main content */
+.main {
+  margin-left:240px; /* spațiu pentru sidebar */
+  padding:20px;
+}
+
+/* Ajustare formular model aplicatie */
+#applicationModelCard form { max-width:900px; }
+
+/* Scroll pentru lista lunga */
+.list { overflow-x:hidden; overflow-y:auto; max-height:70vh; padding-right:10px; }
 </style>
 </head>
 <body>
