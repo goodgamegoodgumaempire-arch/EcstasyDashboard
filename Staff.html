@@ -39,12 +39,6 @@ nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bot
 .staff-card img { width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px; }
 .staff-card h3 { margin:5px 0; font-size:1em; color:#fff; }
 .staff-card p { margin:0; font-size:0.85em; color:#ccc; }
-
-/* Sancțiuni */
-.sanctions-section { max-width:1200px; margin: 40px auto; padding: 0 20px; }
-.sanction-card { background: rgba(17,17,17,0.85); border-radius:10px; padding:15px; margin-bottom:15px; border:1px solid #333; }
-.sanction-card h4 { margin:0 0 10px 0; color:#ff6600; }
-.sanction-card p { margin:2px 0; color:#ccc; font-size:0.9em; }
 </style>
 </head>
 <body>
@@ -58,68 +52,41 @@ nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bot
   </ul>
 </nav>
 
-<!-- Staff Members -->
 <div id="staff-container"></div>
 
-<!-- Sancțiuni -->
-<div class="sanctions-section">
-  <h2>Sancțiuni Staff</h2>
-  <div id="sanctions-container"></div>
-</div>
-
 <script>
-// --- PRELUARE STAFF DIN LOCALSTORAGE ---
+// Preluăm staff-ul din localStorage
 const staffContainer = document.getElementById("staff-container");
-const sanctionsContainer = document.getElementById("sanctions-container");
-
 let staffMembers = JSON.parse(localStorage.getItem("staffMembers")) || [];
-let sanctions = JSON.parse(localStorage.getItem("sanctions")) || [];
 
 // Grupe disponibile
 const groups = ["COMMUNITY OWNERS","CO FOUNDERS","MANAGER STAFF","ADMINISTRATORS","MODERATORS","HELPERS","TRYAL HELPERS"];
 
 // Render staff
-function renderStaff(){
+function renderStaff() {
     staffContainer.innerHTML = "";
-    groups.forEach(group=>{
+    groups.forEach(group => {
         const section = document.createElement("div");
         section.classList.add("staff-section");
         section.innerHTML = `<h2>${group}</h2><div class="staff-cards"></div>`;
         const cardsContainer = section.querySelector(".staff-cards");
-        staffMembers.filter(m=>m.group===group).forEach(member=>{
+
+        staffMembers.filter(member => member.group === group).forEach(member => {
             const card = document.createElement("div");
             card.classList.add("staff-card");
             card.innerHTML = `
-                <img src="${member.img||'default.png'}" alt="${member.name}">
+                <img src="${member.img || 'default.png'}" alt="${member.name}">
                 <h3>${member.name}</h3>
                 <p>Grad: ${member.rank}</p>
             `;
             cardsContainer.appendChild(card);
         });
+
         staffContainer.appendChild(section);
     });
 }
 
-// Render sancțiuni
-function renderSanctions(){
-    sanctionsContainer.innerHTML="";
-    staffMembers.forEach(member=>{
-        const memberSanctions = sanctions.filter(s=>s.staffName===member.name);
-        if(memberSanctions.length>0){
-            const div = document.createElement("div");
-            div.className="sanction-card";
-            let content = `<h4>${member.name} - ${member.rank}</h4>`;
-            memberSanctions.forEach((s,i)=>{ content+=`<p>Sancțiune ${i+1}: ${s.reason}</p>`; });
-            div.innerHTML = content;
-            sanctionsContainer.appendChild(div);
-        }
-    });
-}
-
-// INIT
 renderStaff();
-renderSanctions();
-
 </script>
 
 </body>
