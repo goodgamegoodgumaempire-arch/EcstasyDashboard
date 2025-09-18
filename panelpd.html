@@ -25,67 +25,33 @@ body {
   height:100%;
   box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
-.sidebar h2 {
-  text-align:center;
-  color:#ff6600;
-  margin-bottom:20px;
-}
+.sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
 .sidebar button {
-  display:block;
-  width:100%;
-  margin:5px 0;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  background:#222;
-  color:#fff;
-  cursor:pointer;
-  font-weight:bold;
+  display:block; width:100%; margin:5px 0; padding:10px;
+  border:none; border-radius:8px; background:#222; color:#fff;
+  cursor:pointer; font-weight:bold;
 }
-.sidebar button.active, .sidebar button:hover {
-  background:#ff6600;
-  color:#000;
-}
+.sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
 
-.main {
-  margin-left:240px;
-  padding:20px;
-}
-
+.main { margin-left:240px; padding:20px; }
 h1,h2 { color:#ff6600; }
-
 .list { margin-top:20px; max-width:900px; }
-
 .item {
-  background: rgba(17,17,17,0.7);
-  margin:10px 0;
-  padding:12px;
-  border-radius:8px;
-  display:flex;
-  justify-content:space-between;
+  background: rgba(17,17,17,0.7); margin:10px 0; padding:12px;
+  border-radius:8px; display:flex; justify-content:space-between;
   align-items:center;
 }
-.item-actions button {
-  margin-left:6px;
-  padding:6px 12px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-weight:bold;
-}
+.item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
 .accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
-
 .status { font-weight:bold; margin-left:10px; }
 
 select, input, textarea, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
-button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; }
-button:hover { background:#cc5200; }
+button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; } button:hover { background:#cc5200; }
 
 .tab { display:none; }
 .tab.active { display:block; }
-
 </style>
 </head>
 <body>
@@ -187,14 +153,16 @@ function renderApplications(){
   const container = document.getElementById("applicationsList");
   container.innerHTML="";
   aplicatii.forEach((a,i)=>{
-    if(a.type!=="politie") return;
+    if(a.type.toLowerCase()!=="politie") return; // case-insensitive
     const div = document.createElement("div");
     div.classList.add("item");
     let content = `<strong>${a.name}</strong><br>`;
-    a.answers.forEach((ans,j)=>{
-      content += `Întrebare ${j+1}: ${ans}<br>`;
-    });
-    content += `Status: <span class="status">${a.status}</span>`;
+    if(a.answers){
+      a.answers.forEach((ans,j)=>{
+        content += `Întrebare ${j+1}: ${ans}<br>`;
+      });
+    }
+    content += `Status: <span class="status">${a.status||"În așteptare"}</span>`;
     div.innerHTML = content;
 
     const actions = document.createElement("div");
