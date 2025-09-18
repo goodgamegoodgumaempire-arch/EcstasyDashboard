@@ -6,7 +6,6 @@
 <title>Admin Panel - ECSTASY ROMANIA</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* --- Stilizare generală --- */
 * { box-sizing: border-box; margin:0; padding:0; }
 body {
     font-family: 'Roboto', sans-serif;
@@ -19,7 +18,6 @@ body {
 }
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
-/* --- Sidebar --- */
 .sidebar {
     width:220px;
     background: rgba(17,17,17,0.6);
@@ -42,38 +40,20 @@ body {
 }
 .sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
 
-/* --- Main content --- */
 .main { margin-left:220px; padding:20px; flex:1; }
 
-/* --- Forms --- */
-form {
-    background: rgba(17,17,17,0.7);
-    padding:20px; border-radius:12px; max-width:600px; margin:20px auto;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-}
-form input, form select, form textarea {
-    width:100%; padding:12px; margin:10px 0; border:none; border-radius:8px;
-    background:#222; color:#fff;
-}
-form input::placeholder, form textarea::placeholder { color:#bbb; }
-form button { background:#ff6600; border:none; padding:12px; width:100%; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; }
-form button:hover { background:#cc5200; }
-
-/* --- Lists --- */
 .list { max-width:900px; margin:20px auto; }
 .item { background: rgba(17,17,17,0.6); margin:10px 0; padding:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; transition:0.3s; }
 .item:hover { background: rgba(17,17,17,0.9); }
-.item img, .item video { border-radius:8px; }
-.item img { width:50px; height:50px; object-fit:cover; }
-.item video { width:120px; }
-.item-info { display:flex; align-items:center; gap:15px; flex-wrap: wrap; }
+.item-info { display:flex; flex-direction:column; gap:5px; }
 .item-actions button { margin-left:8px; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; font-weight:bold; transition:0.2s; }
+.accept-btn { background:#28a745; color:#fff; }
+.accept-btn:hover { background:#218838; }
+.reject-btn { background:#dc3545; color:#fff; }
+.reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; }
 .delete-btn:hover { background:#cc0000; }
-.edit-btn { background:#ff6600; color:#fff; }
-.edit-btn:hover { background:#cc5200; }
 
-/* Responsive */
 @media(max-width:800px){
     .sidebar { width:100%; height:auto; flex-direction:row; justify-content:space-around; padding:10px;}
     .main { margin-left:0; }
@@ -85,75 +65,20 @@ form button:hover { background:#cc5200; }
 
 <div class="sidebar">
     <h2>ECSTASY ADMIN</h2>
-    <button onclick="showTab('staff')" id="btn-staff" class="active">Staff</button>
-    <button onclick="showTab('updates')" id="btn-updates">Update-uri</button>
-    <button onclick="showTab('sneak')" id="btn-sneak">Sneak Peeks</button>
-    <button onclick="showTab('staffApps')" id="btn-staffApps">Aplicații Staff</button>
+    <button onclick="showTab('allApps')" id="btn-allApps" class="active">Toate Aplicațiile</button>
 </div>
 
 <div class="main">
     <h1>Admin Panel - ECSTASY ROMANIA</h1>
 
-    <!-- Staff Section -->
-    <div id="staff" class="tab">
-        <h2>Staff Manager</h2>
-        <form id="staffForm">
-            <input type="text" id="name" placeholder="Nume jucător" required>
-            <input type="text" id="rank" placeholder="Grad (ex: Moderator)" required>
-            <input type="text" id="img" placeholder="Link poză/GIF" required>
-            <select id="group" required>
-                <option value="">Selectează grup</option>
-                <option value="COMMUNITY OWNERS">Community Owners</option>
-                <option value="CO FOUNDERS">Co Founders</option>
-                <option value="MANAGER STAFF">Manager Staff</option>
-                <option value="ADMINISTRATORS">Administrators</option>
-                <option value="MODERATORS">Moderators</option>
-                <option value="HELPERS">Helpers</option>
-                <option value="TRYAL HELPERS">Tryal Helpers</option>
-            </select>
-            <button type="submit">Adaugă Membru</button>
-        </form>
-        <div id="members" class="list"></div>
-    </div>
-
-    <!-- Updates Section -->
-    <div id="updates" class="tab" style="display:none;">
-        <h2>Update-uri Manager</h2>
-        <form id="updateForm">
-            <input type="text" id="updateTitle" placeholder="Titlu update" required>
-            <textarea id="updateMessage" placeholder="Mesaj update" required></textarea>
-            <input type="text" id="updateImg" placeholder="Link poză/video (opțional)">
-            <button type="submit">Adaugă Update</button>
-        </form>
-        <div id="updatesList" class="list"></div>
-    </div>
-
-    <!-- Sneak Peeks Section -->
-    <div id="sneak" class="tab" style="display:none;">
-        <h2>Sneak Peeks Manager</h2>
-        <form id="sneakForm">
-            <textarea id="sneakMessage" placeholder="Mesaj sneak peek"></textarea>
-            <input type="text" id="sneakUrl" placeholder="Link poză/video/link">
-            <select id="sneakType">
-                <option value="message">Doar mesaj</option>
-                <option value="image">Imagine</option>
-                <option value="video">Video</option>
-                <option value="link">Link</option>
-            </select>
-            <button type="submit">Adaugă Sneak Peek</button>
-        </form>
-        <div id="sneakList" class="list"></div>
-    </div>
-
-    <!-- Staff Applications Section -->
-    <div id="staffApps" class="tab" style="display:none;">
-        <h2>Aplicații Staff</h2>
-        <div id="staffAppsList" class="list"></div>
+    <div id="allApps" class="tab">
+        <h2>Aplicații</h2>
+        <div id="allAppsList" class="list"></div>
     </div>
 </div>
 
 <script>
-/* --- Tabs --- */
+// --- Tabs ---
 function showTab(tab){
     document.querySelectorAll(".tab").forEach(div=>div.style.display="none");
     document.querySelectorAll(".sidebar button").forEach(btn=>btn.classList.remove("active"));
@@ -161,135 +86,45 @@ function showTab(tab){
     document.getElementById("btn-"+tab).classList.add("active");
 }
 
-/* --- Staff --- */
-let staffData = JSON.parse(localStorage.getItem("staffMembers")) || [];
-const staffForm = document.getElementById("staffForm");
-const membersDiv = document.getElementById("members");
-let editStaffIndex = null;
+// --- Aplicatii Admin ---
+let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-function renderMembers() {
-    membersDiv.innerHTML = "";
-    staffData.forEach((m,i)=>{
-        const div=document.createElement("div");
-        div.classList.add("item");
-        div.innerHTML=`<div class="item-info">
-            <img src="${m.img}" alt="${m.name}">
-            <div><strong>${m.name}</strong> - ${m.rank} (${m.group})</div>
-        </div>
-        <div class="item-actions">
-            <button class="edit-btn" onclick="editMember(${i})">Editează</button>
-            <button class="delete-btn" onclick="deleteMember(${i})">Șterge</button>
-        </div>`;
-        membersDiv.appendChild(div);
+function renderAllApps(){
+    const container = document.getElementById("allAppsList");
+    container.innerHTML = "";
+    aplicatii.forEach((a,i)=>{
+        const div = document.createElement("div");
+        div.className = "item";
+        div.innerHTML = `<div class="item-info"><strong>${a.name}</strong> [${a.type}]<br>${a.message}<br>Status: <span class="status">${a.status||"În așteptare"}</span></div>`;
+        
+        const actions = document.createElement("div"); actions.className = "item-actions";
+        
+        const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
+        accept.onclick = ()=>{ a.status="Acceptat"; saveAllApps(); }
+
+        const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
+        reject.onclick = ()=>{ a.status="Respins"; saveAllApps(); }
+
+        const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
+        del.onclick = ()=>{ aplicatii.splice(i,1); saveAllApps(); }
+
+        actions.appendChild(accept);
+        actions.appendChild(reject);
+        actions.appendChild(del);
+        div.appendChild(actions);
+
+        container.appendChild(div);
     });
 }
 
-staffForm.addEventListener("submit", function(e){
-    e.preventDefault();
-    const name=document.getElementById("name").value;
-    const rank=document.getElementById("rank").value;
-    const img=document.getElementById("img").value;
-    const group=document.getElementById("group").value;
-    if(editStaffIndex===null) staffData.push({name,rank,img,group});
-    else { staffData[editStaffIndex]={name,rank,img,group}; editStaffIndex=null; staffForm.querySelector("button").innerText="Adaugă Membru";}
-    localStorage.setItem("staffMembers",JSON.stringify(staffData));
-    renderMembers(); staffForm.reset();
-});
-function deleteMember(i){ staffData.splice(i,1); localStorage.setItem("staffMembers",JSON.stringify(staffData)); renderMembers();}
-function editMember(i){ const m=staffData[i]; document.getElementById("name").value=m.name; document.getElementById("rank").value=m.rank; document.getElementById("img").value=m.img; document.getElementById("group").value=m.group; editStaffIndex=i; staffForm.querySelector("button").innerText="Salvează Modificările"; }
-
-/* --- Updates --- */
-let updatesData = JSON.parse(localStorage.getItem("updates"))||[];
-const updateForm=document.getElementById("updateForm");
-const updatesList=document.getElementById("updatesList");
-let editUpdateIndex=null;
-
-function renderUpdates(){
-    updatesList.innerHTML="";
-    updatesData.forEach((u,i)=>{
-        const div=document.createElement("div");
-        div.classList.add("item");
-        let content=`<div><strong>${u.title}</strong> - ${u.message}`;
-        if(u.img) content+=`<br><img src="${u.img}" width="60">`;
-        content+="</div>";
-        div.innerHTML=`<div class="item-info">${content}</div>
-        <div class="item-actions">
-        <button class="edit-btn" onclick="editUpdate(${i})">Editează</button>
-        <button class="delete-btn" onclick="deleteUpdate(${i})">Șterge</button></div>`;
-        updatesList.appendChild(div);
-    });
+function saveAllApps(){
+    localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
+    renderAllApps();
 }
-updateForm.addEventListener("submit",function(e){
-    e.preventDefault();
-    const title=document.getElementById("updateTitle").value;
-    const message=document.getElementById("updateMessage").value;
-    const img=document.getElementById("updateImg").value;
-    if(editUpdateIndex===null) updatesData.push({title,message,img});
-    else { updatesData[editUpdateIndex]={title,message,img}; editUpdateIndex=null; updateForm.querySelector("button").innerText="Adaugă Update";}
-    localStorage.setItem("updates",JSON.stringify(updatesData));
-    renderUpdates(); updateForm.reset();
-});
-function deleteUpdate(i){ updatesData.splice(i,1); localStorage.setItem("updates",JSON.stringify(updatesData)); renderUpdates();}
-function editUpdate(i){ const u=updatesData[i]; document.getElementById("updateTitle").value=u.title; document.getElementById("updateMessage").value=u.message; document.getElementById("updateImg").value=u.img; editUpdateIndex=i; updateForm.querySelector("button").innerText="Salvează Modificările"; }
 
-/* --- Sneak Peeks --- */
-let peeksData=JSON.parse(localStorage.getItem("sneakPeeks"))||[];
-const sneakForm=document.getElementById("sneakForm");
-const sneakList=document.getElementById("sneakList");
-let editPeekIndex=null;
-
-function renderPeeks(){
-    sneakList.innerHTML="";
-    peeksData.forEach((p,i)=>{
-        const div=document.createElement("div");
-        div.classList.add("item");
-        let content=`<div><strong>${p.message||""}</strong>`;
-        if(p.type==="image") content+=`<br><img src="${p.url}" width="60">`;
-        if(p.type==="video") content+=`<br><video width="120" controls><source src="${p.url}" type="video/mp4"></video>`;
-        if(p.type==="link") content+=`<br><a href="${p.url}" target="_blank">${p.url}</a>`;
-        content+="</div>";
-        div.innerHTML=`<div class="item-info">${content}</div>
-        <div class="item-actions">
-        <button class="edit-btn" onclick="editPeek(${i})">Editează</button>
-        <button class="delete-btn" onclick="deletePeek(${i})">Șterge</button></div>`;
-        sneakList.appendChild(div);
-    });
-}
-sneakForm.addEventListener("submit",function(e){
-    e.preventDefault();
-    const message=document.getElementById("sneakMessage").value;
-    const url=document.getElementById("sneakUrl").value;
-    const type=document.getElementById("sneakType").value;
-    if(editPeekIndex===null) peeksData.push({message,url,type});
-    else { peeksData[editPeekIndex]={message,url,type}; editPeekIndex=null; sneakForm.querySelector("button").innerText="Adaugă Sneak Peek";}
-    localStorage.setItem("sneakPeeks",JSON.stringify(peeksData));
-    renderPeeks(); sneakForm.reset();
-});
-function deletePeek(i){ peeksData.splice(i,1); localStorage.setItem("sneakPeeks",JSON.stringify(peeksData)); renderPeeks();}
-function editPeek(i){ const p=peeksData[i]; document.getElementById("sneakMessage").value=p.message; document.getElementById("sneakUrl").value=p.url; document.getElementById("sneakType").value=p.type; editPeekIndex=i; sneakForm.querySelector("button").innerText="Salvează Modificările"; }
-
-/* --- Staff Applications --- */
-let aplicatiiStaff = JSON.parse(localStorage.getItem("aplicatii")) || [];
-function renderStaffApps(){
-    const container = document.getElementById("staffAppsList");
-    container.innerHTML="";
-    aplicatiiStaff.forEach((a,i)=>{
-        if(a.type!=="staff") return;
-        const div=document.createElement("div");
-        div.className="item";
-        div.innerHTML=`<div><strong>${a.name}</strong><br>${a.message}<br>Status: ${a.status||"În așteptare"}</div>`;
-        const actions = document.createElement("div"); actions.className="item-actions";
-        const accept = document.createElement("button"); accept.className="edit-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{a.status="Acceptat"; saveRenderStaff();}
-        const reject = document.createElement("button"); reject.className="delete-btn"; reject.innerText="Respinge"; reject.onclick=()=>{a.status="Respins"; saveRenderStaff();}
-        const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge"; del.onclick=()=>{aplicatiiStaff.splice(i,1); saveRenderStaff();}
-        actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
-        div.appendChild(actions); container.appendChild(div);
-    });
-}
-function saveRenderStaff(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatiiStaff)); renderStaffApps(); }
-
-/* --- Init --- */
-renderMembers(); renderUpdates(); renderPeeks(); renderStaffApps();
+// --- Init ---
+renderAllApps();
 </script>
+
 </body>
 </html>
