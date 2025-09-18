@@ -1,16 +1,94 @@
-<!-- Card aplicație Staff -->
-<div class="card">
-  <h2>Aplică pentru Staff</h2>
-  <button onclick="toggleForm('staff')">Aplică</button>
-  <div id="formstaff" class="hidden" data-loaded="false"></div>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplicații - G4A Romania</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
+nav img { height:40px; margin-right:50px;}
+nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0;}
+nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s;}
+nav ul li a:hover, nav ul li.active a { color:#ff6600;}
+#layout { display:flex; max-width:1300px; margin:20px auto; gap:20px; padding:0 20px;}
+#main { flex:3;} #sidebar { flex:1;}
+.card { background: rgba(17,17,17,0.85); border-radius: 10px; padding:20px; margin:15px 0; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s;}
+.card:hover { transform: translateY(-5px); box-shadow:0 8px 25px rgba(0,0,0,0.7);}
+.card h2 { margin:0 0 10px; font-size:1.1em; color:#fff;}
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px;}
+.status { font-weight:bold; margin-left:10px; color:#ffcc00;}
+input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
+button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s;}
+button:hover { background:#cc5200;}
+.hidden { display:none; }
+</style>
+</head>
+<body>
+
+<nav>
+  <img src="logo.png" alt="G4A Logo">
+  <ul>
+    <li><a href="index.html">Acasă</a></li>
+    <li class="active"><a href="aplicatii.html">Aplicații</a></li>
+    <li><a href="reclamatii_staff.html">Reclamații Staff</a></li>
+  </ul>
+</nav>
+
+<div id="layout">
+  <div id="main">
+    <!-- Card aplicație Poliție -->
+    <div class="card">
+      <h2>Aplică pentru Poliție</h2>
+      <button onclick="toggleForm('politie')">Aplică</button>
+      <div id="formpolitie" class="hidden"></div>
+    </div>
+
+    <!-- Card aplicație Medici -->
+    <div class="card">
+      <h2>Aplică pentru Medici</h2>
+      <button onclick="toggleForm('medici')">Aplică</button>
+      <div id="formmedici" class="hidden"></div>
+    </div>
+
+    <!-- Card aplicație Staff -->
+    <div class="card">
+      <h2>Aplică pentru Staff</h2>
+      <button onclick="toggleForm('staff')">Aplică</button>
+      <div id="formstaff" class="hidden"></div>
+    </div>
+
+    <!-- Lista aplicații -->
+    <div class="card">
+      <h2>Aplicațiile tale</h2>
+      <button onclick="toggleAplicațiiPublice()">Vezi aplicații trimise</button>
+      <div id="aplicatiiList" class="hidden"></div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div class="card">
+      <h2>Info</h2>
+      <p>Aplicațiile vor fi gestionate de staff prin panourile dedicate:</p>
+      <ul>
+        <li>👮 Poliție → PanelPD</li>
+        <li>💉 Medici → PanelMD</li>
+        <li>⚙️ Staff → Admin Panel</li>
+      </ul>
+    </div>
+  </div>
 </div>
 
 <script>
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Toggle form și generează câmpuri din model
+// Toggle form și generează carduri separate pentru fiecare întrebare
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
+  const isVisible = div.style.display === "block";
+  div.style.display = isVisible ? "none" : "block";
 
   if(div.dataset.loaded !== "true"){
     let model = [];
@@ -19,7 +97,6 @@ function toggleForm(tip){
     if(tip==="staff") model = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
 
     div.innerHTML = "";
-
     model.forEach(field => {
       const card = document.createElement("div");
       card.className = "card";
@@ -34,13 +111,11 @@ function toggleForm(tip){
 
     const submitBtn = document.createElement("button");
     submitBtn.innerText = "Trimite aplicație";
-    submitBtn.onclick = ()=> trimiteAplicatie(tip);
+    submitBtn.onclick = () => trimiteAplicatie(tip);
     div.appendChild(submitBtn);
 
     div.dataset.loaded = "true";
   }
-
-  div.style.display = (div.style.display==="block") ? "none" : "block";
 }
 
 // Trimite aplicație
@@ -63,20 +138,25 @@ function trimiteAplicatie(tip){
   inputs.forEach(i=>i.value="");
   div.style.display = "none";
 
-  renderAplicatii();
+  renderAplicatiiPublice();
 }
 
 // Render aplicații trimise
-function renderAplicatii(){
+function renderAplicatiiPublice(){
   const container = document.getElementById("aplicatiiList");
   container.innerHTML = "";
-  aplicatii.forEach((a,i)=>{
+  aplicatii.forEach(a => {
     const div = document.createElement("div");
     div.className = "item card";
     let content = `<strong>${a.name}</strong> [${a.type}]<br>`;
     if(a.answers){
-      a.answers.forEach((ans,j)=>{
-        content += `Întrebare ${j+1}: ${ans}<br>`;
+      let model = [];
+      if(a.type === "staff") model = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
+      else if(a.type === "politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
+      else model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
+
+      a.answers.forEach((ans,i) => {
+        content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
       });
     }
     content += `<span class="status">${a.status}</span>`;
@@ -85,5 +165,14 @@ function renderAplicatii(){
   });
 }
 
-renderAplicatii();
+// Toggle vizualizare aplicații publice
+function toggleAplicațiiPublice(){
+  document.getElementById("aplicatiiList").classList.toggle("hidden");
+}
+
+// Init
+renderAplicatiiPublice();
 </script>
+
+</body>
+</html>
