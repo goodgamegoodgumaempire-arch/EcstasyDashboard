@@ -42,28 +42,28 @@ button:hover { background:#cc5200;}
     <!-- Card aplicație Poliție -->
     <div class="card">
       <h2>Aplică pentru Poliție</h2>
-      <button id="togglePolitieBtn">Aplică</button>
-      <div id="formpolitie" class="hidden"></div>
+      <button onclick="toggleForm('politie')">Aplică</button>
+      <div id="formpolitie" class="hidden" data-loaded="false"></div>
     </div>
 
     <!-- Card aplicație Medici -->
     <div class="card">
       <h2>Aplică pentru Medici</h2>
-      <button id="toggleMediciBtn">Aplică</button>
-      <div id="formmedici" class="hidden"></div>
+      <button onclick="toggleForm('medici')">Aplică</button>
+      <div id="formmedici" class="hidden" data-loaded="false"></div>
     </div>
 
     <!-- Card aplicație Staff -->
     <div class="card">
       <h2>Aplică pentru Staff</h2>
-      <button id="toggleStaffBtn">Aplică</button>
-      <div id="formstaff" class="hidden"></div>
+      <button onclick="toggleForm('staff')">Aplică</button>
+      <div id="formstaff" class="hidden" data-loaded="false"></div>
     </div>
 
     <!-- Lista aplicații -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
-      <button id="toggleAplicațiiBtn">Vezi aplicații trimise</button>
+      <button onclick="toggleAplicațiiPublice()">Vezi aplicații trimise</button>
       <div id="aplicatiiList" class="hidden"></div>
     </div>
   </div>
@@ -84,91 +84,90 @@ button:hover { background:#cc5200;}
 <script>
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Modele implicite
-let modelPolitie = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
-let modelMedici = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
-let modelStaff  = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
+// Definim modelele per tip
+const modele = {
+    politie: JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"],
+    medici: JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"],
+    staff: JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"]
+};
 
-// Funcție generică pentru card aplicații
-function setupCard(btnId, formId, model, type){
-  const btn = document.getElementById(btnId);
-  const div = document.getElementById(formId);
+// Toggle form și generează carduri separate pentru fiecare întrebare
+function toggleForm(tip){
+  const div = document.getElementById("form"+tip);
+  if(!div.dataset.loaded || div.dataset.loaded==="false"){
 
-  btn.addEventListener("click", () => {
-    div.classList.toggle("hidden");
+    let model = modele[tip] || ["Nume jucător","Motivație / Mesaj"];
+    div.innerHTML = "";
 
-    if(!div.dataset.loaded){
-      div.innerHTML = "";
-      model.forEach(field => {
-        const wrapper = document.createElement("div");
-        wrapper.style.marginBottom = "10px";
+    model.forEach(field => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const label = document.createElement("label");
+      label.innerText = field;
+      let el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
+      el.dataset.field = field;
+      card.appendChild(label);
+      card.appendChild(el);
+      div.appendChild(card);
+    });
 
-        const label = document.createElement("label");
-        label.innerText = field;
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText = "Trimite aplicație";
+    submitBtn.onclick = ()=> trimiteAplicatie(tip);
+    div.appendChild(submitBtn);
 
-        const input = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
-        input.placeholder = field;
+    div.dataset.loaded = "true";
+  }
 
-        wrapper.appendChild(label);
-        wrapper.appendChild(input);
-        div.appendChild(wrapper);
-      });
-
-      const submitBtn = document.createElement("button");
-      submitBtn.innerText = "Trimite aplicație";
-      submitBtn.addEventListener("click", () => submitAplicatie(div, model, type));
-      div.appendChild(submitBtn);
-
-      div.dataset.loaded = "true";
-    }
-  });
+  div.style.display = (div.style.display==="block") ? "none" : "block";
 }
 
 // Trimite aplicație
-function submitAplicatie(div, model, type){
+function trimiteAplicatie(tip){
+  const div = document.getElementById("form"+tip);
   const inputs = Array.from(div.querySelectorAll("input,textarea"));
-  const values = inputs.map(i => i.value.trim());
-  if(values.some(v => v==="")) { alert("Completează toate câmpurile!"); return; }
+  const values = inputs.map(i=>i.value.trim());
+  if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  aplicatii.push({type:type, name:values[0], answers: values, status:"În așteptare"});
+  // Salvăm aplicația conform panelului corespunzător
+  let obj = {type:tip, name:values[0], answers: values, status:"În așteptare"};
+  aplicatii.push(obj);
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
   alert("Aplicația a fost trimisă!");
 
+  // reset form
   inputs.forEach(i=>i.value="");
-  div.classList.add("hidden");
-
+  div.style.display="none";
   renderAplicatiiPublice();
 }
 
-// Render aplicații
+// Render aplicații trimise
 function renderAplicatiiPublice(){
   const container = document.getElementById("aplicatiiList");
   container.innerHTML = "";
   aplicatii.forEach(a=>{
     const div = document.createElement("div");
-    div.className = "item card";
+    div.className = "item";
     let content = `<strong>${a.name}</strong> [${a.type}]<br>`;
-    const model = (a.type==="politie") ? modelPolitie : (a.type==="medici") ? modelMedici : modelStaff;
-    a.answers.forEach((ans,i)=>{
-      content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
-    });
+    if(a.answers){
+      const model = modele[a.type] || ["Nume jucător","Motivație / Mesaj"];
+      a.answers.forEach((ans,i)=>{
+        content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
+      });
+    }
     content += `<span class="status">${a.status}</span>`;
     div.innerHTML = content;
     container.appendChild(div);
   });
 }
 
-// Toggle vizualizare aplicații
-document.getElementById("toggleAplicațiiBtn").addEventListener("click", ()=>{
-  document.getElementById("aplicatiiList").classList.toggle("hidden");
-});
+// Toggle vizualizare aplicații publice
+function toggleAplicațiiPublice(){
+  const div = document.getElementById("aplicatiiList");
+  div.classList.toggle("hidden");
+}
 
-// Inițializare carduri
-setupCard("togglePolitieBtn","formpolitie",modelPolitie,"politie");
-setupCard("toggleMediciBtn","formmedici",modelMedici,"medici");
-setupCard("toggleStaffBtn","formstaff",modelStaff,"staff");
-
-// Render inițial aplicații
+// Inițializare
 renderAplicatiiPublice();
 </script>
 
