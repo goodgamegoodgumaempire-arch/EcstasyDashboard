@@ -9,8 +9,8 @@
 body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 h1,h2 { color:#ff6600; margin-bottom:10px; }
-.list { max-width:900px; margin-top:20px;}
-.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; flex-direction:column;}
+.list { max-width:900px; margin-top:20px; }
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; flex-direction:column; }
 .item-actions { margin-top:8px; }
 .item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
 .accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
@@ -39,11 +39,7 @@ form button.save-model:hover { background:#cc5200; }
   z-index:1000;
 }
 .sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
-.sidebar button {
-  display:block; width:100%; margin:5px 0; padding:10px;
-  border:none; border-radius:8px; background:#222; color:#fff;
-  cursor:pointer; font-weight:bold;
-}
+.sidebar button { display:block; width:100%; margin:5px 0; padding:10px; border:none; border-radius:8px; background:#222; color:#fff; cursor:pointer; font-weight:bold; }
 .sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
 
 /* Main content */
@@ -70,11 +66,12 @@ form button.save-model:hover { background:#cc5200; }
 <div id="members" class="tab active">
   <h2>Lista Membri Staff</h2>
   <form id="memberForm">
-    <input type="text" id="memberName" placeholder="Nume" required>
-    <input type="text" id="memberRank" placeholder="Rol" required>
+    <input type="text" id="memberName" placeholder="Nume membru" required>
+    <input type="text" id="memberRank" placeholder="Grad / Rol" required>
     <select id="memberStatus">
       <option value="Activ">Activ</option>
       <option value="Inactiv">Inactiv</option>
+      <option value="Concediu">Concediu</option>
     </select>
     <button type="submit">Adaugă membru</button>
   </form>
@@ -93,7 +90,7 @@ form button.save-model:hover { background:#cc5200; }
   <div id="sanctionsList" class="list"></div>
 </div>
 
-<!-- Setare Model Aplicație -->
+<!-- Model Aplicație Staff -->
 <div id="applicationModelCard" class="tab">
   <h2>Setează Model Aplicație Staff</h2>
   <form id="modelForm">
@@ -105,7 +102,7 @@ form button.save-model:hover { background:#cc5200; }
 </div>
 
 <script>
-// TAB NAV
+// --- TAB NAV ---
 function showTab(tabId){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(tabId).classList.add('active');
@@ -113,7 +110,7 @@ function showTab(tabId){
   event.target.classList.add('active');
 }
 
-// MEMBRI
+// --- MEMBRI ---
 let members = JSON.parse(localStorage.getItem("staffMembers")) || [];
 const membersForm = document.getElementById("memberForm");
 const membersDiv = document.getElementById("membersList");
@@ -124,8 +121,24 @@ function renderMembers(){
     const div = document.createElement("div");
     div.classList.add("item");
     div.innerHTML = `<div>${m.name} - ${m.rank} - Status: <strong>${m.status}</strong></div>`;
+
+    const rankInput = document.createElement("input");
+    rankInput.type = "text"; rankInput.value = m.rank; rankInput.style.marginTop="5px";
+    rankInput.onchange = ()=>{ members[i].rank = rankInput.value.trim(); saveMembers(); };
+
+    const statusSelect = document.createElement("select");
+    ["Activ","Inactiv","Concediu"].forEach(s=>{
+      const opt = document.createElement("option"); opt.value=s; opt.innerText=s;
+      if(s===m.status) opt.selected=true;
+      statusSelect.appendChild(opt);
+    });
+    statusSelect.onchange = ()=>{ members[i].status=statusSelect.value; saveMembers(); };
+
     const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
-    delBtn.onclick = ()=>{ members.splice(i,1); saveMembers(); };
+    delBtn.onclick = ()=>{ members.splice(i,1); saveMembers(); renderSanctions(); };
+
+    div.appendChild(rankInput);
+    div.appendChild(statusSelect);
     div.appendChild(delBtn);
     membersDiv.appendChild(div);
   });
@@ -140,6 +153,7 @@ membersForm.addEventListener("submit", e=>{
   members.push({name, rank, status});
   saveMembers();
   membersForm.reset();
+  renderSanctions();
 });
 
 function saveMembers(){
@@ -147,34 +161,37 @@ function saveMembers(){
   renderMembers();
 }
 
-// APLICAȚII STAFF
+// --- APLICAȚII STAFF ---
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
-let modelStaff = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
-document.getElementById("modelStaffTextarea").value = modelStaff.join("\n");
 
 function renderApplications(){
   const container = document.getElementById("applicationsList");
   container.innerHTML="";
   aplicatii.forEach((a,i)=>{
-    if(a.type!=="staffNou") return; // doar staff
+    if(a.type!=="staffNou") return; // doar aplicații staff
     const div = document.createElement("div");
     div.classList.add("item");
     let content = `<strong>${a.name}</strong><br>`;
     if(a.answers){
       a.answers.forEach((ans,j)=>{
-        content += `<strong>${modelStaff[j] || "Întrebare "+(j+1)}:</strong> ${ans}<br>`;
+        content += `Întrebare ${j+1}: ${ans}<br>`;
       });
     }
     content += `Status: <span class="status">${a.status||"În așteptare"}</span>`;
     div.innerHTML = content;
 
-    const actions = document.createElement("div"); actions.classList.add("item-actions");
+    const actions = document.createElement("div");
+    actions.classList.add("item-actions");
+
     const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
     accept.onclick = ()=>{ a.status="Acceptat"; saveApplications(); };
+
     const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
     reject.onclick = ()=>{ a.status="Respins"; saveApplications(); };
+
     const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
     del.onclick = ()=>{ aplicatii.splice(i,1); saveApplications(); };
+
     actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
     div.appendChild(actions);
     container.appendChild(div);
@@ -186,18 +203,86 @@ function saveApplications(){
   renderApplications();
 }
 
-// MODEL STAFF
-document.getElementById("modelForm").addEventListener("submit", e=>{
+// --- SANCȚIUNI ---
+let sanctions = JSON.parse(localStorage.getItem("staffSanctions")) || [];
+
+function renderSanctions() {
+  const container = document.getElementById("sanctionsList");
+  container.innerHTML = "";
+
+  members.forEach((m) => {
+    const div = document.createElement("div");
+    div.classList.add("item");
+
+    const memberSanctions = sanctions.filter(s => s.member === m.name);
+    const absenteCount = memberSanctions.filter(s => s.absenta === "Absent").length;
+
+    div.innerHTML = `<strong>${m.name} (${m.rank})</strong> - Absențe: <span class="status">${absenteCount}</span>`;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Sancțiune / Observație";
+
+    const selectAbs = document.createElement("select");
+    ["Prezent", "Absent"].forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.innerText = s;
+      selectAbs.appendChild(opt);
+    });
+
+    const addBtn = document.createElement("button");
+    addBtn.className = "edit-btn"; addBtn.innerText = "Adaugă";
+    addBtn.onclick = () => {
+      if (!input.value.trim()) return;
+      sanctions.push({ member: m.name, text: input.value.trim(), absenta: selectAbs.value });
+      localStorage.setItem("staffSanctions", JSON.stringify(sanctions));
+      input.value = "";
+      selectAbs.selectedIndex = 0;
+      renderSanctions();
+    };
+
+    const sancList = document.createElement("div");
+    memberSanctions.forEach((s) => {
+      const sdiv = document.createElement("div");
+      sdiv.style.display = "flex";
+      sdiv.style.justifyContent = "space-between";
+      sdiv.style.marginTop = "4px";
+      sdiv.innerHTML = `${s.text} (${s.absenta})`;
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-btn"; delBtn.innerText = "🗑";
+      delBtn.onclick = () => { sanctions = sanctions.filter(san => san !== s); localStorage.setItem("staffSanctions", JSON.stringify(sanctions)); renderSanctions(); };
+
+      sdiv.appendChild(delBtn);
+      sancList.appendChild(sdiv);
+    });
+
+    div.appendChild(input);
+    div.appendChild(selectAbs);
+    div.appendChild(addBtn);
+    div.appendChild(sancList);
+
+    container.appendChild(div);
+  });
+}
+
+// --- MODEL APLICAȚIE STAFF ---
+let modelStaff = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
+document.getElementById("modelStaffTextarea").value = modelStaff.join("\n");
+
+document.getElementById("modelForm").addEventListener("submit", function(e){
   e.preventDefault();
   const text = document.getElementById("modelStaffTextarea").value.trim();
   modelStaff = text.split("\n").map(t=>t.trim()).filter(t=>t!=="");
-  localStorage.setItem("modelStaff",JSON.stringify(modelStaff));
-  alert("Model aplicații Staff salvat!");
+  localStorage.setItem("modelStaff", JSON.stringify(modelStaff));
+  alert("Modelul aplicației Staff a fost salvat!");
 });
 
-// INIT
+// --- INIT ---
 renderMembers();
 renderApplications();
+renderSanctions();
 </script>
 
 </body>
