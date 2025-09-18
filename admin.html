@@ -273,6 +273,7 @@ function renderAplicatii(){
         const div=document.createElement("div");
         div.className="item";
         div.innerHTML=`<div><strong>${a.name}</strong> - ${a.message}<br>Tip: ${a.type}<br>Status: ${a.status||"În așteptare"}</div>`;
+        
         const actions = document.createElement("div"); actions.className="item-actions";
         const accept = document.createElement("button"); accept.className="edit-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{a.status="Acceptat"; saveAplicatii();}
         const reject = document.createElement("button"); reject.className="delete-btn"; reject.innerText="Respinge"; reject.onclick=()=>{a.status="Respins"; saveAplicatii();}
@@ -286,7 +287,6 @@ function saveAplicatii(){ localStorage.setItem("aplicatii",JSON.stringify(aplica
 /* --- Model aplicație Staff --- */
 let modelStaff = localStorage.getItem("modelStaff") || "";
 document.getElementById("modelStaffCurent").innerText = modelStaff;
-
 const modelStaffForm = document.getElementById("modelStaffForm");
 modelStaffForm.addEventListener("submit", function(e){
     e.preventDefault();
