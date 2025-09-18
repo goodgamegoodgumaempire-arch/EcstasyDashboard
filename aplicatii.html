@@ -21,9 +21,10 @@ nav ul li a:hover, nav ul li.active a { color:#ff6600;}
 .card p { margin:0 0 10px; color:#aaa;}
 .item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px;}
 .status { font-weight:bold; margin-left:10px; color:#ffcc00;}
-select, input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
+input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
 button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s;}
 button:hover { background:#cc5200;}
+.hidden { display:none; }
 @media(max-width:900px){ #layout { flex-direction: column; } }
 </style>
 </head>
@@ -48,25 +49,34 @@ button:hover { background:#cc5200;}
     <!-- Poliție -->
     <div class="card">
       <h2>Aplică pentru Poliție</h2>
-      <input type="text" id="numePolitie" placeholder="Nume jucător">
-      <textarea id="mesajPolitie"></textarea>
-      <button onclick="trimiteAplicatie('politie')">Trimite aplicație</button>
+      <button onclick="toggleForm('politie')">Aplică</button>
+      <div id="formPolitie" class="hidden">
+        <input type="text" id="numePolitie" placeholder="Nume jucător">
+        <textarea id="mesajPolitie" placeholder="Motivație / Mesaj"></textarea>
+        <button onclick="trimiteAplicatie('politie')">Trimite aplicație</button>
+      </div>
     </div>
 
     <!-- Medici -->
     <div class="card">
       <h2>Aplică pentru Medici</h2>
-      <input type="text" id="numeMedici" placeholder="Nume jucător">
-      <textarea id="mesajMedici"></textarea>
-      <button onclick="trimiteAplicatie('medici')">Trimite aplicație</button>
+      <button onclick="toggleForm('medici')">Aplică</button>
+      <div id="formMedici" class="hidden">
+        <input type="text" id="numeMedici" placeholder="Nume jucător">
+        <textarea id="mesajMedici" placeholder="Motivație / Mesaj"></textarea>
+        <button onclick="trimiteAplicatie('medici')">Trimite aplicație</button>
+      </div>
     </div>
 
     <!-- Staff -->
     <div class="card">
       <h2>Aplică pentru Staff</h2>
-      <input type="text" id="numeStaff" placeholder="Nume jucător">
-      <textarea id="mesajStaff"></textarea>
-      <button onclick="trimiteAplicatie('staff')">Trimite aplicație</button>
+      <button onclick="toggleForm('staff')">Aplică</button>
+      <div id="formStaff" class="hidden">
+        <input type="text" id="numeStaff" placeholder="Nume jucător">
+        <textarea id="mesajStaff" placeholder="Motivație / Mesaj"></textarea>
+        <button onclick="trimiteAplicatie('staff')">Trimite aplicație</button>
+      </div>
     </div>
 
     <!-- Lista aplicații -->
@@ -92,15 +102,11 @@ button:hover { background:#cc5200;}
 <script>
 const aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Modele prestabilite (poți modifica ce vrei tu)
-const modelPolitie = "Sunt motivat și vreau să ajut comunitatea ca polițist.";
-const modelMedici = "Sunt dedicat și vreau să ajut jucătorii ca medic.";
-const modelStaff = "Am experiență și doresc să contribui la server ca staff.";
-
-// Setează modelul în textarea la încărcare
-document.getElementById("mesajPolitie").value = modelPolitie;
-document.getElementById("mesajMedici").value = modelMedici;
-document.getElementById("mesajStaff").value = modelStaff;
+// Arată / ascunde formular
+function toggleForm(tip){
+  const div = document.getElementById("form"+tip.charAt(0).toUpperCase()+tip.slice(1));
+  div.classList.toggle('hidden');
+}
 
 // Trimite aplicație
 function trimiteAplicatie(tip){
@@ -115,9 +121,10 @@ function trimiteAplicatie(tip){
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
   renderAplicatii();
 
-  if(tip==='politie'){ document.getElementById("numePolitie").value=''; document.getElementById("mesajPolitie").value=modelPolitie; }
-  if(tip==='medici'){ document.getElementById("numeMedici").value=''; document.getElementById("mesajMedici").value=modelMedici; }
-  if(tip==='staff'){ document.getElementById("numeStaff").value=''; document.getElementById("mesajStaff").value=modelStaff; }
+  // Reset form
+  if(tip==='politie'){ document.getElementById("numePolitie").value=''; document.getElementById("mesajPolitie").value=''; toggleForm('politie'); }
+  if(tip==='medici'){ document.getElementById("numeMedici").value=''; document.getElementById("mesajMedici").value=''; toggleForm('medici'); }
+  if(tip==='staff'){ document.getElementById("numeStaff").value=''; document.getElementById("mesajStaff").value=''; toggleForm('staff'); }
 }
 
 // Render aplicații
