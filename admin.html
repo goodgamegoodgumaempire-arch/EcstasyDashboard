@@ -66,7 +66,16 @@ form button:hover { background:#cc5200; }
         <option value="Administrator">Administrator</option>
         <option value="Moderator">Moderator</option>
       </select>
-      <input type="text" id="staffGroup" placeholder="Grup (ex: COMMUNITY OWNERS)" required>
+      <select id="staffGroup" required>
+        <option value="">Selectează grup</option>
+        <option value="COMMUNITY OWNERS">Community Owners</option>
+        <option value="CO FOUNDERS">Co Founders</option>
+        <option value="MANAGER STAFF">Manager Staff</option>
+        <option value="ADMINISTRATORS">Administrators</option>
+        <option value="MODERATORS">Moderators</option>
+        <option value="HELPERS">Helpers</option>
+        <option value="TRYAL HELPERS">Tryal Helpers</option>
+      </select>
       <input type="text" id="staffImg" placeholder="Link imagine (opțional)">
       <button type="submit">Adaugă membru</button>
     </form>
@@ -86,6 +95,7 @@ form button:hover { background:#cc5200; }
       <div id="modelFields"></div>
       <button type="submit">Salvează Model Aplicație</button>
     </form>
+    <button id="addQuestionBtn">Adaugă Întrebare</button>
   </div>
 
   <!-- Update-uri -->
@@ -148,21 +158,22 @@ const staffList = document.getElementById("staffList");
 let editIndex = null;
 
 function renderStaff() {
-  staffList.innerHTML = "";
-  staffMembers.forEach((member,i)=>{
-    const div = document.createElement("div"); div.className="item";
-    div.innerHTML = `<strong>${member.name}</strong> - ${member.rank} (${member.group})<br>
-      <span class="status">${member.status||"Activ"}</span>
+  staffList.innerHTML="";
+  staffMembers.forEach((m,i)=>{
+    const div = document.createElement("div");
+    div.className="item";
+    div.innerHTML=`<strong>${m.name}</strong> - ${m.rank} (${m.group})<br>
+      <span class="status">${m.status||"Activ"}</span>
       <div class="item-actions">
         <button class="edit-btn">Editează</button>
         <button class="delete-btn">Șterge</button>
       </div>`;
     div.querySelector(".edit-btn").onclick = ()=>{
-      document.getElementById("staffName").value = member.name;
-      document.getElementById("staffRank").value = member.rank;
-      document.getElementById("staffGroup").value = member.group;
-      document.getElementById("staffImg").value = member.img||"";
-      editIndex = i;
+      document.getElementById("staffName").value = m.name;
+      document.getElementById("staffRank").value = m.rank;
+      document.getElementById("staffGroup").value = m.group;
+      document.getElementById("staffImg").value = m.img||"";
+      editIndex=i;
       staffForm.querySelector("button").innerText="Salvează modificările";
     };
     div.querySelector(".delete-btn").onclick = ()=>{ staffMembers.splice(i,1); saveStaff(); };
@@ -170,55 +181,46 @@ function renderStaff() {
   });
 }
 
-function saveStaff() {
+function saveStaff(){
   localStorage.setItem("staffMembers",JSON.stringify(staffMembers));
   renderStaff();
-  renderSanctions(); // actualizează card sancțiuni
+  renderSanctions();
 }
 
 staffForm.addEventListener("submit",(e)=>{
   e.preventDefault();
-  const name = document.getElementById("staffName").value.trim();
-  const rank = document.getElementById("staffRank").value;
-  const group = document.getElementById("staffGroup").value.trim();
-  const img = document.getElementById("staffImg").value.trim()||"default.png";
+  const name=document.getElementById("staffName").value.trim();
+  const rank=document.getElementById("staffRank").value;
+  const group=document.getElementById("staffGroup").value.trim();
+  const img=document.getElementById("staffImg").value.trim()||"default.png";
   if(!name||!rank||!group) return;
-  if(editIndex===null) staffMembers.push({name,rank,group,img,status:"Activ"}); 
-  else {
-    staffMembers[editIndex]={name,rank,group,img,status:"Activ"};
-    editIndex=null;
-    staffForm.querySelector("button").innerText="Adaugă membru";
-  }
+  if(editIndex===null) staffMembers.push({name,rank,group,img,status:"Activ"});
+  else { staffMembers[editIndex]={name,rank,group,img,status:"Activ"}; editIndex=null; staffForm.querySelector("button").innerText="Adaugă membru"; }
   staffForm.reset();
   saveStaff();
 });
 
-// --- CARD SANCTIUNI ---
-let sanctions = JSON.parse(localStorage.getItem("sanctions")) || [];
+// --- SANCTIUNI ---
+let sanctions = JSON.parse(localStorage.getItem("sanctions"))||[];
 const sanctionsList = document.getElementById("sanctionsList");
-
 function renderSanctions(){
   sanctionsList.innerHTML="";
-  staffMembers.forEach((member,i)=>{
-    const memberSanctions = sanctions.filter(s=>s.staffName===member.name);
+  staffMembers.forEach(m=>{
+    const memberSanctions = sanctions.filter(s=>s.staffName===m.name);
     const div = document.createElement("div"); div.className="item";
-    let sContent = `<strong>${member.name}</strong> - ${member.rank}<br>`;
-    memberSanctions.forEach((s,j)=>{ sContent+=`Sancțiune ${j+1}: ${s.reason}<br>`; });
-    div.innerHTML = `<div class="item-info">${sContent}</div>
+    let content = `<strong>${m.name}</strong> - ${m.rank}<br>`;
+    memberSanctions.forEach((s,j)=>{ content+=`Sancțiune ${j+1}: ${s.reason}<br>`; });
+    div.innerHTML=`<div class="item-info">${content}</div>
       <div class="item-actions">
         <button class="edit-btn">Adaugă/Edit Sancțiune</button>
         <button class="delete-btn">Șterge Toate Sancțiunile</button>
       </div>`;
     div.querySelector(".edit-btn").onclick = ()=>{
-      const reason = prompt("Introduceți motivul sancțiunii:");
-      if(reason){
-        sanctions.push({staffName:member.name,reason});
-        localStorage.setItem("sanctions",JSON.stringify(sanctions));
-        renderSanctions();
-      }
+      const reason=prompt("Introduceți motivul sancțiunii:");
+      if(reason){ sanctions.push({staffName:m.name,reason}); localStorage.setItem("sanctions",JSON.stringify(sanctions)); renderSanctions(); }
     };
     div.querySelector(".delete-btn").onclick = ()=>{
-      sanctions = sanctions.filter(s=>s.staffName!==member.name);
+      sanctions = sanctions.filter(s=>s.staffName!==m.name);
       localStorage.setItem("sanctions",JSON.stringify(sanctions));
       renderSanctions();
     };
@@ -227,17 +229,21 @@ function renderSanctions(){
 }
 
 // --- MODEL APLICAȚIE ---
-let modelFields = JSON.parse(localStorage.getItem("applicationModel")) || ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
+let modelFields = JSON.parse(localStorage.getItem("applicationModel"))||["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
 const modelFieldsContainer = document.getElementById("modelFields");
 function renderModel(){
   modelFieldsContainer.innerHTML="";
   modelFields.forEach((f,i)=>{
-    const input = document.createElement("input");
-    input.value = f;
-    input.onchange = ()=>{ modelFields[i]=input.value; localStorage.setItem("applicationModel",JSON.stringify(modelFields)); renderAplicatiiStaff(); };
+    const input=document.createElement("input");
+    input.value=f;
+    input.onchange=()=>{ modelFields[i]=input.value; localStorage.setItem("applicationModel",JSON.stringify(modelFields)); renderAplicatiiStaff(); };
     modelFieldsContainer.appendChild(input);
   });
 }
+document.getElementById("addQuestionBtn").onclick=()=>{
+  modelFields.push("Întrebare nouă");
+  renderModel();
+};
 document.getElementById("modelForm").addEventListener("submit",(e)=>{
   e.preventDefault();
   localStorage.setItem("applicationModel",JSON.stringify(modelFields));
@@ -246,23 +252,21 @@ document.getElementById("modelForm").addEventListener("submit",(e)=>{
 renderModel();
 
 // --- APLICAȚII STAFF ---
-let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+let aplicatii = JSON.parse(localStorage.getItem("aplicatii"))||[];
 function renderAplicatiiStaff(){
-  const container = document.getElementById("applicationsList"); container.innerHTML="";
+  const container=document.getElementById("applicationsList"); container.innerHTML="";
   aplicatii.forEach((a,i)=>{
     if(a.type!=="staffNou") return;
-    const div = document.createElement("div"); div.className="item";
-    let content = `<strong>${a.name}</strong><br>`;
-    if(a.answers){
-      a.answers.forEach((ans,j)=>{ content+=`<strong>${modelFields[j]||"Întrebare"}:</strong> ${ans}<br>`; });
-    }
+    const div=document.createElement("div"); div.className="item";
+    let content=`<strong>${a.name}</strong><br>`;
+    if(a.answers){ a.answers.forEach((ans,j)=>{ content+=`<strong>${modelFields[j]||"Întrebare"}:</strong> ${ans}<br>`; }); }
     content+=`<span class="status">${a.status||"În așteptare"}</span>`;
-    const actions = document.createElement("div"); actions.className="item-actions";
-    const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
+    const actions=document.createElement("div"); actions.className="item-actions";
+    const accept=document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
     accept.onclick=()=>{ a.status="Acceptat"; saveAplicatiiStaff(); };
-    const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
+    const reject=document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
     reject.onclick=()=>{ a.status="Respins"; saveAplicatiiStaff(); };
-    const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
+    const del=document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
     del.onclick=()=>{ aplicatii.splice(i,1); saveAplicatiiStaff(); };
     actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
     div.innerHTML=content; div.appendChild(actions); container.appendChild(div);
@@ -270,98 +274,12 @@ function renderAplicatiiStaff(){
 }
 function saveAplicatiiStaff(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatiiStaff(); }
 
-// --- UPDATE-URI ---
-let updates = JSON.parse(localStorage.getItem("updates"))||[];
-const updateForm=document.getElementById("updateForm");
-const updatesList=document.getElementById("updatesList");
-function renderUpdates(){
-  updatesList.innerHTML="";
-  updates.forEach((u,i)=>{
-    const div=document.createElement("div"); div.className="item";
-    let content=`<strong>${u.title}</strong> - ${u.message}`;
-    if(u.img) content+=`<br><img src="${u.img}" width="60">`;
-    div.innerHTML=`<div class="item-info">${content}</div>
-      <div class="item-actions">
-        <button class="delete-btn">Șterge</button>
-      </div>`;
-    div.querySelector(".delete-btn").onclick=()=>{ updates.splice(i,1); saveUpdates(); };
-    updatesList.appendChild(div);
-  });
-}
-function saveUpdates(){ localStorage.setItem("updates",JSON.stringify(updates)); renderUpdates(); }
-updateForm.addEventListener("submit",(e)=>{
-  e.preventDefault();
-  const title=document.getElementById("updateTitle").value.trim();
-  const message=document.getElementById("updateMessage").value.trim();
-  const img=document.getElementById("updateImg").value.trim();
-  if(!title||!message) return;
-  updates.push({title,message,img}); updateForm.reset(); saveUpdates();
-});
-
-// --- SNEAK PEEKS ---
-let sneakPeeks = JSON.parse(localStorage.getItem("sneakPeeks"))||[];
-const sneakForm=document.getElementById("sneakForm");
-const sneakList=document.getElementById("sneakList");
-function renderSneak(){
-  sneakList.innerHTML="";
-  sneakPeeks.forEach((s,i)=>{
-    const div=document.createElement("div"); div.className="item";
-    div.innerHTML=`${s.message} <span class="status">[${s.type}]</span>
-      <div class="item-actions">
-        <button class="delete-btn">Șterge</button>
-      </div>`;
-    div.querySelector(".delete-btn").onclick=()=>{ sneakPeeks.splice(i,1); saveSneak(); };
-    sneakList.appendChild(div);
-  });
-}
-function saveSneak(){ localStorage.setItem("sneakPeeks",JSON.stringify(sneakPeeks)); renderSneak(); }
-sneakForm.addEventListener("submit",(e)=>{
-  e.preventDefault();
-  const message=document.getElementById("sneakMessage").value.trim();
-  const url=document.getElementById("sneakUrl").value.trim();
-  const type=document.getElementById("sneakType").value;
-  if(!message) return;
-  sneakPeeks.push({message,url,type}); sneakForm.reset(); saveSneak();
-});
-
-// --- RECLAMAȚII ---
-let reclamatiiJuc = JSON.parse(localStorage.getItem("reclamatiiJuc")) || [];
-let reclamatiiMaf = JSON.parse(localStorage.getItem("reclamatiiMaf")) || [];
-let reclamatiiStaff = JSON.parse(localStorage.getItem("reclamatiiStaff")) || [];
-function renderReclamatii(containerId, arr){
-  const container = document.getElementById(containerId);
-  container.innerHTML="";
-  arr.forEach((r,i)=>{
-    const div = document.createElement("div"); div.className="item";
-    div.innerHTML = `<strong>${r.from}</strong> -> <strong>${r.target}</strong><br>${r.message}<br><span class="status">${r.status||"În așteptare"}</span>`;
-    const actions = document.createElement("div"); actions.className="item-actions";
-    const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
-    accept.onclick = ()=>{ r.status="Acceptat"; saveReclamatii(); };
-    const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
-    reject.onclick = ()=>{ r.status="Respins"; saveReclamatii(); };
-    const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
-    del.onclick = ()=>{ arr.splice(i,1); saveReclamatii(); };
-    actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
-    div.appendChild(actions); container.appendChild(div);
-  });
-}
-function saveReclamatii(){
-  localStorage.setItem("reclamatiiJuc",JSON.stringify(reclamatiiJuc));
-  localStorage.setItem("reclamatiiMaf",JSON.stringify(reclamatiiMaf));
-  localStorage.setItem("reclamatiiStaff",JSON.stringify(reclamatiiStaff));
-  renderReclamatii("reclamatiiJucList",reclamatiiJuc);
-  renderReclamatii("reclamatiiMafList",reclamatiiMaf);
-  renderReclamatii("reclamatiiStaffList",reclamatiiStaff);
-}
-
 // --- INIT ---
 renderAplicatiiStaff();
 renderStaff();
 renderSanctions();
-saveUpdates();
-renderSneak();
-saveReclamatii();
-</script>
+renderModel();
 
+</script>
 </body>
 </html>
