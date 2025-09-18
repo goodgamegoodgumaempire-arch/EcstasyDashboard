@@ -49,6 +49,9 @@ h1,h2 { color:#ff6600; }
 
 select, input, textarea, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
 button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; } button:hover { background:#cc5200; }
+form textarea { width:100%; height:100px; padding:10px; border-radius:8px; border:none; background:#222; color:#fff; margin:5px 0; }
+form button.save-model { background:#ff6600; margin-top:10px; width:auto; padding:10px 20px; border:none; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; }
+form button.save-model:hover { background:#cc5200; }
 
 .tab { display:none; }
 .tab.active { display:block; }
@@ -61,6 +64,7 @@ button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; } butt
   <button onclick="showTab('members')" class="active">Membri</button>
   <button onclick="showTab('applications')">Aplicații</button>
   <button onclick="showTab('sanctions')">Sancțiuni</button>
+  <button onclick="showTab('applicationModelCard')">Setare Model Aplicație</button>
 </div>
 
 <div class="main">
@@ -94,6 +98,15 @@ button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; } butt
     <div id="sanctionsList" class="list"></div>
   </div>
 
+  <!-- Setare Model Aplicație -->
+  <div id="applicationModelCard" class="tab">
+    <h2>Setează Model Aplicație Poliție</h2>
+    <form id="modelForm">
+      <textarea id="modelPolitieTextarea" placeholder="Scrie fiecare întrebare pe câte un rând..."></textarea>
+      <button type="submit" class="save-model">Salvează Model</button>
+    </form>
+  </div>
+
 </div>
 
 <script>
@@ -118,7 +131,7 @@ function renderMembers(){
     div.innerHTML = `<div>${m.name} - ${m.rank} - Status: <strong>${m.status}</strong></div>`;
 
     const rankInput = document.createElement("input");
-    rankInput.type="text";
+    rankInput.type = "text";
     rankInput.value = m.rank;
     rankInput.style.marginTop = "5px";
     rankInput.onchange = ()=>{ members[i].rank = rankInput.value.trim(); saveMembers(); };
@@ -277,6 +290,18 @@ function renderSanctions() {
     container.appendChild(div);
   });
 }
+
+// --- MODEL APLICAȚIE POLIȚIE ---
+let modelPolitie = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător", "Motivație / Mesaj"];
+document.getElementById("modelPolitieTextarea").value = modelPolitie.join("\n");
+
+document.getElementById("modelForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  const text = document.getElementById("modelPolitieTextarea").value.trim();
+  modelPolitie = text.split("\n").map(t=>t.trim()).filter(t=>t!=="");
+  localStorage.setItem("modelPolitie", JSON.stringify(modelPolitie));
+  alert("Modelul aplicației Poliție a fost salvat!");
+});
 
 // --- INIT ---
 renderMembers();
