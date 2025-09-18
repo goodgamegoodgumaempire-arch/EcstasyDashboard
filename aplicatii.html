@@ -53,14 +53,14 @@ button:hover { background:#cc5200;}
       <div id="formmedici" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Card aplicație Staff nou -->
+    <!-- Card aplicație Staff -->
     <div class="card">
       <h2>Aplică pentru Staff</h2>
       <button onclick="toggleForm('staffNou')">Aplică</button>
       <div id="formstaffNou" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Lista aplicații -->
+    <!-- Card aplicații pentru admin -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
       <button onclick="toggleAplicațiiPublice()">Vezi aplicații trimise</button>
@@ -84,7 +84,7 @@ button:hover { background:#cc5200;}
 <script>
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Toggle form și generează carduri separate pentru fiecare întrebare
+// Toggle form și generează carduri pentru fiecare întrebare
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
   if(div.dataset.loaded !== "true"){
@@ -92,7 +92,7 @@ function toggleForm(tip){
     let model = [];
     if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
     if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
-    if(tip==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"]; // întrebări noi pentru Staff
+    if(tip==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
 
     div.innerHTML = "";
     model.forEach(field => {
@@ -100,7 +100,7 @@ function toggleForm(tip){
       card.className = "card";
       const label = document.createElement("label");
       label.innerText = field;
-      let el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
+      let el = field.toLowerCase().includes("mesaj") || field.toLowerCase().includes("experiență") ? document.createElement("textarea") : document.createElement("input");
       el.dataset.field = field;
       card.appendChild(label);
       card.appendChild(el);
@@ -125,10 +125,15 @@ function trimiteAplicatie(tip){
   const values = inputs.map(i=>i.value.trim());
   if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  let obj = {type:tip, name:values[0], answers: values, status:"În așteptare"};
+  const obj = {type:tip, name:values[0], answers: values, status:"În așteptare"};
   aplicatii.push(obj);
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
   alert("Aplicația a fost trimisă!");
+
+  // Redirecționare către panel corespunzător
+  if(tip==="politie") window.location.href="panelpd.html";
+  if(tip==="medici") window.location.href="panelmd.html";
+  if(tip==="staffNou") window.location.href="admin.html";
 
   inputs.forEach(i=>i.value="");
   div.style.display="none";
