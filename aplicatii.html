@@ -60,7 +60,7 @@ button:hover { background:#cc5200;}
       <div id="formstaffNou" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Card aplicații pentru admin -->
+    <!-- Card aplicații pentru utilizator -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
       <button onclick="toggleAplicatiiPublice()">Vezi aplicații trimise</button>
@@ -88,7 +88,6 @@ let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
   if(div.dataset.loaded !== "true"){
-
     let model = [];
     if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
     if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
@@ -100,7 +99,7 @@ function toggleForm(tip){
       card.className = "card";
       const label = document.createElement("label");
       label.innerText = field;
-      let el = field.toLowerCase().includes("mesaj") || field.toLowerCase().includes("experiență") ? document.createElement("textarea") : document.createElement("input");
+      const el = field.toLowerCase().includes("mesaj") || field.toLowerCase().includes("experiență") ? document.createElement("textarea") : document.createElement("input");
       el.dataset.field = field;
       card.appendChild(label);
       card.appendChild(el);
@@ -114,7 +113,6 @@ function toggleForm(tip){
 
     div.dataset.loaded = "true";
   }
-
   div.style.display = (div.style.display==="block") ? "none" : "block";
 }
 
@@ -125,24 +123,26 @@ function trimiteAplicatie(tip){
   const values = inputs.map(i=>i.value.trim());
   if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  // Asigură type corect
-  const obj = {type: tip.toLowerCase(), name: values[0], answers: values, status:"În așteptare"};
+  // Type corect
+  let typeValue = "";
+  if(tip === "politie") typeValue = "politie";
+  if(tip === "medici") typeValue = "medici";
+  if(tip === "staffNou") typeValue = "staffNou";
+
+  const obj = {type: typeValue, name: values[0], answers: values, status:"În așteptare"};
   aplicatii.push(obj);
-
-  // Salvează înainte de redirecționare
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
-  alert("Aplicația a fost trimisă!");
 
+  alert("Aplicația a fost trimisă!");
   inputs.forEach(i=>i.value="");
   div.style.display="none";
 
-  // Redirecționare către panel corespunzător
-  if(tip === "politie") window.location.href="panelpd.html";
-  if(tip === "medici") window.location.href="panelmd.html";
-  if(tip === "staffNou") window.location.href="admin.html";
-
-  // Re-render pentru listă
   renderAplicatiiPublice();
+
+  // Redirecționare către panelul corespunzător
+  if(typeValue==="politie") window.location.href="panelpd.html";
+  if(typeValue==="medici") window.location.href="panelmd.html";
+  if(typeValue==="staffNou") window.location.href="admin.html";
 }
 
 // Render aplicații trimise
@@ -157,7 +157,7 @@ function renderAplicatiiPublice(){
       let model = [];
       if(a.type==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
       if(a.type==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
-      if(a.type==="staffnou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
+      if(a.type==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
       a.answers.forEach((ans,i)=>{
         content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
       });
