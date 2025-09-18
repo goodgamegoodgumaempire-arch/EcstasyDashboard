@@ -53,11 +53,11 @@ button:hover { background:#cc5200;}
       <div id="formmedici" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Card aplicație Staff -->
+    <!-- Card aplicație Staff nou -->
     <div class="card">
       <h2>Aplică pentru Staff</h2>
-      <button onclick="toggleForm('staff')">Aplică</button>
-      <div id="formstaff" class="hidden" data-loaded="false"></div>
+      <button onclick="toggleForm('staffNou')">Aplică</button>
+      <div id="formstaffNou" class="hidden" data-loaded="false"></div>
     </div>
 
     <!-- Lista aplicații -->
@@ -92,7 +92,7 @@ function toggleForm(tip){
     let model = [];
     if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
     if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
-    if(tip==="staff") model = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"]; // întrebări noi pentru Staff
 
     div.innerHTML = "";
     model.forEach(field => {
@@ -125,13 +125,11 @@ function trimiteAplicatie(tip){
   const values = inputs.map(i=>i.value.trim());
   if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  // Salvăm aplicația conform panelului corespunzător
   let obj = {type:tip, name:values[0], answers: values, status:"În așteptare"};
   aplicatii.push(obj);
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
   alert("Aplicația a fost trimisă!");
 
-  // reset form
   inputs.forEach(i=>i.value="");
   div.style.display="none";
   renderAplicatiiPublice();
@@ -146,10 +144,12 @@ function renderAplicatiiPublice(){
     div.className = "item";
     let content = `<strong>${a.name}</strong> [${a.type}]<br>`;
     if(a.answers){
-      const model = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
+      let model = [];
+      if(a.type==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
+      if(a.type==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
+      if(a.type==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
       a.answers.forEach((ans,i)=>{
-        const q = (a.type==="staff") ? model : ["Nume jucător","Motivație / Mesaj"];
-        content += `<strong>${q[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
+        content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
       });
     }
     content += `<span class="status">${a.status}</span>`;
@@ -170,4 +170,3 @@ renderAplicatiiPublice();
 
 </body>
 </html>
-
