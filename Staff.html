@@ -16,13 +16,11 @@ body {
     color:#fff;
     min-height:100vh;
 }
-
 @keyframes gradientBG {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
-
 /* Navbar */
 nav {
     display:flex;
@@ -119,28 +117,37 @@ const groups = ["COMMUNITY OWNERS","CO FOUNDERS","MANAGER STAFF","ADMINISTRATORS
 function renderStaff() {
     staffContainer.innerHTML = "";
     groups.forEach(group => {
+        const membersInGroup = staffData.filter(member => member.group === group);
+        if(membersInGroup.length === 0) return; // Nu afișa secțiuni goale
+
         const section = document.createElement("div");
         section.classList.add("staff-section");
         section.innerHTML = `<h2>${group}</h2><div class="staff-cards"></div>`;
-        
         const cardsContainer = section.querySelector(".staff-cards");
-        staffData.filter(member => member.group === group).forEach(member => {
+
+        membersInGroup.forEach(member => {
             const card = document.createElement("div");
             card.classList.add("staff-card");
             card.innerHTML = `
-                <img src="${member.img}" alt="${member.name}">
+                <img src="${member.img || 'default.png'}" alt="${member.name}">
                 <h3>${member.name}</h3>
                 <p>Grad: ${member.rank}</p>
             `;
             cardsContainer.appendChild(card);
         });
+
         staffContainer.appendChild(section);
     });
 }
+
+// Re-render la schimbări
+window.addEventListener('storage', () => {
+    staffData = JSON.parse(localStorage.getItem("staffMembers")) || [];
+    renderStaff();
+});
 
 renderStaff();
 </script>
 
 </body>
 </html>
-
