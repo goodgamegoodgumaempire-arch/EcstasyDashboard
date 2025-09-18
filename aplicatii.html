@@ -6,7 +6,7 @@
 <title>Aplicații - G4A Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
+body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b1c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
 nav img { height:40px; margin-right:50px;}
@@ -60,7 +60,7 @@ button:hover { background:#cc5200;}
       <div id="formstaffNou" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Card aplicații pentru utilizator -->
+    <!-- Card aplicații pentru admin -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
       <button onclick="toggleAplicatiiPublice()">Vezi aplicații trimise</button>
@@ -88,6 +88,7 @@ let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
   if(div.dataset.loaded !== "true"){
+
     let model = [];
     if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
     if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
@@ -99,7 +100,7 @@ function toggleForm(tip){
       card.className = "card";
       const label = document.createElement("label");
       label.innerText = field;
-      const el = field.toLowerCase().includes("mesaj") || field.toLowerCase().includes("experiență") ? document.createElement("textarea") : document.createElement("input");
+      let el = field.toLowerCase().includes("mesaj") || field.toLowerCase().includes("experiență") ? document.createElement("textarea") : document.createElement("input");
       el.dataset.field = field;
       card.appendChild(label);
       card.appendChild(el);
@@ -113,6 +114,7 @@ function toggleForm(tip){
 
     div.dataset.loaded = "true";
   }
+
   div.style.display = (div.style.display==="block") ? "none" : "block";
 }
 
@@ -123,7 +125,6 @@ function trimiteAplicatie(tip){
   const values = inputs.map(i=>i.value.trim());
   if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  // Type corect
   let typeValue = "";
   if(tip === "politie") typeValue = "politie";
   if(tip === "medici") typeValue = "medici";
@@ -134,15 +135,11 @@ function trimiteAplicatie(tip){
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
 
   alert("Aplicația a fost trimisă!");
+
   inputs.forEach(i=>i.value="");
   div.style.display="none";
 
   renderAplicatiiPublice();
-
-  // Redirecționare către panelul corespunzător
-  if(typeValue==="politie") window.location.href="panelpd.html";
-  if(typeValue==="medici") window.location.href="panelmd.html";
-  if(typeValue==="staffNou") window.location.href="admin.html";
 }
 
 // Render aplicații trimise
