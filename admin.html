@@ -53,11 +53,10 @@ form button:hover { background:#cc5200; }
 .item-actions button { margin-left:8px; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; font-weight:bold; transition:0.2s; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
 .edit-btn { background:#ff6600; color:#fff; } .edit-btn:hover { background:#cc5200; }
-@media(max-width:800px){ .sidebar { width:100%; height:auto; flex-direction:row; justify-content:space-around; padding:10px;} .main { margin-left:0; } .item-info { flex-direction:column; align-items:flex-start; } }
-.model-card { display:flex; align-items:center; margin-bottom:10px; background: rgba(34,34,34,0.8); padding:8px; border-radius:8px; }
-.model-card input { flex:1; }
-.model-card button { margin-left:10px; background:#ff4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
 .add-btn { margin-top:12px; background:#28a745; color:#fff; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; }
+.model-card { display:flex; align-items:center; margin-bottom:10px; background: rgba(34,34,34,0.8); padding:8px; border-radius:8px; }
+.model-card input { flex:1; margin-right:8px; }
+@media(max-width:800px){ .sidebar { width:100%; height:auto; flex-direction:row; justify-content:space-around; padding:10px;} .main { margin-left:0; } .item-info { flex-direction:column; align-items:flex-start; } }
 </style>
 </head>
 <body>
@@ -75,7 +74,6 @@ form button:hover { background:#cc5200; }
 <div class="main">
     <h1>Admin Panel - ECSTASY ROMANIA</h1>
 
-    <!-- Staff Manager -->
     <div id="staff" class="tab">
         <h2>Staff Manager</h2>
         <form id="staffForm">
@@ -97,7 +95,6 @@ form button:hover { background:#cc5200; }
         <div id="members" class="list"></div>
     </div>
 
-    <!-- Updates Manager -->
     <div id="updates" class="tab" style="display:none;">
         <h2>Update-uri Manager</h2>
         <form id="updateForm">
@@ -109,7 +106,6 @@ form button:hover { background:#cc5200; }
         <div id="updatesList" class="list"></div>
     </div>
 
-    <!-- Sneak Peeks -->
     <div id="sneak" class="tab" style="display:none;">
         <h2>Sneak Peeks Manager</h2>
         <form id="sneakForm">
@@ -126,105 +122,192 @@ form button:hover { background:#cc5200; }
         <div id="sneakList" class="list"></div>
     </div>
 
-    <!-- Aplicații Staff -->
     <div id="aplicatii" class="tab" style="display:none;">
         <h2>Aplicații Staff</h2>
         <div id="aplicatiiList" class="list"></div>
     </div>
 
-    <!-- Model aplicație Staff -->
     <div id="modelStaff" class="tab" style="display:none;">
         <h2>Setează Model Aplicație Staff</h2>
         <form id="modelStaffForm">
-            <textarea id="modelStaffTextarea" placeholder="Scrie fiecare întrebare pe câte un rând..."></textarea>
-            <button type="submit" class="save-model">Salvează Model Aplicație</button>
+            <div id="modelFields"></div>
+            <button type="submit">Salvează Model Aplicație</button>
         </form>
     </div>
 
-    <!-- Reclamații -->
     <div id="reclamatii" class="tab" style="display:none;">
         <h2>Reclamații</h2>
-        <div class="list" id="reclamatiiCards">
-            <div class="item">Reclamați Jucători</div>
-            <div class="item">Reclamați Staff</div>
-            <div class="item">Reclamați Mafii</div>
+        <div id="reclamatiiCards" class="list">
+            <div class="item" onclick="alert('Reclamați Jucători')">Reclamați Jucători</div>
+            <div class="item" onclick="alert('Reclamați Staff')">Reclamați Staff</div>
+            <div class="item" onclick="alert('Reclamați Mafii')">Reclamați Mafii</div>
         </div>
     </div>
 </div>
 
 <script>
-// --- TAB NAV ---
-function showTab(tab){
-    document.querySelectorAll('.tab').forEach(t=>t.style.display='none');
-    document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
-    document.getElementById(tab).style.display='block';
-    document.getElementById('btn-'+tab).classList.add('active');
+/* --- TAB NAV --- */
+function showTab(tabId){
+    document.querySelectorAll(".tab").forEach(t => t.style.display="none");
+    document.getElementById(tabId).style.display="block";
+    document.querySelectorAll(".sidebar button").forEach(b => b.classList.remove("active"));
+    document.getElementById("btn-"+tabId).classList.add("active");
 }
-document.querySelectorAll('.sidebar button').forEach(btn=>{
-    btn.addEventListener('click',()=>showTab(btn.id.replace('btn-','')));
-});
+
+/* --- Event listeners tab --- */
+document.getElementById("btn-staff").addEventListener("click",()=>showTab("staff"));
+document.getElementById("btn-updates").addEventListener("click",()=>showTab("updates"));
+document.getElementById("btn-sneak").addEventListener("click",()=>showTab("sneak"));
+document.getElementById("btn-aplicatii").addEventListener("click",()=>showTab("aplicatii"));
+document.getElementById("btn-modelStaff").addEventListener("click",()=>showTab("modelStaff"));
+document.getElementById("btn-reclamatii").addEventListener("click",()=>showTab("reclamatii"));
 
 /* --- Staff Manager --- */
-let staffData = JSON.parse(localStorage.getItem('staffMembers')) || [];
-const staffForm = document.getElementById('staffForm');
-const membersDiv = document.getElementById('members');
+let staffData = JSON.parse(localStorage.getItem("staffMembers")) || [];
+const staffForm = document.getElementById("staffForm");
+const membersDiv = document.getElementById("members");
 let editStaffIndex = null;
-function renderMembers(){
-    membersDiv.innerHTML='';
+function renderMembers() {
+    membersDiv.innerHTML="";
     staffData.forEach((m,i)=>{
-        const div=document.createElement('div');
-        div.className='item';
-        div.innerHTML=`<div class='item-info'><img src='${m.img}' alt='${m.name}'><div><strong>${m.name}</strong> - ${m.rank} (${m.group})</div></div><div class='item-actions'><button class='edit-btn' onclick='editMember(${i})'>Editează</button><button class='delete-btn' onclick='deleteMember(${i})'>Șterge</button></div>`;
+        const div=document.createElement("div");
+        div.classList.add("item");
+        div.innerHTML=`<div class="item-info">
+            <img src="${m.img}" alt="${m.name}">
+            <div><strong>${m.name}</strong> - ${m.rank} (${m.group})</div>
+        </div>
+        <div class="item-actions">
+            <button class="edit-btn" onclick="editMember(${i})">Editează</button>
+            <button class="delete-btn" onclick="deleteMember(${i})">Șterge</button>
+        </div>`;
         membersDiv.appendChild(div);
     });
 }
-staffForm.addEventListener('submit',e=>{
+staffForm.addEventListener("submit", function(e){
     e.preventDefault();
-    const name=document.getElementById('name').value;
-    const rank=document.getElementById('rank').value;
-    const img=document.getElementById('img').value;
-    const group=document.getElementById('group').value;
+    const name=document.getElementById("name").value;
+    const rank=document.getElementById("rank").value;
+    const img=document.getElementById("img").value;
+    const group=document.getElementById("group").value;
     if(editStaffIndex===null) staffData.push({name,rank,img,group});
-    else { staffData[editStaffIndex]={name,rank,img,group}; editStaffIndex=null; staffForm.querySelector('button').innerText='Adaugă Membru';}
-    localStorage.setItem('staffMembers',JSON.stringify(staffData));
+    else { staffData[editStaffIndex]={name,rank,img,group}; editStaffIndex=null; staffForm.querySelector("button").innerText="Adaugă Membru";}
+    localStorage.setItem("staffMembers",JSON.stringify(staffData));
     renderMembers(); staffForm.reset();
 });
-function deleteMember(i){ staffData.splice(i,1); localStorage.setItem('staffMembers',JSON.stringify(staffData)); renderMembers();}
-function editMember(i){ const m=staffData[i]; document.getElementById('name').value=m.name; document.getElementById('rank').value=m.rank; document.getElementById('img').value=m.img; document.getElementById('group').value=m.group; editStaffIndex=i; staffForm.querySelector('button').innerText='Salvează Modificările'; }
+function deleteMember(i){ staffData.splice(i,1); localStorage.setItem("staffMembers",JSON.stringify(staffData)); renderMembers();}
+function editMember(i){ const m=staffData[i]; document.getElementById("name").value=m.name; document.getElementById("rank").value=m.rank; document.getElementById("img").value=m.img; document.getElementById("group").value=m.group; editStaffIndex=i; staffForm.querySelector("button").innerText="Salvează Modificările"; }
 
 /* --- Updates Manager --- */
-let updatesData = JSON.parse(localStorage.getItem('updates'))||[];
-const updateForm=document.getElementById('updateForm');
-const updatesList=document.getElementById('updatesList');
+let updatesData = JSON.parse(localStorage.getItem("updates"))||[];
+const updateForm=document.getElementById("updateForm");
+const updatesList=document.getElementById("updatesList");
 let editUpdateIndex=null;
-function renderUpdates(){ updatesList.innerHTML=''; updatesData.forEach((u,i)=>{
-    const div=document.createElement('div'); div.className='item';
-    let content=`<div><strong>${u.title}</strong> - ${u.message}`;
-    if(u.img) content+=`<br><img src='${u.img}' width='60'>`;
-    content+='</div>';
-    div.innerHTML=`<div class='item-info'>${content}</div><div class='item-actions'><button class='edit-btn' onclick='editUpdate(${i})'>Editează</button><button class='delete-btn' onclick='deleteUpdate(${i})'>Șterge</button></div>`;
-    updatesList.appendChild(div);
-});}
-updateForm.addEventListener('submit',e=>{
+function renderUpdates(){
+    updatesList.innerHTML="";
+    updatesData.forEach((u,i)=>{
+        const div=document.createElement("div"); div.classList.add("item");
+        let content=`<div><strong>${u.title}</strong> - ${u.message}`;
+        if(u.img) content+=`<br><img src="${u.img}" width="60">`;
+        content+="</div>";
+        div.innerHTML=`<div class="item-info">${content}</div>
+        <div class="item-actions">
+        <button class="edit-btn" onclick="editUpdate(${i})">Editează</button>
+        <button class="delete-btn" onclick="deleteUpdate(${i})">Șterge</button></div>`;
+        updatesList.appendChild(div);
+    });
+}
+updateForm.addEventListener("submit",function(e){
     e.preventDefault();
-    const title=document.getElementById('updateTitle').value;
-    const message=document.getElementById('updateMessage').value;
-    const img=document.getElementById('updateImg').value;
+    const title=document.getElementById("updateTitle").value;
+    const message=document.getElementById("updateMessage").value;
+    const img=document.getElementById("updateImg").value;
     if(editUpdateIndex===null) updatesData.push({title,message,img});
-    else { updatesData[editUpdateIndex]={title,message,img}; editUpdateIndex=null; updateForm.querySelector('button').innerText='Adaugă Update';}
-    localStorage.setItem('updates',JSON.stringify(updatesData));
+    else { updatesData[editUpdateIndex]={title,message,img}; editUpdateIndex=null; updateForm.querySelector("button").innerText="Adaugă Update";}
+    localStorage.setItem("updates",JSON.stringify(updatesData));
     renderUpdates(); updateForm.reset();
 });
-function deleteUpdate(i){ updatesData.splice(i,1); localStorage.setItem('updates',JSON.stringify(updatesData)); renderUpdates();}
-function editUpdate(i){ const u=updatesData[i]; document.getElementById('updateTitle').value=u.title; document.getElementById('updateMessage').value=u.message; document.getElementById('updateImg').value=u.img; editUpdateIndex=i; updateForm.querySelector('button').innerText='Salvează Modificările'; }
+function deleteUpdate(i){ updatesData.splice(i,1); localStorage.setItem("updates",JSON.stringify(updatesData)); renderUpdates();}
+function editUpdate(i){ const u=updatesData[i]; document.getElementById("updateTitle").value=u.title; document.getElementById("updateMessage").value=u.message; document.getElementById("updateImg").value=u.img; editUpdateIndex=i; updateForm.querySelector("button").innerText="Salvează Modificările"; }
 
 /* --- Sneak Peeks --- */
-let peeksData=JSON.parse(localStorage.getItem('sneakPeeks'))||[];
-const sneakForm=document.getElementById('sneakForm');
-const sneakList=document.getElementById('sneakList');
+let peeksData=JSON.parse(localStorage.getItem("sneakPeeks"))||[];
+const sneakForm=document.getElementById("sneakForm");
+const sneakList=document.getElementById("sneakList");
 let editPeekIndex=null;
 function renderPeeks(){
-    sneakList.innerHTML='';
+    sneakList.innerHTML="";
     peeksData.forEach((p,i)=>{
-        const div=document.createElement('div'); div.className='item';
-        let content=`<div><strong>${p.message||
+        const div=document.createElement("div"); div.classList.add("item");
+        let content=`<div><strong>${p.message||""}</strong>`;
+        if(p.type==="image") content+=`<br><img src="${p.url}" width="60">`;
+        if(p.type==="video") content+=`<br><video width="120" controls><source src="${p.url}"></video>`;
+        if(p.type==="link") content+=`<br><a href="${p.url}" target="_blank">${p.url}</a>`;
+        content+="</div>";
+        div.innerHTML=`<div class="item-info">${content}</div>
+        <div class="item-actions">
+        <button class="edit-btn" onclick="editPeek(${i})">Editează</button>
+        <button class="delete-btn" onclick="deletePeek(${i})">Șterge</button></div>`;
+        sneakList.appendChild(div);
+    });
+}
+sneakForm.addEventListener("submit",function(e){
+    e.preventDefault();
+    const message=document.getElementById("sneakMessage").value;
+    const url=document.getElementById("sneakUrl").value;
+    const type=document.getElementById("sneakType").value;
+    if(editPeekIndex===null) peeksData.push({message,url,type});
+    else { peeksData[editPeekIndex]={message,url,type}; editPeekIndex=null; sneakForm.querySelector("button").innerText="Adaugă Sneak Peek";}
+    localStorage.setItem("sneakPeeks",JSON.stringify(peeksData));
+    renderPeeks(); sneakForm.reset();
+});
+function deletePeek(i){ peeksData.splice(i,1); localStorage.setItem("sneakPeeks",JSON.stringify(peeksData)); renderPeeks();}
+function editPeek(i){ const p=peeksData[i]; document.getElementById("sneakMessage").value=p.message; document.getElementById("sneakUrl").value=p.url; document.getElementById("sneakType").value=p.type; editPeekIndex=i; sneakForm.querySelector("button").innerText="Salvează Modificările"; }
+
+/* --- Aplicatii Staff --- */
+let aplicatiiStaff=JSON.parse(localStorage.getItem("aplicatiiStaff"))||[];
+const aplicatiiList=document.getElementById("aplicatiiList");
+function renderAplicatii(){ aplicatiiList.innerHTML=""; aplicatiiStaff.forEach((a,i)=>{
+    const div=document.createElement("div"); div.classList.add("item");
+    div.innerHTML=`<strong>${a.name}</strong><br>${a.answers?.map((v,j)=>`Întrebare ${j+1}: ${v}`).join("<br>")}<br>Status: ${a.status||"În așteptare"}<br>
+    <div class="item-actions">
+        <button class="edit-btn" onclick="acceptAplicatie(${i})">Acceptă</button>
+        <button class="delete-btn" onclick="rejectAplicatie(${i})">Respinge</button>
+        <button class="delete-btn" onclick="deleteAplicatie(${i})">Șterge</button>
+    </div>`;
+    aplicatiiList.appendChild(div);
+});
+}
+function acceptAplicatie(i){ aplicatiiStaff[i].status="Acceptat"; localStorage.setItem("aplicatiiStaff",JSON.stringify(aplicatiiStaff)); renderAplicatii();}
+function rejectAplicatie(i){ aplicatiiStaff[i].status="Respins"; localStorage.setItem("aplicatiiStaff",JSON.stringify(aplicatiiStaff)); renderAplicatii();}
+function deleteAplicatie(i){ aplicatiiStaff.splice(i,1); localStorage.setItem("aplicatiiStaff",JSON.stringify(aplicatiiStaff)); renderAplicatii(); }
+
+/* --- Model Aplicație Staff --- */
+let modelStaff = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație"];
+const modelFields = document.getElementById("modelFields");
+function renderModelFields(){
+    modelFields.innerHTML="";
+    modelStaff.forEach((f,i)=>{
+        const div=document.createElement("div"); div.classList.add("model-card");
+        div.innerHTML=`<input value="${f}"><button onclick="deleteField(${i})">🗑</button>`;
+        modelFields.appendChild(div);
+    });
+}
+function deleteField(i){ modelStaff.splice(i,1); renderModelFields(); }
+function addField(){ modelStaff.push(""); renderModelFields(); }
+renderModelFields();
+document.getElementById("modelStaffForm").addEventListener("submit",function(e){
+    e.preventDefault();
+    modelStaff=[];
+    document.querySelectorAll("#modelFields input").forEach(inp=>{ if(inp.value.trim()) modelStaff.push(inp.value.trim()); });
+    localStorage.setItem("modelStaff",JSON.stringify(modelStaff));
+    alert("Model aplicație staff salvat!");
+});
+const addBtn=document.createElement("button"); addBtn.innerText="Adaugă întrebare"; addBtn.type="button"; addBtn.classList.add("add-btn"); addBtn.onclick=addField; modelFields.parentElement.appendChild(addBtn);
+
+/* --- INIT --- */
+renderMembers(); renderUpdates(); renderPeeks(); renderAplicatii();
+showTab("staff"); // default tab
+</script>
+
+</body>
+</html>
