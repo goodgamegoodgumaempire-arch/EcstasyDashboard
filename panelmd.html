@@ -15,16 +15,42 @@ h1,h2 { color:#ff6600; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
 .status { font-weight:bold; margin-left:10px;}
+form { background: rgba(17,17,17,0.7); padding:20px; border-radius:12px; max-width:900px; margin:20px 0; }
+textarea { width:100%; height:100px; padding:10px; border-radius:8px; border:none; background:#222; color:#fff; }
+button.save-model { background:#ff6600; margin-top:10px; width:auto; padding:10px 20px; }
+button.save-model:hover { background:#cc5200; }
 </style>
 </head>
 <body>
 
 <h1>PanelMD - Medici</h1>
+
+<!-- Setează model aplicație -->
+<div class="card">
+  <h2>Setează model aplicație Medici</h2>
+  <form id="modelForm">
+    <textarea id="modelMediciTextarea" placeholder="Scrie modelul aplicației aici..."></textarea>
+    <button type="submit" class="save-model">Salvează model</button>
+  </form>
+</div>
+
 <div id="applications" class="list"></div>
 
 <script>
 // LocalStorage array
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+
+// Preia modelul existent
+const modelMedici = localStorage.getItem("modelMedici") || "";
+document.getElementById("modelMediciTextarea").value = modelMedici;
+
+// Salvează modelul
+document.getElementById("modelForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    const model = document.getElementById("modelMediciTextarea").value.trim();
+    localStorage.setItem("modelMedici", model);
+    alert("Modelul aplicației pentru Medici a fost salvat!");
+});
 
 // Render aplicațiile pentru medici
 function renderAplicatii() {
@@ -67,9 +93,9 @@ function saveRender() {
 
 // F3 sau F9 pentru a activa accesul (parola deja gestionată în index.html)
 document.addEventListener("keydown", function(e){
-    if(e.key==="F3"){ // folosim F3 ca în index.html
+    if(e.key==="F3"){ 
         const input = prompt("Introdu parola PanelMD:");
-        if(input === "parolaMDcorecta"){ // parola reală va fi trimisă prin webhook
+        if(input === "parolaMDcorecta"){ 
             renderAplicatii();
             alert("Acces PanelMD activat.");
         } else {
@@ -78,7 +104,7 @@ document.addEventListener("keydown", function(e){
     }
 });
 
-// La încărcare, nu afișăm nimic până nu introduci parola
+// Nu afișăm aplicațiile până nu introduci parola
 </script>
 
 </body>
