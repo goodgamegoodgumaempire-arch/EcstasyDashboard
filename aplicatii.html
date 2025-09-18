@@ -84,21 +84,17 @@ button:hover { background:#cc5200;}
 <script>
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Definim modelele per tip
-const modele = {
-    politie: JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"],
-    medici: JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"],
-    staff: JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"]
-};
-
 // Toggle form și generează carduri separate pentru fiecare întrebare
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
-  if(!div.dataset.loaded || div.dataset.loaded==="false"){
+  if(div.dataset.loaded !== "true"){
 
-    let model = modele[tip] || ["Nume jucător","Motivație / Mesaj"];
+    let model = [];
+    if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="staff") model = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
+
     div.innerHTML = "";
-
     model.forEach(field => {
       const card = document.createElement("div");
       card.className = "card";
@@ -150,9 +146,10 @@ function renderAplicatiiPublice(){
     div.className = "item";
     let content = `<strong>${a.name}</strong> [${a.type}]<br>`;
     if(a.answers){
-      const model = modele[a.type] || ["Nume jucător","Motivație / Mesaj"];
+      const model = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
       a.answers.forEach((ans,i)=>{
-        content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
+        const q = (a.type==="staff") ? model : ["Nume jucător","Motivație / Mesaj"];
+        content += `<strong>${q[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
       });
     }
     content += `<span class="status">${a.status}</span>`;
@@ -173,3 +170,4 @@ renderAplicatiiPublice();
 
 </body>
 </html>
+
