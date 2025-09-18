@@ -1,248 +1,83 @@
-<!DOCTYPE html>
-<html lang="ro">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PanelPD - Poliție ECSTASY</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<style>
-body {
-  margin:0;
-  font-family:'Roboto',sans-serif;
-  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
-  background-size:400% 400%;
-  animation: gradientBG 20s ease infinite;
-  color:#fff;
-  min-height:100vh;
-}
-@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-
-.sidebar {
-  width:220px;
-  background: rgba(17,17,17,0.85);
-  padding:20px;
-  position:fixed;
-  height:100%;
-  box-shadow:0 0 10px rgba(0,0,0,0.5);
-}
-.sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
-.sidebar button {
-  display:block; width:100%; margin:5px 0; padding:10px;
-  border:none; border-radius:8px; background:#222; color:#fff;
-  cursor:pointer; font-weight:bold;
-}
-.sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
-
-.main { margin-left:240px; padding:20px; }
-h1,h2 { color:#ff6600; }
-.list { margin-top:20px; max-width:900px; }
-.item {
-  background: rgba(17,17,17,0.7); margin:10px 0; padding:12px;
-  border-radius:8px; display:flex; justify-content:space-between;
-  align-items:center;
-}
-.item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
-.accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
-.reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
-.delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
-.status { font-weight:bold; margin-left:10px; }
-
-select, input, textarea, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
-button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; } button:hover { background:#cc5200; }
-
-.tab { display:none; }
-.tab.active { display:block; }
-</style>
-</head>
-<body>
-
-<div class="sidebar">
-  <h2>Panel Poliție</h2>
-  <button onclick="showTab('members')" class="active">Membri</button>
-  <button onclick="showTab('applications')">Aplicații</button>
-  <button onclick="showTab('sanctions')">Sancțiuni</button>
-</div>
-
-<div class="main">
-  <h1>Panel Poliție</h1>
-
-  <!-- Membri -->
-  <div id="members" class="tab active">
-    <h2>Lista Membri</h2>
-    <form id="memberForm">
-      <input type="text" id="memberName" placeholder="Nume membru" required>
-      <select id="memberStatus">
-        <option value="Activ">Activ</option>
-        <option value="Inactiv">Inactiv</option>
-        <option value="Concediu">Concediu</option>
-      </select>
-      <button type="submit">Adaugă membru</button>
-    </form>
-    <div id="membersList" class="list"></div>
-  </div>
-
-  <!-- Aplicații -->
-  <div id="applications" class="tab">
-    <h2>Aplicații Poliție</h2>
-    <div id="applicationsList" class="list"></div>
-  </div>
-
-  <!-- Sancțiuni -->
-  <div id="sanctions" class="tab">
-    <h2>Sancțiuni Membri</h2>
-    <div id="sanctionsList" class="list"></div>
-  </div>
-
+<!-- SANCȚIUNI -->
+<div id="sanctions" class="tab">
+  <h2>Sancțiuni Membri</h2>
+  <div id="sanctionsList" class="list"></div>
 </div>
 
 <script>
-// --- TAB NAV ---
-function showTab(tabId){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(tabId).classList.add('active');
-  document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-}
-
-// --- MEMBRI ---
-let members = JSON.parse(localStorage.getItem("pdMembers")) || [];
-const membersForm = document.getElementById("memberForm");
-const membersDiv = document.getElementById("membersList");
-
-function renderMembers(){
-  membersDiv.innerHTML="";
-  members.forEach((m,i)=>{
-    const div = document.createElement("div");
-    div.classList.add("item");
-    div.innerHTML = `<div>${m.name} - Status: <strong>${m.status}</strong></div>`;
-    const statusSelect = document.createElement("select");
-    ["Activ","Inactiv","Concediu"].forEach(s=>{
-      const opt = document.createElement("option"); opt.value=s; opt.innerText=s;
-      if(s===m.status) opt.selected=true;
-      statusSelect.appendChild(opt);
-    });
-    statusSelect.onchange = ()=>{ members[i].status=statusSelect.value; saveMembers(); };
-    const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
-    delBtn.onclick = ()=>{ members.splice(i,1); saveMembers(); renderSanctions(); };
-    div.appendChild(statusSelect); div.appendChild(delBtn);
-    membersDiv.appendChild(div);
-  });
-}
-
-membersForm.addEventListener("submit", e=>{
-  e.preventDefault();
-  const name = document.getElementById("memberName").value.trim();
-  const status = document.getElementById("memberStatus").value;
-  if(!name) return;
-  members.push({name,status});
-  saveMembers();
-  membersForm.reset();
-  renderMembers();
-  renderSanctions();
-});
-
-function saveMembers(){
-  localStorage.setItem("pdMembers",JSON.stringify(members));
-  renderMembers();
-}
-
-// --- APLICAȚII ---
-let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
-
-function renderApplications(){
-  const container = document.getElementById("applicationsList");
-  container.innerHTML="";
-  aplicatii.forEach((a,i)=>{
-    if(a.type.toLowerCase()!=="politie") return; // case-insensitive
-    const div = document.createElement("div");
-    div.classList.add("item");
-    let content = `<strong>${a.name}</strong><br>`;
-    if(a.answers){
-      a.answers.forEach((ans,j)=>{
-        content += `Întrebare ${j+1}: ${ans}<br>`;
-      });
-    }
-    content += `Status: <span class="status">${a.status||"În așteptare"}</span>`;
-    div.innerHTML = content;
-
-    const actions = document.createElement("div");
-    actions.classList.add("item-actions");
-
-    const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
-    accept.onclick = ()=>{ a.status="Acceptat"; saveApplications(); };
-
-    const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
-    reject.onclick = ()=>{ a.status="Respins"; saveApplications(); };
-
-    const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
-    del.onclick = ()=>{ aplicatii.splice(i,1); saveApplications(); };
-
-    actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
-    div.appendChild(actions);
-    container.appendChild(div);
-  });
-}
-
-function saveApplications(){
-  localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
-  renderApplications();
-}
-
 // --- SANCȚIUNI ---
 let sanctions = JSON.parse(localStorage.getItem("pdSanctions")) || [];
 
-function renderSanctions(){
+function renderSanctions() {
   const container = document.getElementById("sanctionsList");
-  container.innerHTML="";
-  members.forEach((m,i)=>{
+  container.innerHTML = "";
+
+  members.forEach((m) => {
     const div = document.createElement("div");
     div.classList.add("item");
-    div.innerHTML = `<strong>${m.name}</strong>`;
-    
+
+    // Calcul absențe
+    const memberSanctions = sanctions.filter(s => s.member === m.name);
+    const absenteCount = memberSanctions.filter(s => s.absenta === "Absent la ședință").length;
+
+    div.innerHTML = `<strong>${m.name}</strong> - Absențe: <span class="status">${absenteCount}</span>`;
+
+    // Input pentru adăugare sancțiune
     const input = document.createElement("input");
-    input.type="text"; input.placeholder="Sancțiune / Observație";
-    
+    input.type = "text";
+    input.placeholder = "Sancțiune / Observație";
+
     const selectAbs = document.createElement("select");
-    ["Prezent","Absent la ședință"].forEach(s=>{
-      const opt = document.createElement("option"); opt.value=s; opt.innerText=s;
+    ["Prezent", "Absent la ședință"].forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.innerText = s;
       selectAbs.appendChild(opt);
     });
 
     const addBtn = document.createElement("button");
-    addBtn.className="edit-btn"; addBtn.innerText="Adaugă";
-    addBtn.onclick = ()=>{
-      if(!input.value.trim()) return;
-      sanctions.push({member:m.name,text:input.value.trim(),absenta:selectAbs.value});
-      localStorage.setItem("pdSanctions",JSON.stringify(sanctions));
-      input.value=""; selectAbs.selectedIndex=0;
+    addBtn.className = "edit-btn";
+    addBtn.innerText = "Adaugă";
+    addBtn.onclick = () => {
+      if (!input.value.trim()) return;
+      sanctions.push({
+        member: m.name,
+        text: input.value.trim(),
+        absenta: selectAbs.value
+      });
+      localStorage.setItem("pdSanctions", JSON.stringify(sanctions));
+      input.value = "";
+      selectAbs.selectedIndex = 0;
       renderSanctions();
     };
 
     const sancList = document.createElement("div");
-    sanctions.filter(s=>s.member===m.name).forEach((s,j)=>{
+    memberSanctions.forEach((s) => {
       const sdiv = document.createElement("div");
-      sdiv.style.display="flex"; sdiv.style.justifyContent="space-between"; sdiv.style.marginTop="4px";
-      sdiv.innerHTML=`${s.text} (${s.absenta})`;
-      const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="🗑";
-      delBtn.onclick = ()=>{
-        sanctions.splice(sanctions.indexOf(s),1);
-        localStorage.setItem("pdSanctions",JSON.stringify(sanctions));
+      sdiv.style.display = "flex";
+      sdiv.style.justifyContent = "space-between";
+      sdiv.style.marginTop = "4px";
+      sdiv.innerHTML = `${s.text} (${s.absenta})`;
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-btn";
+      delBtn.innerText = "🗑";
+      delBtn.onclick = () => {
+        sanctions = sanctions.filter(san => san !== s);
+        localStorage.setItem("pdSanctions", JSON.stringify(sanctions));
         renderSanctions();
       };
+
       sdiv.appendChild(delBtn);
       sancList.appendChild(sdiv);
     });
 
-    div.appendChild(input); div.appendChild(selectAbs); div.appendChild(addBtn); div.appendChild(sancList);
+    div.appendChild(input);
+    div.appendChild(selectAbs);
+    div.appendChild(addBtn);
+    div.appendChild(sancList);
+
     container.appendChild(div);
   });
 }
-
-// --- INIT ---
-renderMembers();
-renderApplications();
-renderSanctions();
 </script>
-
-</body>
-</html>
