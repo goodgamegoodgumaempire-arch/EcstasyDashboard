@@ -102,10 +102,27 @@ button:hover { background:#cc5200;}
 <script>
 const aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Arată / ascunde formular
+// Preia modelele aplicațiilor
+const modelPolitie = localStorage.getItem("modelPolitie") || "";
+const modelMedici = localStorage.getItem("modelMedici") || "";
+const modelStaff = localStorage.getItem("modelStaff") || "";
+
+// Arată / ascunde formular și setează modelul
 function toggleForm(tip){
   const div = document.getElementById("form"+tip.charAt(0).toUpperCase()+tip.slice(1));
   div.classList.toggle('hidden');
+
+  if(!div.classList.contains('hidden')){
+    let textarea;
+    if(tip==='politie') textarea = document.getElementById("mesajPolitie");
+    if(tip==='medici') textarea = document.getElementById("mesajMedici");
+    if(tip==='staff') textarea = document.getElementById("mesajStaff");
+
+    // Pune modelul în textarea dacă există
+    if(tip==='politie' && modelPolitie) textarea.value = modelPolitie;
+    if(tip==='medici' && modelMedici) textarea.value = modelMedici;
+    if(tip==='staff' && modelStaff) textarea.value = modelStaff;
+  }
 }
 
 // Trimite aplicație
