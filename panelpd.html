@@ -15,47 +15,107 @@ h1,h2 { color:#ff6600; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
 .status { font-weight:bold; margin-left:10px;}
+form input { width:100%; margin:5px 0; padding:8px; border-radius:8px; border:none; background:#222; color:#fff;}
+form button { margin-top:10px; padding:10px; border:none; border-radius:8px; background:#ff6600; color:#fff; font-weight:bold; cursor:pointer; }
+form button:hover { background:#cc5200; }
 </style>
 </head>
 <body>
 
 <h1>PanelPD - Poliție</h1>
+
+<h2>Setează Model Aplicație</h2>
+<form id="modelForm">
+    <div id="modelFields">
+        <!-- câmpurile pentru model vor fi adăugate din JS -->
+    </div>
+    <button type="submit">Salvează Model</button>
+</form>
+
+<h2>Aplicații Poliție</h2>
 <div id="applications" class="list"></div>
 
 <script>
-// --- Preluare aplicații din localStorage ---
+// --- Preluare aplicații și model ---
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+let modelPolitie = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
 
-// Render aplicații de tip "politie"
-function renderAplicatii() {
+// --- Funcții model ---
+// Construiește inputurile pentru model
+function renderModelInputs(){
+    const container = document.getElementById("modelFields");
+    container.innerHTML="";
+    modelPolitie.forEach((field,index)=>{
+        const input = document.createElement("input");
+        input.type="text";
+        input.value = field;
+        input.placeholder = "Întrebare " + (index+1);
+        input.id = `modelField_${index}`;
+        container.appendChild(input);
+    });
+    // Adăugăm buton pentru a adăuga întrebări noi
+    const addBtn = document.createElement("button");
+    addBtn.type="button";
+    addBtn.innerText="Adaugă întrebare";
+    addBtn.onclick = ()=>{
+        modelPolitie.push("");
+        renderModelInputs();
+    };
+    container.appendChild(addBtn);
+}
+
+document.getElementById("modelForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    // Preluăm valorile din inputuri
+    const inputs = document.querySelectorAll("#modelFields input");
+    modelPolitie = Array.from(inputs).map(i=>i.value.trim()).filter(i=>i!=="");
+    localStorage.setItem("modelPolitie", JSON.stringify(modelPolitie));
+    alert("Modelul aplicației Poliție a fost salvat!");
+    renderAplicatiiForm();
+});
+
+// --- Render aplicații ---
+// Funcție pentru aplicațiile Poliție
+function renderAplicatiiForm(){
     const container = document.getElementById("applications");
     container.innerHTML="";
     aplicatii.forEach((a,i)=>{
-        if(a.type!=="politie") return; // doar poliție
-        const div=document.createElement("div");
+        if(a.type!=="politie") return;
+        const div = document.createElement("div");
         div.classList.add("item");
         div.innerHTML = `<div><strong>${a.name}</strong> - ${a.message} <span class="status">${a.status||"În așteptare"}</span></div>`;
-        const actions=document.createElement("div");
+        const actions = document.createElement("div");
         actions.classList.add("item-actions");
 
-        const accept=document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{ a.status="Acceptat"; saveRender(); }
-        const reject=document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge"; reject.onclick=()=>{ a.status="Respins"; saveRender(); }
-        const del=document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge"; del.onclick=()=>{ aplicatii.splice(i,1); saveRender(); }
+        const accept = document.createElement("button");
+        accept.className="accept-btn"; accept.innerText="Acceptă"; 
+        accept.onclick=()=>{ a.status="Acceptat"; saveRender(); };
 
-        actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
+        const reject = document.createElement("button");
+        reject.className="reject-btn"; reject.innerText="Respinge";
+        reject.onclick=()=>{ a.status="Respins"; saveRender(); };
+
+        const del = document.createElement("button");
+        del.className="delete-btn"; del.innerText="Șterge";
+        del.onclick=()=>{ aplicatii.splice(i,1); saveRender(); };
+
+        actions.appendChild(accept);
+        actions.appendChild(reject);
+        actions.appendChild(del);
         div.appendChild(actions);
         container.appendChild(div);
     });
 }
 
-// Salvează modificările și re-randează
-function saveRender(){ 
-    localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); 
-    renderAplicatii(); 
+// Salvează și rerandează
+function saveRender(){
+    localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
+    renderAplicatiiForm();
 }
 
-// La deschidere panel, afisează aplicațiile
-renderAplicatii();
+// Inițializare
+renderModelInputs();
+renderAplicatiiForm();
 </script>
 
 </body>
