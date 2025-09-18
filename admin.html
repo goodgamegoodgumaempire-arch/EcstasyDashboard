@@ -6,37 +6,17 @@
 <title>Admin Panel - G4A Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
+body {
+  margin:0; font-family:'Roboto',sans-serif;
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b1c17);
+  background-size:400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color:#fff; min-height:100vh;
+}
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-h1,h2 { color:#ff6600; margin-bottom:10px; }
-.list { max-width:900px; margin-top:20px;}
-.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; flex-direction:column;}
-.item-actions { margin-top:8px; }
-.item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
-.accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
-.reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
-.delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
-.status { font-weight:bold; margin-left:10px; }
-
-select, input, textarea, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
-button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; } button:hover { background:#cc5200; }
-form textarea { width:100%; height:100px; padding:10px; border-radius:8px; border:none; background:#222; color:#fff; margin:5px 0; }
-form button.save-model { background:#ff6600; margin-top:10px; width:auto; padding:10px 20px; border:none; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; }
-form button.save-model:hover { background:#cc5200; }
-
-.tab { display:none; }
-.tab.active { display:block; }
-
-/* Sidebar */
 .sidebar {
-  width:220px;
-  background: rgba(17,17,17,0.95);
-  padding:20px;
-  position:fixed;
-  top:0; left:0;
-  height:100%;
-  box-shadow:0 0 10px rgba(0,0,0,0.5);
-  z-index:1000;
+  width:220px; background: rgba(17,17,17,0.85);
+  padding:20px; position:fixed; height:100%; box-shadow:0 0 10px rgba(0,0,0,0.5);
 }
 .sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
 .sidebar button {
@@ -45,49 +25,59 @@ form button.save-model:hover { background:#cc5200; }
   cursor:pointer; font-weight:bold;
 }
 .sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
-
-/* Main content */
-.main {
-  margin-left:240px;
-  padding:20px;
+.main { margin-left:240px; padding:20px; }
+h1,h2 { color:#ff6600; }
+.list { margin-top:20px; max-width:900px; }
+.item {
+  background: rgba(17,17,17,0.7); margin:10px 0; padding:12px;
+  border-radius:8px; display:flex; flex-direction:column;
 }
-
-.list { overflow-x:hidden; overflow-y:auto; max-height:70vh; padding-right:10px; }
+.item-actions { margin-top:8px; display:flex; gap:6px; }
+.item-actions button { padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+.accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
+.reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
+.delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
+.status { font-weight:bold; margin-left:10px; }
+.tab { display:none; }
+.tab.active { display:block; }
 </style>
 </head>
 <body>
 
 <div class="sidebar">
   <h2>Admin Panel</h2>
-  <button onclick="showTab('staffApplications')" class="active">Aplicații Staff</button>
-  <button onclick="showTab('sanctions')">Sancțiuni</button>
-  <button onclick="showTab('applicationModelCard')">Setare Model</button>
+  <button onclick="showTab('applicationsTab')" class="active">Aplicații Staff</button>
+  <button onclick="showTab('reclamatiiJucatori')">Reclamații Jucători</button>
+  <button onclick="showTab('reclamatiiMafii')">Reclamații Mafii</button>
+  <button onclick="showTab('reclamatiiStaff')">Reclamații Staff</button>
 </div>
 
 <div class="main">
-<h1>Admin Panel - Staff</h1>
+  <h1>Admin Panel</h1>
 
-<!-- Aplicații Staff -->
-<div id="staffApplications" class="tab active">
-  <h2>Aplicații Staff</h2>
-  <div id="applicationsList" class="list"></div>
-</div>
+  <!-- Aplicații Staff -->
+  <div id="applicationsTab" class="tab active">
+    <h2>Aplicații Staff</h2>
+    <div id="applicationsList" class="list"></div>
+  </div>
 
-<!-- Sancțiuni -->
-<div id="sanctions" class="tab">
-  <h2>Sancțiuni Staff</h2>
-  <div id="sanctionsList" class="list"></div>
-</div>
+  <!-- Reclamații Jucători -->
+  <div id="reclamatiiJucatori" class="tab">
+    <h2>Reclamații Jucători</h2>
+    <div id="reclamatiiJucList" class="list"></div>
+  </div>
 
-<!-- Setare Model Aplicație Staff -->
-<div id="applicationModelCard" class="tab">
-  <h2>Setează Model Aplicație Staff</h2>
-  <form id="modelForm">
-      <textarea id="modelStaffTextarea" placeholder="Scrie fiecare întrebare pe câte un rând..."></textarea>
-      <button type="submit" class="save-model">Salvează Model</button>
-  </form>
-</div>
+  <!-- Reclamații Mafii -->
+  <div id="reclamatiiMafii" class="tab">
+    <h2>Reclamații Mafii</h2>
+    <div id="reclamatiiMafList" class="list"></div>
+  </div>
 
+  <!-- Reclamații Staff -->
+  <div id="reclamatiiStaff" class="tab">
+    <h2>Reclamații Staff</h2>
+    <div id="reclamatiiStaffList" class="list"></div>
+  </div>
 </div>
 
 <script>
@@ -102,63 +92,74 @@ function showTab(tabId){
 // --- APLICAȚII STAFF ---
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-function renderStaffApplications(){
+function renderAplicatiiStaff(){
   const container = document.getElementById("applicationsList");
   container.innerHTML = "";
-
   aplicatii.forEach((a,i)=>{
-    if(a.type !== "staffNou") return;
-
+    if(a.type!=="staffNou") return;
     const div = document.createElement("div");
-    div.classList.add("item");
-
+    div.className="item";
+    const model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
     let content = `<strong>${a.name}</strong><br>`;
     if(a.answers){
-      a.answers.forEach((ans,j)=>{
-        content += `Întrebare ${j+1}: ${ans}<br>`;
-      });
+      a.answers.forEach((ans,j)=>{ content += `<strong>${model[j]}:</strong> ${ans}<br>`; });
     }
-    content += `Status: <span class="status">${a.status || "În așteptare"}</span>`;
-    div.innerHTML = content;
-
-    const actions = document.createElement("div");
-    actions.classList.add("item-actions");
-
+    content += `<span class="status">${a.status||"În așteptare"}</span>`;
+    
+    const actions = document.createElement("div"); actions.className="item-actions";
     const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
-    accept.onclick = ()=>{ a.status="Acceptat"; saveStaffApplications(); };
-
+    accept.onclick = ()=>{ a.status="Acceptat"; saveAplicatiiStaff(); };
     const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
-    reject.onclick = ()=>{ a.status="Respins"; saveStaffApplications(); };
-
+    reject.onclick = ()=>{ a.status="Respins"; saveAplicatiiStaff(); };
     const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
-    del.onclick = ()=>{ aplicatii.splice(i,1); saveStaffApplications(); };
-
+    del.onclick = ()=>{ aplicatii.splice(i,1); saveAplicatiiStaff(); };
     actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
-    div.appendChild(actions);
 
+    div.innerHTML = content;
+    div.appendChild(actions);
     container.appendChild(div);
   });
 }
 
-function saveStaffApplications(){
-  localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
-  renderStaffApplications();
+function saveAplicatiiStaff(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatiiStaff(); }
+
+// --- RECLAMAȚII ---
+let reclamatiiJuc = JSON.parse(localStorage.getItem("reclamatiiJuc")) || [];
+let reclamatiiMaf = JSON.parse(localStorage.getItem("reclamatiiMaf")) || [];
+let reclamatiiStaff = JSON.parse(localStorage.getItem("reclamatiiStaff")) || [];
+
+function renderReclamatii(containerId, arr){
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  arr.forEach((r,i)=>{
+    const div = document.createElement("div");
+    div.className="item";
+    div.innerHTML = `<strong>${r.from}</strong> -> <strong>${r.target}</strong><br>${r.message}<br><span class="status">${r.status||"În așteptare"}</span>`;
+    const actions = document.createElement("div"); actions.className="item-actions";
+    const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
+    accept.onclick = ()=>{ r.status="Acceptat"; saveReclamatii(); };
+    const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
+    reject.onclick = ()=>{ r.status="Respins"; saveReclamatii(); };
+    const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
+    del.onclick = ()=>{ arr.splice(i,1); saveReclamatii(); };
+    actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
+    div.appendChild(actions);
+    container.appendChild(div);
+  });
 }
 
-// --- MODEL APLICAȚIE STAFF ---
-let modelStaff = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
-document.getElementById("modelStaffTextarea").value = modelStaff.join("\n");
-
-document.getElementById("modelForm").addEventListener("submit", function(e){
-  e.preventDefault();
-  const text = document.getElementById("modelStaffTextarea").value.trim();
-  modelStaff = text.split("\n").map(t=>t.trim()).filter(t=>t!=="");
-  localStorage.setItem("modelStaff", JSON.stringify(modelStaff));
-  alert("Modelul aplicației Staff a fost salvat!");
-});
+function saveReclamatii(){
+  localStorage.setItem("reclamatiiJuc",JSON.stringify(reclamatiiJuc));
+  localStorage.setItem("reclamatiiMaf",JSON.stringify(reclamatiiMaf));
+  localStorage.setItem("reclamatiiStaff",JSON.stringify(reclamatiiStaff));
+  renderReclamatii("reclamatiiJucList",reclamatiiJuc);
+  renderReclamatii("reclamatiiMafList",reclamatiiMaf);
+  renderReclamatii("reclamatiiStaffList",reclamatiiStaff);
+}
 
 // --- INIT ---
-renderStaffApplications();
+renderAplicatiiStaff();
+saveReclamatii();
 </script>
 
 </body>
