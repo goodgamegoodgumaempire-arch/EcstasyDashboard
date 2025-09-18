@@ -92,23 +92,31 @@ let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
   div.classList.toggle('hidden');
-
   if(div.dataset.loaded === "true") return;
 
-  // Preia modelul din localStorage
-  const modele = JSON.parse(localStorage.getItem("modeleAplicatii")) || {};
-  const campuri = modele[tip] || ["Nume jucător","Motivație / Mesaj"];
+  // Preia modelul pentru tipul respectiv
+  const modele = {
+    politie: JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"],
+    medici: JSON.parse(localStorage.getItem("modelMedici"))?.split("|") || ["Nume jucător","Motivație / Mesaj"],
+    staff: JSON.parse(localStorage.getItem("modelStaff"))?.split("|") || ["Nume jucător","Motivație / Mesaj"]
+  };
 
+  const campuri = modele[tip];
   campuri.forEach(field => {
-    const el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
-    el.placeholder = field;
+    const card = document.createElement("div");
+    card.className = "card";
+    const label = document.createElement("label");
+    label.innerText = field;
+    let el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
     el.dataset.field = field;
-    div.appendChild(el);
+    card.appendChild(label);
+    card.appendChild(el);
+    div.appendChild(card);
   });
 
   const submitBtn = document.createElement("button");
   submitBtn.innerText = "Trimite aplicație";
-  submitBtn.onclick = () => trimiteAplicatie(tip);
+  submitBtn.onclick = ()=> trimiteAplicatie(tip);
   div.appendChild(submitBtn);
 
   div.dataset.loaded = "true";
@@ -118,15 +126,13 @@ function toggleForm(tip){
 function trimiteAplicatie(tip){
   const div = document.getElementById("form"+tip);
   const inputs = Array.from(div.querySelectorAll("input,textarea"));
-  const values = inputs.map(i=>i.value.trim());
-  if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
+  const answers = inputs.map(i=>i.value.trim());
+  if(answers.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  const message = values.join(" | "); // combinăm toate câmpurile
-  aplicatii.push({type:tip, name:values[0], message:message, status:"În așteptare"});
+  aplicatii.push({type:tip, name:answers[0], answers:answers, status:"În așteptare"});
   localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
   renderAplicatii();
 
-  // Resetează form
   inputs.forEach(i=>i.value="");
   div.classList.add('hidden');
 }
@@ -138,7 +144,15 @@ function renderAplicatii(){
   aplicatii.forEach(a=>{
     const div = document.createElement("div");
     div.className = "item";
-    div.innerHTML = `<strong>${a.name}</strong> [${a.type}]<br>${a.message}<br><span class="status">${a.status}</span>`;
+    let content = `<strong>${a.name}</strong> [${a.type}]<br>`;
+    a.answers.forEach((ans,i)=>{
+      let field = a.type==="politie" ? JSON.parse(localStorage.getItem("modelPolitie"))[i]
+               : a.type==="medici" ? JSON.parse(localStorage.getItem("modelMedici"))?.split("|")[i]
+               : JSON.parse(localStorage.getItem("modelStaff"))?.split("|")[i];
+      content += `<strong>${field || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
+    });
+    content += `<span class="status">${a.status}</span>`;
+    div.innerHTML = content;
     container.appendChild(div);
   });
 }
