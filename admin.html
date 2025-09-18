@@ -36,6 +36,7 @@ form button:hover { background:#cc5200; }
   <h2>Admin Panel</h2>
   <button onclick="showTab('applicationsTab')" class="active">Aplicații Staff</button>
   <button onclick="showTab('staffTab')">Staff Manager</button>
+  <button onclick="resetAllData()">RESET ALL DATA</button>
   <button onclick="showTab('sanctionsTab')">Sancțiuni</button>
   <button onclick="showTab('modelTab')">Model Aplicație</button>
   <button onclick="showTab('updatesTab')">Update-uri</button>
@@ -274,12 +275,108 @@ function renderAplicatiiStaff(){
 }
 function saveAplicatiiStaff(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatiiStaff(); }
 
+// --- UPDATE-URI ---
+let updates = JSON.parse(localStorage.getItem("updates")) || [];
+const updateForm = document.getElementById("updateForm");
+const updatesList = document.getElementById("updatesList");
+
+function renderUpdates(){
+  updatesList.innerHTML = "";
+  updates.forEach((u,i)=>{
+    const div = document.createElement("div");
+    div.className="item";
+    div.innerHTML=`<strong>${u.title}</strong><br>${u.message}<br>${u.img||""}`;
+    const delBtn = document.createElement("button");
+    delBtn.className="delete-btn";
+    delBtn.innerText="Șterge";
+    delBtn.onclick=()=>{ updates.splice(i,1); saveUpdates(); };
+    div.appendChild(delBtn);
+    updatesList.appendChild(div);
+  });
+}
+
+function saveUpdates(){
+  localStorage.setItem("updates", JSON.stringify(updates));
+  renderUpdates();
+}
+
+updateForm.addEventListener("submit", e=>{
+  e.preventDefault();
+  const title=document.getElementById("updateTitle").value.trim();
+  const message=document.getElementById("updateMessage").value.trim();
+  const img=document.getElementById("updateImg").value.trim();
+  if(!title||!message) return;
+  updates.push({title,message,img});
+  updateForm.reset();
+  saveUpdates();
+});
+
+// --- SNEAK PEEKS ---
+let sneakPeeks = JSON.parse(localStorage.getItem("sneakPeeks")) || [];
+const sneakForm = document.getElementById("sneakForm");
+const sneakList = document.getElementById("sneakList");
+
+function renderSneaks(){
+  sneakList.innerHTML="";
+  sneakPeeks.forEach((sp,i)=>{
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML=`<strong>${sp.type.toUpperCase()}</strong><br>${sp.message}<br>${sp.url||""}`;
+    const delBtn=document.createElement("button");
+    delBtn.className="delete-btn";
+    delBtn.innerText="Șterge";
+    delBtn.onclick=()=>{ sneakPeeks.splice(i,1); saveSneaks(); };
+    div.appendChild(delBtn);
+    sneakList.appendChild(div);
+  });
+}
+
+function saveSneaks(){
+  localStorage.setItem("sneakPeeks", JSON.stringify(sneakPeeks));
+  renderSneaks();
+}
+
+sneakForm.addEventListener("submit", e=>{
+  e.preventDefault();
+  const message=document.getElementById("sneakMessage").value.trim();
+  const url=document.getElementById("sneakUrl").value.trim();
+  const type=document.getElementById("sneakType").value;
+  if(!message && !url) return;
+  sneakPeeks.push({message,url,type});
+  sneakForm.reset();
+  saveSneaks();
+});
+
 // --- INIT ---
 renderAplicatiiStaff();
 renderStaff();
 renderSanctions();
 renderModel();
+renderUpdates();
+renderSneaks();
 
+</script>
+// --- RESETARE DATE ---
+function resetAllData(){
+  if(!confirm("Ești sigur că vrei să ștergi toate datele?")) return;
+  localStorage.removeItem("staffMembers");
+  localStorage.removeItem("aplicatii");
+  localStorage.removeItem("updates");
+  localStorage.removeItem("sneakPeeks");
+  localStorage.removeItem("sanctions");
+  // Reinițializează toate listele vizuale
+  staffMembers = [];
+  aplicatii = [];
+  updates = [];
+  sneakPeeks = [];
+  sanctions = [];
+  renderStaff();
+  renderAplicatiiStaff();
+  renderUpdates();
+  renderSneaks();
+  renderSanctions();
+  alert("Toate datele au fost resetate!");
+}
 </script>
 </body>
 </html>
