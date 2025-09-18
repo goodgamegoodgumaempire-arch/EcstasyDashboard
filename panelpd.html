@@ -65,7 +65,7 @@ form button.save-model:hover { background:#cc5200; }
   <button onclick="showTab('applications')">Aplicații</button>
   <button onclick="showTab('sanctions')">Sancțiuni</button>
   <button onclick="showTab('applicationModelCard')">Setare Model Aplicație</button>
-  <button onclick="showTab('reclamatiiPolitie')">Reclamații Poliție</button>
+  <button onclick="showTab('reclamatiiPolitieTab')">Reclamații Poliție</button>
 </div>
 
 <div class="main">
@@ -108,30 +108,11 @@ form button.save-model:hover { background:#cc5200; }
     </form>
   </div>
 
-// --- RECLAMAȚII POLIȚIE ---
-let reclamatiiPolitie = JSON.parse(localStorage.getItem("reclamatiiPolitie")) || [];
-const reclamatiiList = document.getElementById("reclamatiiList");
-
-function renderReclamatii(){
-  reclamatiiList.innerHTML = "";
-  reclamatiiPolitie.forEach((r,i)=>{
-    const div = document.createElement("div");
-    div.classList.add("item");
-    div.innerHTML = `<strong>De la:</strong> ${r.from}<br>${r.message}`;
-    const delBtn = document.createElement("button");
-    delBtn.className = "delete-btn";
-    delBtn.innerText = "Șterge";
-    delBtn.onclick = ()=>{
-      reclamatiiPolitie.splice(i,1);
-      localStorage.setItem("reclamatiiPolitie", JSON.stringify(reclamatiiPolitie));
-      renderReclamatii();
-    };
-    div.appendChild(delBtn);
-    reclamatiiList.appendChild(div);
-  });
-}
-
-renderReclamatii();
+  <!-- Reclamații Poliție -->
+  <div id="reclamatiiPolitieTab" class="tab">
+    <h2>Reclamații Poliție</h2>
+    <div id="reclamatiiPolitieList" class="list"></div>
+  </div>
 
 </div>
 
@@ -157,7 +138,9 @@ function renderMembers(){
     div.innerHTML = `<div>${m.name} - ${m.rank} - Status: <strong>${m.status}</strong></div>`;
 
     const rankInput = document.createElement("input");
-    rankInput.type = "text"; rankInput.value = m.rank; rankInput.style.marginTop="5px";
+    rankInput.type = "text";
+    rankInput.value = m.rank;
+    rankInput.style.marginTop = "5px";
     rankInput.onchange = ()=>{ members[i].rank = rankInput.value.trim(); saveMembers(); };
 
     const statusSelect = document.createElement("select");
@@ -169,9 +152,15 @@ function renderMembers(){
     statusSelect.onchange = ()=>{ members[i].status=statusSelect.value; saveMembers(); };
 
     const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
-    delBtn.onclick = ()=>{ members.splice(i,1); saveMembers(); renderSanctions(); };
+    delBtn.onclick = ()=>{
+      members.splice(i,1);
+      saveMembers();
+      renderSanctions();
+    };
 
-    div.appendChild(rankInput); div.appendChild(statusSelect); div.appendChild(delBtn);
+    div.appendChild(rankInput);
+    div.appendChild(statusSelect);
+    div.appendChild(delBtn);
     membersDiv.appendChild(div);
   });
 }
@@ -201,26 +190,39 @@ function renderApplications(){
   container.innerHTML="";
   aplicatii.forEach((a,i)=>{
     if(a.type.toLowerCase()!=="politie") return;
-    const div = document.createElement("div"); div.classList.add("item");
+    const div = document.createElement("div");
+    div.classList.add("item");
     let content = `<strong>${a.name}</strong><br>`;
-    if(a.answers){ a.answers.forEach((ans,j)=>{ content += `Întrebare ${j+1}: ${ans}<br>`; }); }
+    if(a.answers){
+      a.answers.forEach((ans,j)=>{
+        content += `Întrebare ${j+1}: ${ans}<br>`;
+      });
+    }
     content += `Status: <span class="status">${a.status||"În așteptare"}</span>`;
     div.innerHTML = content;
 
-    const actions = document.createElement("div"); actions.classList.add("item-actions");
+    const actions = document.createElement("div");
+    actions.classList.add("item-actions");
+
     const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
     accept.onclick = ()=>{ a.status="Acceptat"; saveApplications(); };
+
     const reject = document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
     reject.onclick = ()=>{ a.status="Respins"; saveApplications(); };
+
     const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
     del.onclick = ()=>{ aplicatii.splice(i,1); saveApplications(); };
 
     actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
-    div.appendChild(actions); container.appendChild(div);
+    div.appendChild(actions);
+    container.appendChild(div);
   });
 }
 
-function saveApplications(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderApplications(); }
+function saveApplications(){
+  localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
+  renderApplications();
+}
 
 // --- SANCȚIUNI ---
 let sanctions = JSON.parse(localStorage.getItem("pdSanctions")) || [];
@@ -228,37 +230,70 @@ let sanctions = JSON.parse(localStorage.getItem("pdSanctions")) || [];
 function renderSanctions() {
   const container = document.getElementById("sanctionsList");
   container.innerHTML = "";
+
   members.forEach((m) => {
-    const div = document.createElement("div"); div.classList.add("item");
+    const div = document.createElement("div");
+    div.classList.add("item");
+
     const memberSanctions = sanctions.filter(s => s.member === m.name);
     const absenteCount = memberSanctions.filter(s => s.absenta === "Absent la ședință").length;
+
     div.innerHTML = `<strong>${m.name} (${m.rank})</strong> - Absențe: <span class="status">${absenteCount}</span>`;
 
-    const input = document.createElement("input"); input.type="text"; input.placeholder="Sancțiune / Observație";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = "Sancțiune / Observație";
+
     const selectAbs = document.createElement("select");
     ["Prezent", "Absent la ședință"].forEach(s => {
-      const opt = document.createElement("option"); opt.value = s; opt.innerText = s; selectAbs.appendChild(opt);
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.innerText = s;
+      selectAbs.appendChild(opt);
     });
-    selectAbs.onchange = ()=>{}; // optional
 
-    const addBtn = document.createElement("button"); addBtn.className="edit-btn"; addBtn.innerText="Adaugă";
-    addBtn.onclick = ()=>{
-      if(!input.value.trim()) return;
-      sanctions.push({ member:m.name, text:input.value.trim(), absenta:selectAbs.value });
+    const addBtn = document.createElement("button");
+    addBtn.className = "edit-btn";
+    addBtn.innerText = "Adaugă";
+    addBtn.onclick = () => {
+      if (!input.value.trim()) return;
+      sanctions.push({
+        member: m.name,
+        text: input.value.trim(),
+        absenta: selectAbs.value
+      });
       localStorage.setItem("pdSanctions", JSON.stringify(sanctions));
-      input.value=""; selectAbs.selectedIndex=0; renderSanctions();
+      input.value = "";
+      selectAbs.selectedIndex = 0;
+      renderSanctions();
     };
 
     const sancList = document.createElement("div");
     memberSanctions.forEach((s) => {
-      const sdiv = document.createElement("div"); sdiv.style.display="flex"; sdiv.style.justifyContent="space-between"; sdiv.style.marginTop="4px";
+      const sdiv = document.createElement("div");
+      sdiv.style.display = "flex";
+      sdiv.style.justifyContent = "space-between";
+      sdiv.style.marginTop = "4px";
       sdiv.innerHTML = `${s.text} (${s.absenta})`;
-      const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="🗑";
-      delBtn.onclick = ()=>{ sanctions = sanctions.filter(san => san!==s); localStorage.setItem("pdSanctions",JSON.stringify(sanctions)); renderSanctions(); };
-      sdiv.appendChild(delBtn); sancList.appendChild(sdiv);
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-btn";
+      delBtn.innerText = "🗑";
+      delBtn.onclick = () => {
+        sanctions = sanctions.filter(san => san !== s);
+        localStorage.setItem("pdSanctions", JSON.stringify(sanctions));
+        renderSanctions();
+      };
+
+      sdiv.appendChild(delBtn);
+      sancList.appendChild(sdiv);
     });
 
-    div.appendChild(input); div.appendChild(selectAbs); div.appendChild(addBtn); div.appendChild(sancList);
+    div.appendChild(input);
+    div.appendChild(selectAbs);
+    div.appendChild(addBtn);
+    div.appendChild(sancList);
+
     container.appendChild(div);
   });
 }
@@ -266,6 +301,7 @@ function renderSanctions() {
 // --- MODEL APLICAȚIE POLIȚIE ---
 let modelPolitie = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător", "Motivație / Mesaj"];
 document.getElementById("modelPolitieTextarea").value = modelPolitie.join("\n");
+
 document.getElementById("modelForm").addEventListener("submit", function(e){
   e.preventDefault();
   const text = document.getElementById("modelPolitieTextarea").value.trim();
@@ -276,42 +312,32 @@ document.getElementById("modelForm").addEventListener("submit", function(e){
 
 // --- RECLAMAȚII POLIȚIE ---
 let reclamatiiPolitie = JSON.parse(localStorage.getItem("reclamatiiPolitie")) || [];
-const reclamatiiForm = document.getElementById("reclamatiiForm");
-const reclamatiiList = document.getElementById("reclamatiiList");
+const reclamatiiPolitieList = document.getElementById("reclamatiiPolitieList");
 
-function renderReclamatii(){
-  reclamatiiList.innerHTML="";
+function renderReclamatiiPolitie(){
+  reclamatiiPolitieList.innerHTML = "";
   reclamatiiPolitie.forEach((r,i)=>{
-    const div = document.createElement("div"); div.classList.add("item");
+    const div = document.createElement("div");
+    div.className = "item";
     div.innerHTML = `<strong>De la:</strong> ${r.from}<br>${r.message}`;
-    const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
-    delBtn.onclick = ()=>{ reclamatiiPolitie.splice(i,1); saveReclamatii(); };
-    div.appendChild(delBtn); reclamatiiList.appendChild(div);
+    const delBtn = document.createElement("button");
+    delBtn.innerText = "Șterge";
+    delBtn.onclick = ()=>{
+      reclamatiiPolitie.splice(i,1);
+      localStorage.setItem("reclamatiiPolitie", JSON.stringify(reclamatiiPolitie));
+      renderReclamatiiPolitie();
+    };
+    div.appendChild(delBtn);
+    reclamatiiPolitieList.appendChild(div);
   });
 }
-
-function saveReclamatii(){
-  localStorage.setItem("reclamatiiPolitie", JSON.stringify(reclamatiiPolitie));
-  renderReclamatii();
-}
-
-reclamatiiForm.addEventListener("submit", e=>{
-  e.preventDefault();
-  const msg = document.getElementById("reclamatiiMessage").value.trim();
-  const from = document.getElementById("reclamatiiFrom").value.trim();
-  if(!msg || !from) return;
-  reclamatiiPolitie.push({message:msg, from});
-  reclamatiiForm.reset();
-  saveReclamatii();
-});
 
 // --- INIT ---
 renderMembers();
 renderApplications();
 renderSanctions();
-renderReclamatii();
+renderReclamatiiPolitie();
 </script>
 
 </body>
 </html>
-
