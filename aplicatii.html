@@ -91,50 +91,56 @@ let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 // Toggle form și generează câmpuri din model
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
-  div.classList.toggle('hidden');
-  if(div.dataset.loaded === "true") return;
 
-  // Preia modelul pentru tipul respectiv
-  const modele = {
-    politie: JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"],
-    medici: JSON.parse(localStorage.getItem("modelMedici"))?.split("|") || ["Nume jucător","Motivație / Mesaj"],
-    staff: JSON.parse(localStorage.getItem("modelStaff"))?.split("|") || ["Nume jucător","Motivație / Mesaj"]
-  };
+  // dacă nu e populat încă, generăm formularul
+  if(div.dataset.loaded !== "true"){
 
-  const campuri = modele[tip];
-  campuri.forEach(field => {
-    const card = document.createElement("div");
-    card.className = "card";
-    const label = document.createElement("label");
-    label.innerText = field;
-    let el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
-    el.dataset.field = field;
-    card.appendChild(label);
-    card.appendChild(el);
-    div.appendChild(card);
-  });
+    // model default dacă nu există în localStorage
+    let model = [];
+    if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici"))?.split("|") || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="staff") model = JSON.parse(localStorage.getItem("modelStaff"))?.split("|") || ["Nume jucător","Motivație / Mesaj"];
 
-  const submitBtn = document.createElement("button");
-  submitBtn.innerText = "Trimite aplicație";
-  submitBtn.onclick = ()=> trimiteAplicatie(tip);
-  div.appendChild(submitBtn);
+    div.innerHTML = ""; // golim înainte
+    model.forEach(field => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const label = document.createElement("label");
+      label.innerText = field;
+      let el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
+      el.dataset.field = field;
+      card.appendChild(label);
+      card.appendChild(el);
+      div.appendChild(card);
+    });
 
-  div.dataset.loaded = "true";
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText = "Trimite aplicație";
+    submitBtn.onclick = ()=> trimiteAplicatie(tip);
+    div.appendChild(submitBtn);
+
+    div.dataset.loaded = "true";
+  }
+
+  // arătăm/ascundem formularul
+  div.style.display = (div.style.display==="block") ? "none" : "block";
 }
 
 // Trimite aplicație
 function trimiteAplicatie(tip){
   const div = document.getElementById("form"+tip);
   const inputs = Array.from(div.querySelectorAll("input,textarea"));
-  const answers = inputs.map(i=>i.value.trim());
-  if(answers.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
+  const values = inputs.map(i=>i.value.trim());
+  if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  aplicatii.push({type:tip, name:answers[0], answers:answers, status:"În așteptare"});
+  const message = values.join(" | "); // combinăm toate câmpurile
+  aplicatii.push({type:tip, name:values[0], message:message, status:"În așteptare"});
   localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
   renderAplicatii();
 
+  // Resetează form
   inputs.forEach(i=>i.value="");
-  div.classList.add('hidden');
+  div.style.display = "none";
 }
 
 // Render aplicații
@@ -144,15 +150,7 @@ function renderAplicatii(){
   aplicatii.forEach(a=>{
     const div = document.createElement("div");
     div.className = "item";
-    let content = `<strong>${a.name}</strong> [${a.type}]<br>`;
-    a.answers.forEach((ans,i)=>{
-      let field = a.type==="politie" ? JSON.parse(localStorage.getItem("modelPolitie"))[i]
-               : a.type==="medici" ? JSON.parse(localStorage.getItem("modelMedici"))?.split("|")[i]
-               : JSON.parse(localStorage.getItem("modelStaff"))?.split("|")[i];
-      content += `<strong>${field || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
-    });
-    content += `<span class="status">${a.status}</span>`;
-    div.innerHTML = content;
+    div.innerHTML = `<strong>${a.name}</strong> [${a.type}]<br>${a.message}<br><span class="status">${a.status}</span>`;
     container.appendChild(div);
   });
 }
