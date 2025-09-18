@@ -6,116 +6,228 @@
 <title>PanelPD - Poliție ECSTASY</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { font-family:'Roboto',sans-serif; background:#0b0c17; color:#fff; min-height:100vh; padding:20px;}
-h1,h2 { color:#ff6600; }
+body { font-family:'Roboto',sans-serif; background:#0b0c17; color:#fff; min-height:100vh; display:flex; margin:0;}
+.sidebar { width:220px; background: rgba(17,17,17,0.8); padding:20px; display:flex; flex-direction:column; height:100vh; }
+.sidebar h2 { color:#ff6600; margin-bottom:20px; text-align:center; }
+.sidebar button { background:none; border:none; color:#fff; padding:12px 10px; margin:5px 0; text-align:left; border-radius:8px; cursor:pointer; font-weight:bold; transition:0.3s;}
+.sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
+.main { flex:1; padding:20px; overflow-y:auto;}
+form input, form select, form textarea { width:100%; margin:5px 0; padding:8px; border-radius:8px; border:none; background:#222; color:#fff;}
+form button { margin-top:10px; padding:10px; border:none; border-radius:8px; background:#ff6600; color:#fff; font-weight:bold; cursor:pointer; }
+form button:hover { background:#cc5200; }
 .list { max-width:900px; margin-top:20px;}
-.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;}
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
 .item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;}
 .accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
-.status { font-weight:bold; margin-left:10px;}
-form input { width:100%; margin:5px 0; padding:8px; border-radius:8px; border:none; background:#222; color:#fff;}
-form button { margin-top:10px; padding:10px; border:none; border-radius:8px; background:#ff6600; color:#fff; font-weight:bold; cursor:pointer; }
-form button:hover { background:#cc5200; }
+.model-card { display:flex; align-items:center; margin-bottom:10px; background: rgba(34,34,34,0.8); padding:8px; border-radius:8px; }
+.model-card input { flex:1; margin-right:10px;}
+.add-btn { margin-top:12px; background:#28a745; color:#fff; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; }
 </style>
 </head>
 <body>
 
-<h1>PanelPD - Poliție</h1>
+<div class="sidebar">
+  <h2>Panel Poliție</h2>
+  <button onclick="showTab('membri')" id="btn-membri" class="active">Membri</button>
+  <button onclick="showTab('sancțiuni')" id="btn-sancțiuni">Sancțiuni</button>
+  <button onclick="showTab('aplicații')" id="btn-aplicații">Aplicații</button>
+  <button onclick="showTab('model')" id="btn-model">Model Aplicație</button>
+</div>
 
-<h2>Setează Model Aplicație</h2>
-<form id="modelForm">
-    <div id="modelFields"></div>
-    <button type="submit">Salvează Model</button>
-</form>
+<div class="main">
+  <h1>Panel Poliție ECSTASY</h1>
 
-<h2>Aplicații Poliție</h2>
-<div id="applications" class="list"></div>
+  <!-- Membri -->
+  <div id="membri" class="tab">
+    <h2>Lista Membri</h2>
+    <form id="membriForm">
+      <input type="text" id="membruName" placeholder="Nume membru" required>
+      <select id="membruStatus" required>
+        <option value="">Selectează status</option>
+        <option value="Activ">Activ</option>
+        <option value="Inactiv">Inactiv</option>
+        <option value="Concediu">Concediu</option>
+      </select>
+      <button type="submit">Adaugă membru</button>
+    </form>
+    <div id="membriList" class="list"></div>
+  </div>
+
+  <!-- Sancțiuni -->
+  <div id="sancțiuni" class="tab" style="display:none;">
+    <h2>Sancțiuni Membri</h2>
+    <div id="sancțiuniList" class="list"></div>
+  </div>
+
+  <!-- Aplicații -->
+  <div id="aplicații" class="tab" style="display:none;">
+    <h2>Aplicații Poliție</h2>
+    <div id="applications" class="list"></div>
+  </div>
+
+  <!-- Model aplicație -->
+  <div id="model" class="tab" style="display:none;">
+    <h2>Setează Model Aplicație</h2>
+    <form id="modelForm">
+      <div id="modelFields"></div>
+      <button type="submit">Salvează Model</button>
+    </form>
+  </div>
+</div>
 
 <script>
-// --- Date inițiale ---
-let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
-let modelPolitie = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
-
-// --- Render inputuri model ---
-function renderModelInputs(){
-    const container = document.getElementById("modelFields");
-    container.innerHTML = "";
-    modelPolitie.forEach((field,index)=>{
-        const input = document.createElement("input");
-        input.type = "text";
-        input.value = field;
-        input.placeholder = "Întrebare " + (index+1);
-        input.id = `modelField_${index}`;
-        container.appendChild(input);
-    });
-
-    const addBtn = document.createElement("button");
-    addBtn.type = "button";
-    addBtn.innerText = "Adaugă întrebare";
-    addBtn.onclick = ()=>{
-        modelPolitie.push("");
-        renderModelInputs();
-    };
-    container.appendChild(addBtn);
+// --- TAB NAV ---
+function showTab(tab){
+  document.querySelectorAll(".tab").forEach(div=>div.style.display="none");
+  document.querySelectorAll(".sidebar button").forEach(btn=>btn.classList.remove("active"));
+  document.getElementById(tab).style.display="block";
+  document.getElementById("btn-"+tab).classList.add("active");
 }
 
-// --- Salvează model ---
-document.getElementById("modelForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    const inputs = document.querySelectorAll("#modelFields input");
-    modelPolitie = Array.from(inputs).map(i=>i.value.trim()).filter(i=>i!=="");
-    localStorage.setItem("modelPolitie", JSON.stringify(modelPolitie));
-    alert("Modelul aplicației Poliție a fost salvat!");
+// --- Membri ---
+let membri = JSON.parse(localStorage.getItem("pdMembri")) || [];
+const membriForm = document.getElementById("membriForm");
+const membriList = document.getElementById("membriList");
+let editIndex = null;
+
+function renderMembri(){
+  membriList.innerHTML="";
+  membri.forEach((m,i)=>{
+    const div = document.createElement("div");
+    div.className="item";
+    div.innerHTML = `<div><strong>${m.name}</strong> - Status: ${m.status}</div>`;
+    const actions = document.createElement("div");
+    const statusSelect = document.createElement("select");
+    ["Activ","Inactiv","Concediu"].forEach(s=>{
+      const option = document.createElement("option");
+      option.value=s; option.innerText=s;
+      if(s===m.status) option.selected=true;
+      statusSelect.appendChild(option);
+    });
+    statusSelect.onchange = ()=>{ m.status = statusSelect.value; saveMembri(); renderSancțiuni(); };
+    const editBtn = document.createElement("button"); editBtn.innerText="Editează"; editBtn.className="accept-btn";
+    editBtn.onclick = ()=>{ document.getElementById("membruName").value=m.name; document.getElementById("membruStatus").value=m.status; editIndex=i; membriForm.querySelector("button").innerText="Salvează"; };
+    const delBtn = document.createElement("button"); delBtn.innerText="Șterge"; delBtn.className="delete-btn";
+    delBtn.onclick = ()=>{ membri.splice(i,1); saveMembri(); renderMembri(); renderSancțiuni(); };
+    actions.appendChild(statusSelect); actions.appendChild(editBtn); actions.appendChild(delBtn);
+    div.appendChild(actions);
+    membriList.appendChild(div);
+  });
+}
+
+membriForm.addEventListener("submit", e=>{
+  e.preventDefault();
+  const name = document.getElementById("membruName").value.trim();
+  const status = document.getElementById("membruStatus").value;
+  if(editIndex===null) membri.push({name,status});
+  else { membri[editIndex]={name,status}; editIndex=null; membriForm.querySelector("button").innerText="Adaugă membru"; }
+  document.getElementById("membruName").value="";
+  document.getElementById("membruStatus").value="";
+  saveMembri(); renderMembri(); renderSancțiuni();
 });
 
-// --- Render aplicații ---
-function renderAplicatii(){
-    const container = document.getElementById("applications");
-    container.innerHTML = "";
-    aplicatii.forEach((a,i)=>{
-        if(a.type !== "politie") return;
-        const div = document.createElement("div");
-        div.classList.add("item");
-        let content = `<div><strong>${a.name}</strong> - Status: ${a.status || "În așteptare"}<br>`;
-        a.answers.forEach((ans,j)=>{
-            content += `<strong>${modelPolitie[j] || "Întrebare "+(j+1)}:</strong> ${ans}<br>`;
-        });
-        content += `</div>`;
-        div.innerHTML = content;
+function saveMembri(){ localStorage.setItem("pdMembri",JSON.stringify(membri)); }
 
-        const actions = document.createElement("div");
-        actions.classList.add("item-actions");
+// --- Sancțiuni ---
+let sanctiuni = JSON.parse(localStorage.getItem("pdSanctiuni")) || [];
 
-        const accept = document.createElement("button");
-        accept.className="accept-btn"; accept.innerText="Acceptă";
-        accept.onclick = ()=>{ a.status="Acceptat"; saveRender(); };
-
-        const reject = document.createElement("button");
-        reject.className="reject-btn"; reject.innerText="Respinge";
-        reject.onclick = ()=>{ a.status="Respins"; saveRender(); };
-
-        const del = document.createElement("button");
-        del.className="delete-btn"; del.innerText="Șterge";
-        del.onclick = ()=>{ aplicatii.splice(i,1); saveRender(); };
-
-        actions.appendChild(accept);
-        actions.appendChild(reject);
-        actions.appendChild(del);
-        div.appendChild(actions);
-        container.appendChild(div);
+function renderSancțiuni(){
+  const container = document.getElementById("sancțiuniList");
+  container.innerHTML="";
+  membri.forEach((m,i)=>{
+    const div = document.createElement("div");
+    div.className="item";
+    div.innerHTML=`<div><strong>${m.name}</strong></div>`;
+    const actions = document.createElement("div");
+    const input = document.createElement("input"); input.placeholder="Introduceți sancțiune";
+    const absenta = document.createElement("select");
+    ["Nicio Absență","Absent Sedință"].forEach(o=>{
+      const option = document.createElement("option"); option.value=o; option.innerText=o;
+      absenta.appendChild(option);
     });
+    const addBtn = document.createElement("button"); addBtn.className="edit-btn"; addBtn.innerText="Adaugă";
+    addBtn.onclick=()=>{
+      const text = input.value.trim();
+      if(text) sanctiuni.push({staffName:m.name,text,absenta:absenta.value});
+      localStorage.setItem("pdSanctiuni",JSON.stringify(sanctiuni));
+      input.value=""; absenta.selectedIndex=0;
+      renderSancțiuni();
+    }
+    const sancList = document.createElement("div"); sancList.style.marginTop="8px";
+    sanctiuni.filter(s=>s.staffName===m.name).forEach((s,j)=>{
+      const span = document.createElement("div"); span.style.display="flex"; span.style.justifyContent="space-between"; span.style.marginTop="4px";
+      span.innerHTML=`<span>${s.text} - ${s.absenta}</span>`;
+      const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="🗑";
+      delBtn.onclick=()=>{ sanctiuni.splice(sanctiuni.indexOf(s),1); localStorage.setItem("pdSanctiuni",JSON.stringify(sanctiuni)); renderSancțiuni(); }
+      span.appendChild(delBtn);
+      sancList.appendChild(span);
+    });
+
+    actions.appendChild(input); actions.appendChild(absenta); actions.appendChild(addBtn);
+    div.appendChild(actions);
+    div.appendChild(sancList);
+    container.appendChild(div);
+  });
 }
 
-function saveRender(){
-    localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
-    renderAplicatii();
+// --- Aplicații ---
+function renderAplicatii(){
+  const container = document.getElementById("applications");
+  container.innerHTML="";
+  aplicatii.forEach((a,i)=>{
+    if(a.type!=="politie") return;
+    const div=document.createElement("div"); div.className="item";
+    let content=`<div><strong>${a.name}</strong> - Status: ${a.status || "În așteptare"}<br>`;
+    if(a.answers){
+      a.answers.forEach((ans,j)=>{
+        content+=`<strong>${modelPolitie[j] || "Întrebare "+(j+1)}:</strong> ${ans}<br>`;
+      });
+    }
+    content+="</div>"; div.innerHTML=content;
+    const actions=document.createElement("div"); actions.className="item-actions";
+    const accept=document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
+    accept.onclick=()=>{ a.status="Acceptat"; saveAplicatii(); };
+    const reject=document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge";
+    reject.onclick=()=>{ a.status="Respins"; saveAplicatii(); };
+    const del=document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
+    del.onclick=()=>{ aplicatii.splice(i,1); saveAplicatii(); };
+    actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
+    div.appendChild(actions);
+    container.appendChild(div);
+  });
 }
 
-// --- Inițializare ---
-renderModelInputs();
-renderAplicatii();
+function saveAplicatii(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatii(); }
+
+// --- Model aplicație ---
+function renderModelInputs(){
+  const container=document.getElementById("modelFields");
+  container.innerHTML="";
+  modelPolitie.forEach((field,index)=>{
+    const wrapper=document.createElement("div"); wrapper.className="model-card";
+    const input=document.createElement("input"); input.value=field;
+    input.oninput=e=>modelPolitie[index]=e.target.value;
+    wrapper.appendChild(input);
+    const delBtn=document.createElement("button"); delBtn.type="button"; delBtn.innerText="🗑"; delBtn.onclick=()=>{ modelPolitie.splice(index,1); renderModelInputs(); };
+    wrapper.appendChild(delBtn);
+    container.appendChild(wrapper);
+  });
+  const addBtn=document.createElement("button"); addBtn.type="button"; addBtn.className="add-btn"; addBtn.innerText="➕ Adaugă întrebare";
+  addBtn.onclick=()=>{ modelPolitie.push(""); renderModelInputs(); };
+  container.appendChild(addBtn);
+}
+
+document.getElementById("modelForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  modelPolitie=modelPolitie.map(f=>f.trim()).filter(f=>f!=="");
+  localStorage.setItem("modelPolitie",JSON.stringify(modelPolitie));
+  alert("Model aplicație Poliție salvat!");
+});
+
+// --- INIT ---
+renderMembri(); renderSancțiuni(); renderAplicatii(); renderModelInputs();
 </script>
 
 </body>
