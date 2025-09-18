@@ -16,22 +16,10 @@ body {
     color:#fff;
     min-height:100vh;
 }
-@keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
 /* Navbar */
-nav {
-    display:flex;
-    align-items:center;
-    background:transparent;
-    padding:10px 40px;
-    border-bottom:1px solid rgba(255,255,255,0.1);
-    position:sticky;
-    top:0;
-    z-index:100;
-}
+nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100; }
 nav img { height:40px; margin-right:50px; }
 nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0; }
 nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s; }
@@ -39,57 +27,24 @@ nav ul li a:hover { color:#ff6600; }
 nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bottom:4px; }
 
 /* Staff Section */
-.staff-section {
-    max-width:1200px;
-    margin: 20px auto;
-    padding: 0 20px;
-}
-.staff-section h2 {
-    color:#ff6600;
-    border-bottom:2px solid #222;
-    padding-bottom:10px;
-    margin-bottom:20px;
-}
+.staff-section { max-width:1200px; margin: 20px auto; padding: 0 20px; }
+.staff-section h2 { color:#ff6600; border-bottom:2px solid #222; padding-bottom:10px; margin-bottom:20px; }
 
 /* Staff Cards Container */
-.staff-cards {
-    display:flex;
-    flex-wrap:wrap;
-    gap:20px;
-}
+.staff-cards { display:flex; flex-wrap:wrap; gap:20px; }
 
 /* Individual Staff Card */
-.staff-card {
-    background: rgba(17,17,17,0.85);
-    border-radius: 10px;
-    padding:15px;
-    width:200px;
-    text-align:center;
-    border:1px solid #333;
-    box-shadow:0 4px 15px rgba(0,0,0,0.5);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-.staff-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0,0,0,0.7);
-}
-.staff-card img {
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    object-fit:cover;
-    margin-bottom:10px;
-}
-.staff-card h3 {
-    margin:5px 0;
-    font-size:1em;
-    color:#fff;
-}
-.staff-card p {
-    margin:0;
-    font-size:0.85em;
-    color:#ccc;
-}
+.staff-card { background: rgba(17,17,17,0.85); border-radius: 10px; padding:15px; width:200px; text-align:center; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s; }
+.staff-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
+.staff-card img { width:80px; height:80px; border-radius:50%; object-fit:cover; margin-bottom:10px; }
+.staff-card h3 { margin:5px 0; font-size:1em; color:#fff; }
+.staff-card p { margin:0; font-size:0.85em; color:#ccc; }
+
+/* Sancțiuni */
+.sanctions-section { max-width:1200px; margin: 40px auto; padding: 0 20px; }
+.sanction-card { background: rgba(17,17,17,0.85); border-radius:10px; padding:15px; margin-bottom:15px; border:1px solid #333; }
+.sanction-card h4 { margin:0 0 10px 0; color:#ff6600; }
+.sanction-card p { margin:2px 0; color:#ccc; font-size:0.9em; }
 </style>
 </head>
 <body>
@@ -103,50 +58,68 @@ nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bot
   </ul>
 </nav>
 
+<!-- Staff Members -->
 <div id="staff-container"></div>
 
+<!-- Sancțiuni -->
+<div class="sanctions-section">
+  <h2>Sancțiuni Staff</h2>
+  <div id="sanctions-container"></div>
+</div>
+
 <script>
-// Preluăm staff-ul din localStorage
+// --- PRELUARE STAFF DIN LOCALSTORAGE ---
 const staffContainer = document.getElementById("staff-container");
-let staffData = JSON.parse(localStorage.getItem("staffMembers")) || [];
+const sanctionsContainer = document.getElementById("sanctions-container");
+
+let staffMembers = JSON.parse(localStorage.getItem("staffMembers")) || [];
+let sanctions = JSON.parse(localStorage.getItem("sanctions")) || [];
 
 // Grupe disponibile
 const groups = ["COMMUNITY OWNERS","CO FOUNDERS","MANAGER STAFF","ADMINISTRATORS","MODERATORS","HELPERS","TRYAL HELPERS"];
 
 // Render staff
-function renderStaff() {
+function renderStaff(){
     staffContainer.innerHTML = "";
-    groups.forEach(group => {
-        const membersInGroup = staffData.filter(member => member.group === group);
-        if(membersInGroup.length === 0) return; // Nu afișa secțiuni goale
-
+    groups.forEach(group=>{
         const section = document.createElement("div");
         section.classList.add("staff-section");
         section.innerHTML = `<h2>${group}</h2><div class="staff-cards"></div>`;
         const cardsContainer = section.querySelector(".staff-cards");
-
-        membersInGroup.forEach(member => {
+        staffMembers.filter(m=>m.group===group).forEach(member=>{
             const card = document.createElement("div");
             card.classList.add("staff-card");
             card.innerHTML = `
-                <img src="${member.img || 'default.png'}" alt="${member.name}">
+                <img src="${member.img||'default.png'}" alt="${member.name}">
                 <h3>${member.name}</h3>
                 <p>Grad: ${member.rank}</p>
             `;
             cardsContainer.appendChild(card);
         });
-
         staffContainer.appendChild(section);
     });
 }
 
-// Re-render la schimbări
-window.addEventListener('storage', () => {
-    staffData = JSON.parse(localStorage.getItem("staffMembers")) || [];
-    renderStaff();
-});
+// Render sancțiuni
+function renderSanctions(){
+    sanctionsContainer.innerHTML="";
+    staffMembers.forEach(member=>{
+        const memberSanctions = sanctions.filter(s=>s.staffName===member.name);
+        if(memberSanctions.length>0){
+            const div = document.createElement("div");
+            div.className="sanction-card";
+            let content = `<h4>${member.name} - ${member.rank}</h4>`;
+            memberSanctions.forEach((s,i)=>{ content+=`<p>Sancțiune ${i+1}: ${s.reason}</p>`; });
+            div.innerHTML = content;
+            sanctionsContainer.appendChild(div);
+        }
+    });
+}
 
+// INIT
 renderStaff();
+renderSanctions();
+
 </script>
 
 </body>
