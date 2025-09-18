@@ -6,13 +6,13 @@
 <title>PanelPD - Poliție ECSTASY</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:'Roboto',sans-serif; background:#0b0c17; color:#fff; min-height:100vh; padding:20px;}
-h1,h2 { color:#ff6600; }
+body { margin:0; font-family:'Roboto',sans-serif; background:#0b0c17; color:#fff; min-height:100vh;}
 .sidebar { width:220px; background: rgba(17,17,17,0.85); padding:20px; position:fixed; height:100%; box-shadow:0 0 10px rgba(0,0,0,0.5);}
 .sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
 .sidebar button { display:block; width:100%; margin:5px 0; padding:10px; border:none; border-radius:8px; background:#222; color:#fff; cursor:pointer; font-weight:bold;}
 .sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000;}
 .main { margin-left:240px; padding:20px; }
+h1,h2 { color:#ff6600; }
 .list { max-width:900px; margin-top:20px; }
 .item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; flex-direction:column; }
 .item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
@@ -20,13 +20,12 @@ h1,h2 { color:#ff6600; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
 .status { font-weight:bold; margin-left:10px; }
-select, input, textarea, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
+input, select, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
 button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; }
 button:hover { background:#cc5200; }
 .tab { display:none; }
 .tab.active { display:block; }
 .member-item { display:flex; justify-content:space-between; align-items:center; padding:6px 12px; border-radius:6px; margin:4px 0; background:#222; }
-.member-item.absent { background:#330000; }
 .sanctions-list { margin-top:6px; padding-left:10px; border-left:2px solid #ff4444; }
 .sanction-item { display:flex; justify-content:space-between; margin-top:4px; padding:4px 8px; background:#111; border-radius:4px; }
 </style>
@@ -43,6 +42,7 @@ button:hover { background:#cc5200; }
 <div class="main">
   <h1>Panel Poliție</h1>
 
+  <!-- Membri -->
   <div id="members" class="tab active">
     <h2>Lista Membri</h2>
     <form id="memberForm">
@@ -58,11 +58,13 @@ button:hover { background:#cc5200; }
     <div id="membersList" class="list"></div>
   </div>
 
+  <!-- Aplicații -->
   <div id="applications" class="tab">
     <h2>Aplicații Poliție</h2>
     <div id="applicationsList" class="list"></div>
   </div>
 
+  <!-- Sancțiuni -->
   <div id="sanctions" class="tab">
     <h2>Sancțiuni Membri</h2>
     <div id="sanctionsList" class="list"></div>
@@ -91,11 +93,7 @@ function renderMembers(){
   membersDiv.innerHTML="";
   members.forEach((m,i)=>{
     const div = document.createElement("div");
-    const memberSanctions = sanctions.filter(s=>s.member===m.name);
-    const absenteCount = memberSanctions.filter(s=>s.absenta!=="Prezent").length;
-
     div.className = "member-item";
-    if(absenteCount>0) div.classList.add("absent");
     div.innerHTML = `<div><strong>${m.name}</strong>, ${m.rank} - Status: <strong>${m.status}</strong></div>`;
 
     const statusSelect = document.createElement("select");
@@ -140,7 +138,7 @@ function renderApplications(){
   aplicatii.forEach((a,i)=>{
     if(a.type!=="politie") return;
     const div = document.createElement("div");
-    div.classList.add("item");
+    div.className = "item";
     let content = `<strong>${a.name}</strong><br>`;
     a.answers.forEach((ans,j)=>{
       content += `Întrebare ${j+1}: ${ans}<br>`;
@@ -149,7 +147,7 @@ function renderApplications(){
     div.innerHTML = content;
 
     const actions = document.createElement("div");
-    actions.classList.add("item-actions");
+    actions.className = "item-actions";
 
     const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
     accept.onclick = ()=>{ a.status="Acceptat"; saveApplications(); };
@@ -179,11 +177,9 @@ function renderSanctions(){
   container.innerHTML="";
   members.forEach((m)=>{
     const div = document.createElement("div");
-    div.classList.add("item");
-
+    div.className = "item";
     const memberSanctions = sanctions.filter(s=>s.member===m.name);
     const absenteCount = memberSanctions.filter(s=>s.absenta!=="Prezent").length;
-
     div.innerHTML = `<strong>${m.name}</strong>, ${m.rank} - Absente: <strong>${absenteCount}</strong>`;
 
     const input = document.createElement("input"); input.type="text"; input.placeholder="Sancțiune / Observație";
