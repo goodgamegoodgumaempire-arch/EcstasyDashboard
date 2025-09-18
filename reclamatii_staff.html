@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reclamații Staff</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body { font-family:'Roboto',sans-serif; background:#111; color:#fff; padding:20px; }
+h1 { color:#ff6600; text-align:center; }
+form input, form textarea, form select { width:100%; padding:10px; margin:5px 0; border-radius:6px; border:none; background:#222; color:#fff; }
+form button { background:#ff6600; color:#fff; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; font-weight:bold; }
+form button:hover { background:#cc5200; }
+.list { margin-top:20px; max-width:800px; }
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; }
+.item button { margin-top:5px; background:#ff4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; }
+</style>
+</head>
+<body>
+<h1>Reclamații Staff</h1>
+<form id="reclamatiiForm">
+  <input type="text" id="numeStaff" placeholder="Nume staff" required>
+  <textarea id="mesajReclamatie" placeholder="Descrie reclamația" required></textarea>
+  <button type="submit">Trimite reclamația</button>
+</form>
+
+<div id="reclamatiiList" class="list"></div>
+
+<script>
+let reclamatiiStaff = JSON.parse(localStorage.getItem("reclamatiiStaff")) || [];
+const form = document.getElementById("reclamatiiForm");
+const list = document.getElementById("reclamatiiList");
+
+function renderReclamatii(){
+  list.innerHTML="";
+  reclamatiiStaff.forEach((r,i)=>{
+    const div=document.createElement("div");
+    div.className="item";
+    div.innerHTML=`<strong>${r.nume}</strong><br>${r.mesaj}`;
+    const delBtn=document.createElement("button");
+    delBtn.innerText="Șterge";
+    delBtn.onclick=()=>{ reclamatiiStaff.splice(i,1); saveReclamatii(); };
+    div.appendChild(delBtn);
+    list.appendChild(div);
+  });
+}
+
+function saveReclamatii(){
+  localStorage.setItem("reclamatiiStaff", JSON.stringify(reclamatiiStaff));
+  renderReclamatii();
+}
+
+form.addEventListener("submit", e=>{
+  e.preventDefault();
+  const nume = document.getElementById("numeStaff").value.trim();
+  const mesaj = document.getElementById("mesajReclamatie").value.trim();
+  if(!nume || !mesaj) return;
+  reclamatiiStaff.push({nume, mesaj});
+  form.reset();
+  saveReclamatii();
+});
+
+renderReclamatii();
+</script>
+</body>
+</html>
