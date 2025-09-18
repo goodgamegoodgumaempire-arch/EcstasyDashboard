@@ -310,6 +310,13 @@ document.getElementById("modelForm").addEventListener("submit", function(e){
   alert("Modelul aplicației Poliție a fost salvat!");
 });
 
+<!-- Reclamații Poliție -->
+<div id="reclamatiiPolitieTab" class="tab">
+  <h2>Reclamații Poliție</h2>
+  <div id="reclamatiiPolitieList" class="list"></div>
+</div>
+
+<script>
 // --- RECLAMAȚII POLIȚIE ---
 let reclamatiiPolitie = JSON.parse(localStorage.getItem("reclamatiiPolitie")) || [];
 const reclamatiiPolitieList = document.getElementById("reclamatiiPolitieList");
@@ -321,6 +328,7 @@ function renderReclamatiiPolitie(){
     div.className = "item";
     div.innerHTML = `<strong>De la:</strong> ${r.from}<br>${r.message}`;
     const delBtn = document.createElement("button");
+    delBtn.className = "delete-btn";
     delBtn.innerText = "Șterge";
     delBtn.onclick = ()=>{
       reclamatiiPolitie.splice(i,1);
@@ -332,12 +340,10 @@ function renderReclamatiiPolitie(){
   });
 }
 
-// --- INIT ---
-renderMembers();
-renderApplications();
-renderSanctions();
 renderReclamatiiPolitie();
 </script>
 
+
 </body>
 </html>
+
