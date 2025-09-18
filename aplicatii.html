@@ -18,7 +18,6 @@ nav ul li a:hover, nav ul li.active a { color:#ff6600;}
 .card { background: rgba(17,17,17,0.85); border-radius: 10px; padding:20px; margin:15px 0; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s;}
 .card:hover { transform: translateY(-5px); box-shadow:0 8px 25px rgba(0,0,0,0.7);}
 .card h2 { margin:0 0 10px; font-size:1.1em; color:#fff;}
-.card p { margin:0 0 10px; color:#aaa;}
 .item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px;}
 .status { font-weight:bold; margin-left:10px; color:#ffcc00;}
 input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
@@ -45,41 +44,10 @@ button:hover { background:#cc5200;}
 
 <div id="layout">
   <div id="main">
+    <!-- Container aplicații -->
+    <div id="aplicatiiContainer"></div>
 
-    <!-- Poliție -->
-    <div class="card">
-      <h2>Aplică pentru Poliție</h2>
-      <button onclick="toggleForm('politie')">Aplică</button>
-      <div id="formPolitie" class="hidden">
-        <input type="text" id="numePolitie" placeholder="Nume jucător">
-        <textarea id="mesajPolitie" placeholder="Motivație / Mesaj"></textarea>
-        <button onclick="trimiteAplicatie('politie')">Trimite aplicație</button>
-      </div>
-    </div>
-
-    <!-- Medici -->
-    <div class="card">
-      <h2>Aplică pentru Medici</h2>
-      <button onclick="toggleForm('medici')">Aplică</button>
-      <div id="formMedici" class="hidden">
-        <input type="text" id="numeMedici" placeholder="Nume jucător">
-        <textarea id="mesajMedici" placeholder="Motivație / Mesaj"></textarea>
-        <button onclick="trimiteAplicatie('medici')">Trimite aplicație</button>
-      </div>
-    </div>
-
-    <!-- Staff -->
-    <div class="card">
-      <h2>Aplică pentru Staff</h2>
-      <button onclick="toggleForm('staff')">Aplică</button>
-      <div id="formStaff" class="hidden">
-        <input type="text" id="numeStaff" placeholder="Nume jucător">
-        <textarea id="mesajStaff" placeholder="Motivație / Mesaj"></textarea>
-        <button onclick="trimiteAplicatie('staff')">Trimite aplicație</button>
-      </div>
-    </div>
-
-    <!-- Lista aplicații -->
+    <!-- Lista aplicații trimise -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
       <div id="aplicatiiList"></div>
@@ -100,62 +68,96 @@ button:hover { background:#cc5200;}
 </div>
 
 <script>
-const aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+// Preluăm modelul fiecărei aplicații
+const modelPolitie = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
+const modelMedici  = JSON.parse(localStorage.getItem("modelMedici"))  || ["Nume jucător","Motivație / Mesaj"];
+const modelStaff   = JSON.parse(localStorage.getItem("modelStaff"))   || ["Nume jucător","Motivație / Mesaj"];
 
-// Preia modelele aplicațiilor
-const modelPolitie = localStorage.getItem("modelPolitie") || "";
-const modelMedici = localStorage.getItem("modelMedici") || "";
-const modelStaff = localStorage.getItem("modelStaff") || "";
+let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Arată / ascunde formular și setează modelul
-function toggleForm(tip){
-  const div = document.getElementById("form"+tip.charAt(0).toUpperCase()+tip.slice(1));
-  div.classList.toggle('hidden');
+// Generare carduri pentru fiecare aplicație
+function renderAplicatiiForm(){
+  const container = document.getElementById("aplicatiiContainer");
+  container.innerHTML = "";
 
-  if(!div.classList.contains('hidden')){
-    let textarea;
-    if(tip==='politie') textarea = document.getElementById("mesajPolitie");
-    if(tip==='medici') textarea = document.getElementById("mesajMedici");
-    if(tip==='staff') textarea = document.getElementById("mesajStaff");
+  const aplicatiiConfig = [
+    {type:"politie", title:"Aplică pentru Poliție", model:modelPolitie},
+    {type:"medici", title:"Aplică pentru Medici", model:modelMedici},
+    {type:"staff", title:"Aplică pentru Staff", model:modelStaff}
+  ];
 
-    // Pune modelul în textarea dacă există
-    if(tip==='politie' && modelPolitie) textarea.value = modelPolitie;
-    if(tip==='medici' && modelMedici) textarea.value = modelMedici;
-    if(tip==='staff' && modelStaff) textarea.value = modelStaff;
-  }
+  aplicatiiConfig.forEach(conf=>{
+    const card = document.createElement("div");
+    card.className="card";
+
+    const h2 = document.createElement("h2");
+    h2.innerText = conf.title;
+    card.appendChild(h2);
+
+    const btn = document.createElement("button");
+    btn.innerText="Aplică";
+    card.appendChild(btn);
+
+    const formDiv = document.createElement("div");
+    formDiv.className="hidden";
+
+    // Construim formularul din model
+    conf.model.forEach((field,index)=>{
+      if(field.toLowerCase().includes("mesaj") || field.toLowerCase().includes("motiv")){
+        const ta = document.createElement("textarea");
+        ta.placeholder = field;
+        ta.id = `field_${conf.type}_${index}`;
+        formDiv.appendChild(ta);
+      } else {
+        const input = document.createElement("input");
+        input.type="text";
+        input.placeholder=field;
+        input.id = `field_${conf.type}_${index}`;
+        formDiv.appendChild(input);
+      }
+    });
+
+    const submit = document.createElement("button");
+    submit.innerText="Trimite aplicație";
+    submit.onclick = ()=>{ trimiteAplicatie(conf.type, conf.model.length); };
+    formDiv.appendChild(submit);
+
+    card.appendChild(formDiv);
+    container.appendChild(card);
+
+    // Toggle formular
+    btn.onclick = ()=>{ formDiv.classList.toggle("hidden"); };
+  });
 }
 
 // Trimite aplicație
-function trimiteAplicatie(tip){
-  let nume='', mesaj='';
-  if(tip==='politie'){ nume=document.getElementById("numePolitie").value.trim(); mesaj=document.getElementById("mesajPolitie").value.trim(); }
-  if(tip==='medici'){ nume=document.getElementById("numeMedici").value.trim(); mesaj=document.getElementById("mesajMedici").value.trim(); }
-  if(tip==='staff'){ nume=document.getElementById("numeStaff").value.trim(); mesaj=document.getElementById("mesajStaff").value.trim(); }
-
-  if(!nume || !mesaj){ alert("Completează toate câmpurile!"); return; }
-
-  aplicatii.push({type:tip, name:nume, message:mesaj, status:"În așteptare"});
-  localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
+function trimiteAplicatie(type, fieldsCount){
+  let values=[];
+  for(let i=0;i<fieldsCount;i++){
+    const val = document.getElementById(`field_${type}_${i}`).value.trim();
+    if(!val){ alert("Completează toate câmpurile!"); return; }
+    values.push(val);
+  }
+  const message = values.slice(1).join(" | "); // concatenăm restul câmpurilor în mesaj
+  aplicatii.push({type:type, name:values[0], message:message, status:"În așteptare"});
+  localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
   renderAplicatii();
-
-  // Reset form
-  if(tip==='politie'){ document.getElementById("numePolitie").value=''; document.getElementById("mesajPolitie").value=''; toggleForm('politie'); }
-  if(tip==='medici'){ document.getElementById("numeMedici").value=''; document.getElementById("mesajMedici").value=''; toggleForm('medici'); }
-  if(tip==='staff'){ document.getElementById("numeStaff").value=''; document.getElementById("mesajStaff").value=''; toggleForm('staff'); }
+  renderAplicatiiForm(); // resetează formularele
 }
 
-// Render aplicații
+// Render aplicații trimise
 function renderAplicatii(){
   const container=document.getElementById("aplicatiiList");
-  container.innerHTML='';
+  container.innerHTML="";
   aplicatii.forEach(a=>{
     const div=document.createElement("div");
-    div.className='item';
+    div.className="item";
     div.innerHTML=`<strong>${a.name}</strong> [${a.type}]<br>${a.message}<br><span class="status">${a.status}</span>`;
     container.appendChild(div);
   });
 }
 
+renderAplicatiiForm();
 renderAplicatii();
 </script>
 
