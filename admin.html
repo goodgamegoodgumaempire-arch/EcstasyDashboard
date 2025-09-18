@@ -6,7 +6,6 @@
 <title>Admin Panel - ECSTASY ROMANIA</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* --- Stilizare generală --- */
 * { box-sizing: border-box; margin:0; padding:0; }
 body {
     font-family: 'Roboto', sans-serif;
@@ -19,7 +18,6 @@ body {
 }
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 
-/* --- Sidebar --- */
 .sidebar {
     width:220px;
     background: rgba(17,17,17,0.6);
@@ -42,10 +40,8 @@ body {
 }
 .sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
 
-/* --- Main content --- */
 .main { margin-left:220px; padding:20px; flex:1; }
 
-/* --- Forms & Lists --- */
 form, .list { background: rgba(17,17,17,0.7); padding:20px; border-radius:12px; max-width:900px; margin:20px auto; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 form input, form select, form textarea { width:100%; padding:12px; margin:10px 0; border:none; border-radius:8px; background:#222; color:#fff; }
 form input::placeholder, form textarea::placeholder { color:#bbb; }
@@ -54,19 +50,15 @@ form button:hover { background:#cc5200; }
 
 .item { background: rgba(17,17,17,0.6); margin:10px 0; padding:15px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; transition:0.3s; }
 .item:hover { background: rgba(17,17,17,0.9); }
-.item img, .item video { border-radius:8px; }
-.item img { width:50px; height:50px; object-fit:cover; }
-.item video { width:120px; }
-.item-info { display:flex; align-items:center; gap:15px; flex-wrap: wrap; }
+.item-info { display:flex; flex-direction:column; gap:5px; }
 .item-actions button { margin-left:8px; border:none; padding:6px 12px; cursor:pointer; border-radius:6px; font-weight:bold; transition:0.2s; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
-.edit-btn { background:#ff6600; color:#fff; } .edit-btn:hover { background:#cc5200; }
+.edit-btn { background:#28a745; color:#fff; } .edit-btn:hover { background:#218838; }
 
 /* Responsive */
 @media(max-width:800px){
     .sidebar { width:100%; height:auto; flex-direction:row; justify-content:space-around; padding:10px;}
     .main { margin-left:0; }
-    .item-info { flex-direction:column; align-items:flex-start; }
 }
 </style>
 </head>
@@ -135,7 +127,7 @@ form button:hover { background:#cc5200; }
         <div id="sneakList" class="list"></div>
     </div>
 
-    <!-- Toate Aplicațiile -->
+    <!-- Toate Aplicațiile Staff -->
     <div id="aplicatii" class="tab" style="display:none;">
         <h2>Toate Aplicațiile</h2>
         <div id="aplicatiiList" class="list"></div>
@@ -264,36 +256,43 @@ sneakForm.addEventListener("submit",function(e){
 function deletePeek(i){ peeksData.splice(i,1); localStorage.setItem("sneakPeeks",JSON.stringify(peeksData)); renderPeeks();}
 function editPeek(i){ const p=peeksData[i]; document.getElementById("sneakMessage").value=p.message; document.getElementById("sneakUrl").value=p.url; document.getElementById("sneakType").value=p.type; editPeekIndex=i; sneakForm.querySelector("button").innerText="Salvează Modificările"; }
 
-/* --- Toate Aplicațiile --- */
+/* --- Toate Aplicațiile Staff --- */
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+let modelStaff = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"];
+document.getElementById("modelStaffCurent").innerText = modelStaff.join(" | ");
+
 function renderAplicatii(){
     const container = document.getElementById("aplicatiiList");
     container.innerHTML="";
     aplicatii.forEach((a,i)=>{
-        const div=document.createElement("div");
-        div.className="item";
-        div.innerHTML=`<div><strong>${a.name}</strong> - ${a.message}<br>Tip: ${a.type}<br>Status: ${a.status||"În așteptare"}</div>`;
-        
-        const actions = document.createElement("div"); actions.className="item-actions";
-        const accept = document.createElement("button"); accept.className="edit-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{a.status="Acceptat"; saveAplicatii();}
-        const reject = document.createElement("button"); reject.className="delete-btn"; reject.innerText="Respinge"; reject.onclick=()=>{a.status="Respins"; saveAplicatii();}
-        const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge"; del.onclick=()=>{aplicatii.splice(i,1); saveAplicatii();}
-        actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
-        div.appendChild(actions); container.appendChild(div);
+        if(a.type!=="staff") return;
+        const raspunsuri = a.raspunsuri || a.message.split("|"); // pentru compatibilitate
+        raspunsuri.forEach((r,j)=>{
+            const div = document.createElement("div");
+            div.className="item";
+            div.innerHTML=`<div class="item-info"><strong>${modelStaff[j] || "Întrebare "+(j+1)}:</strong> ${r.trim()}<br><span class="status">Status: ${a.status||"În așteptare"}</span></div>`;
+            const actions = document.createElement("div");
+            actions.className="item-actions";
+            const accept = document.createElement("button"); accept.className="edit-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{ a.status="Acceptat"; saveAplicatii(); };
+            const reject = document.createElement("button"); reject.className="delete-btn"; reject.innerText="Respinge"; reject.onclick=()=>{ a.status="Respins"; saveAplicatii(); };
+            const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge"; del.onclick=()=>{ aplicatii.splice(i,1); saveAplicatii(); };
+            actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
+            div.appendChild(actions); container.appendChild(div);
+        });
     });
 }
+
 function saveAplicatii(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatii(); }
 
 /* --- Model aplicație Staff --- */
-let modelStaff = localStorage.getItem("modelStaff") || "";
-document.getElementById("modelStaffCurent").innerText = modelStaff;
 const modelStaffForm = document.getElementById("modelStaffForm");
 modelStaffForm.addEventListener("submit", function(e){
     e.preventDefault();
-    modelStaff = document.getElementById("modelStaffTextarea").value.trim();
-    if(!modelStaff) { alert("Completează modelul aplicației!"); return; }
-    localStorage.setItem("modelStaff", modelStaff);
-    document.getElementById("modelStaffCurent").innerText = modelStaff;
+    const text = document.getElementById("modelStaffTextarea").value.trim();
+    if(!text) { alert("Completează modelul aplicației!"); return; }
+    modelStaff = text.split("\n").map(t=>t.trim()).filter(t=>t!=="");
+    localStorage.setItem("modelStaff", JSON.stringify(modelStaff));
+    document.getElementById("modelStaffCurent").innerText = modelStaff.join(" | ");
     alert("Model aplicație Staff salvat!");
 });
 
