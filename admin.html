@@ -78,6 +78,7 @@ form button:hover { background:#cc5200; }
     <button onclick="showTab('updates')" id="btn-updates">Update-uri</button>
     <button onclick="showTab('sneak')" id="btn-sneak">Sneak Peeks</button>
     <button onclick="showTab('aplicatii')" id="btn-aplicatii">Toate Aplicațiile</button>
+    <button onclick="showTab('modelStaff')" id="btn-modelStaff">Model Aplicație Staff</button>
 </div>
 
 <div class="main">
@@ -138,6 +139,16 @@ form button:hover { background:#cc5200; }
     <div id="aplicatii" class="tab" style="display:none;">
         <h2>Toate Aplicațiile</h2>
         <div id="aplicatiiList" class="list"></div>
+    </div>
+
+    <!-- Model aplicație Staff -->
+    <div id="modelStaff" class="tab" style="display:none;">
+        <h2>Setează model aplicație Staff</h2>
+        <form id="modelStaffForm">
+            <textarea id="modelStaffTextarea" placeholder="Scrie modelul aplicației pentru Staff aici"></textarea>
+            <button type="submit">Salvează model aplicație</button>
+        </form>
+        <p>Model curent: <span id="modelStaffCurent"></span></p>
     </div>
 </div>
 
@@ -271,6 +282,20 @@ function renderAplicatii(){
     });
 }
 function saveAplicatii(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatii(); }
+
+/* --- Model aplicație Staff --- */
+let modelStaff = localStorage.getItem("modelStaff") || "";
+document.getElementById("modelStaffCurent").innerText = modelStaff;
+
+const modelStaffForm = document.getElementById("modelStaffForm");
+modelStaffForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    modelStaff = document.getElementById("modelStaffTextarea").value.trim();
+    if(!modelStaff) { alert("Completează modelul aplicației!"); return; }
+    localStorage.setItem("modelStaff", modelStaff);
+    document.getElementById("modelStaffCurent").innerText = modelStaff;
+    alert("Model aplicație Staff salvat!");
+});
 
 /* --- Init --- */
 renderMembers(); renderUpdates(); renderPeeks(); renderAplicatii();
