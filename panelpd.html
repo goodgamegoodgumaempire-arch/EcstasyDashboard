@@ -6,28 +6,52 @@
 <title>PanelPD - Poliție ECSTASY</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:'Roboto',sans-serif; background:#0b0c17; color:#fff; min-height:100vh;}
-.sidebar { width:220px; background: rgba(17,17,17,0.85); padding:20px; position:fixed; height:100%; box-shadow:0 0 10px rgba(0,0,0,0.5);}
+body {
+  margin:0;
+  font-family:'Roboto',sans-serif;
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
+  background-size:400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color:#fff;
+  min-height:100vh;
+}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+.sidebar {
+  width:220px;
+  background: rgba(17,17,17,0.85);
+  padding:20px;
+  position:fixed;
+  height:100%;
+  box-shadow:0 0 10px rgba(0,0,0,0.5);
+}
 .sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
-.sidebar button { display:block; width:100%; margin:5px 0; padding:10px; border:none; border-radius:8px; background:#222; color:#fff; cursor:pointer; font-weight:bold;}
-.sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000;}
+.sidebar button {
+  display:block; width:100%; margin:5px 0; padding:10px;
+  border:none; border-radius:8px; background:#222; color:#fff;
+  cursor:pointer; font-weight:bold;
+}
+.sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
+
 .main { margin-left:240px; padding:20px; }
 h1,h2 { color:#ff6600; }
-.list { max-width:900px; margin-top:20px; }
-.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; flex-direction:column; }
+.list { margin-top:20px; max-width:900px; }
+.item {
+  background: rgba(17,17,17,0.7); margin:10px 0; padding:12px;
+  border-radius:8px; display:flex; justify-content:space-between;
+  align-items:center;
+}
 .item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
 .accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
 .status { font-weight:bold; margin-left:10px; }
-input, select, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
-button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; }
-button:hover { background:#cc5200; }
+
+select, input, textarea, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
+button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; } button:hover { background:#cc5200; }
+
 .tab { display:none; }
 .tab.active { display:block; }
-.member-item { display:flex; justify-content:space-between; align-items:center; padding:6px 12px; border-radius:6px; margin:4px 0; background:#222; }
-.sanctions-list { margin-top:6px; padding-left:10px; border-left:2px solid #ff4444; }
-.sanction-item { display:flex; justify-content:space-between; margin-top:4px; padding:4px 8px; background:#111; border-radius:4px; }
 </style>
 </head>
 <body>
@@ -47,7 +71,6 @@ button:hover { background:#cc5200; }
     <h2>Lista Membri</h2>
     <form id="memberForm">
       <input type="text" id="memberName" placeholder="Nume membru" required>
-      <input type="text" id="memberRank" placeholder="Grad" required>
       <select id="memberStatus">
         <option value="Activ">Activ</option>
         <option value="Inactiv">Inactiv</option>
@@ -69,10 +92,11 @@ button:hover { background:#cc5200; }
     <h2>Sancțiuni Membri</h2>
     <div id="sanctionsList" class="list"></div>
   </div>
+
 </div>
 
 <script>
-// TAB NAV
+// --- TAB NAV ---
 function showTab(tabId){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(tabId).classList.add('active');
@@ -80,12 +104,8 @@ function showTab(tabId){
   event.target.classList.add('active');
 }
 
-// LOCALSTORAGE
+// --- MEMBRI ---
 let members = JSON.parse(localStorage.getItem("pdMembers")) || [];
-let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
-let sanctions = JSON.parse(localStorage.getItem("pdSanctions")) || [];
-
-// MEMBRI
 const membersForm = document.getElementById("memberForm");
 const membersDiv = document.getElementById("membersList");
 
@@ -93,9 +113,8 @@ function renderMembers(){
   membersDiv.innerHTML="";
   members.forEach((m,i)=>{
     const div = document.createElement("div");
-    div.className = "member-item";
-    div.innerHTML = `<div><strong>${m.name}</strong>, ${m.rank} - Status: <strong>${m.status}</strong></div>`;
-
+    div.classList.add("item");
+    div.innerHTML = `<div>${m.name} - Status: <strong>${m.status}</strong></div>`;
     const statusSelect = document.createElement("select");
     ["Activ","Inactiv","Concediu"].forEach(s=>{
       const opt = document.createElement("option"); opt.value=s; opt.innerText=s;
@@ -103,12 +122,9 @@ function renderMembers(){
       statusSelect.appendChild(opt);
     });
     statusSelect.onchange = ()=>{ members[i].status=statusSelect.value; saveMembers(); };
-
     const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
     delBtn.onclick = ()=>{ members.splice(i,1); saveMembers(); renderSanctions(); };
-
-    div.appendChild(statusSelect);
-    div.appendChild(delBtn);
+    div.appendChild(statusSelect); div.appendChild(delBtn);
     membersDiv.appendChild(div);
   });
 }
@@ -116,10 +132,9 @@ function renderMembers(){
 membersForm.addEventListener("submit", e=>{
   e.preventDefault();
   const name = document.getElementById("memberName").value.trim();
-  const rank = document.getElementById("memberRank").value.trim();
   const status = document.getElementById("memberStatus").value;
-  if(!name || !rank) return;
-  members.push({name, rank, status});
+  if(!name) return;
+  members.push({name,status});
   saveMembers();
   membersForm.reset();
   renderMembers();
@@ -131,23 +146,27 @@ function saveMembers(){
   renderMembers();
 }
 
-// APLICAȚII
+// --- APLICAȚII ---
+let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+
 function renderApplications(){
   const container = document.getElementById("applicationsList");
   container.innerHTML="";
   aplicatii.forEach((a,i)=>{
-    if(a.type!=="politie") return;
+    if(a.type.toLowerCase()!=="politie") return; // case-insensitive
     const div = document.createElement("div");
-    div.className = "item";
+    div.classList.add("item");
     let content = `<strong>${a.name}</strong><br>`;
-    a.answers.forEach((ans,j)=>{
-      content += `Întrebare ${j+1}: ${ans}<br>`;
-    });
+    if(a.answers){
+      a.answers.forEach((ans,j)=>{
+        content += `Întrebare ${j+1}: ${ans}<br>`;
+      });
+    }
     content += `Status: <span class="status">${a.status||"În așteptare"}</span>`;
     div.innerHTML = content;
 
     const actions = document.createElement("div");
-    actions.className = "item-actions";
+    actions.classList.add("item-actions");
 
     const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
     accept.onclick = ()=>{ a.status="Acceptat"; saveApplications(); };
@@ -158,9 +177,7 @@ function renderApplications(){
     const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
     del.onclick = ()=>{ aplicatii.splice(i,1); saveApplications(); };
 
-    actions.appendChild(accept);
-    actions.appendChild(reject);
-    actions.appendChild(del);
+    actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
     div.appendChild(actions);
     container.appendChild(div);
   });
@@ -171,60 +188,57 @@ function saveApplications(){
   renderApplications();
 }
 
-// SANCȚIUNI
+// --- SANCȚIUNI ---
+let sanctions = JSON.parse(localStorage.getItem("pdSanctions")) || [];
+
 function renderSanctions(){
   const container = document.getElementById("sanctionsList");
   container.innerHTML="";
-  members.forEach((m)=>{
+  members.forEach((m,i)=>{
     const div = document.createElement("div");
-    div.className = "item";
-    const memberSanctions = sanctions.filter(s=>s.member===m.name);
-    const absenteCount = memberSanctions.filter(s=>s.absenta!=="Prezent").length;
-    div.innerHTML = `<strong>${m.name}</strong>, ${m.rank} - Absente: <strong>${absenteCount}</strong>`;
-
-    const input = document.createElement("input"); input.type="text"; input.placeholder="Sancțiune / Observație";
+    div.classList.add("item");
+    div.innerHTML = `<strong>${m.name}</strong>`;
+    
+    const input = document.createElement("input");
+    input.type="text"; input.placeholder="Sancțiune / Observație";
+    
     const selectAbs = document.createElement("select");
     ["Prezent","Absent la ședință"].forEach(s=>{
       const opt = document.createElement("option"); opt.value=s; opt.innerText=s;
       selectAbs.appendChild(opt);
     });
-    const addBtn = document.createElement("button"); addBtn.className="edit-btn"; addBtn.innerText="Adaugă";
+
+    const addBtn = document.createElement("button");
+    addBtn.className="edit-btn"; addBtn.innerText="Adaugă";
     addBtn.onclick = ()=>{
       if(!input.value.trim()) return;
       sanctions.push({member:m.name,text:input.value.trim(),absenta:selectAbs.value});
       localStorage.setItem("pdSanctions",JSON.stringify(sanctions));
       input.value=""; selectAbs.selectedIndex=0;
       renderSanctions();
-      renderMembers();
     };
 
     const sancList = document.createElement("div");
-    sancList.className="sanctions-list";
-    memberSanctions.forEach(s=>{
+    sanctions.filter(s=>s.member===m.name).forEach((s,j)=>{
       const sdiv = document.createElement("div");
-      sdiv.className="sanction-item";
+      sdiv.style.display="flex"; sdiv.style.justifyContent="space-between"; sdiv.style.marginTop="4px";
       sdiv.innerHTML=`${s.text} (${s.absenta})`;
       const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="🗑";
       delBtn.onclick = ()=>{
         sanctions.splice(sanctions.indexOf(s),1);
         localStorage.setItem("pdSanctions",JSON.stringify(sanctions));
         renderSanctions();
-        renderMembers();
       };
       sdiv.appendChild(delBtn);
       sancList.appendChild(sdiv);
     });
 
-    div.appendChild(input);
-    div.appendChild(selectAbs);
-    div.appendChild(addBtn);
-    div.appendChild(sancList);
-
+    div.appendChild(input); div.appendChild(selectAbs); div.appendChild(addBtn); div.appendChild(sancList);
     container.appendChild(div);
   });
 }
 
-// INIT
+// --- INIT ---
 renderMembers();
 renderApplications();
 renderSanctions();
