@@ -6,86 +6,25 @@
 <title>PanelPD - Poliție ECSTASY</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {
-  margin:0;
-  font-family:'Roboto',sans-serif;
-  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
-  background-size:400% 400%;
-  animation: gradientBG 20s ease infinite;
-  color:#fff;
-  min-height:100vh;
-}
-@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-
-.sidebar {
-  width:220px;
-  background: rgba(17,17,17,0.85);
-  padding:20px;
-  position:fixed;
-  height:100%;
-  box-shadow:0 0 10px rgba(0,0,0,0.5);
-}
-.sidebar h2 {
-  text-align:center;
-  color:#ff6600;
-  margin-bottom:20px;
-}
-.sidebar button {
-  display:block;
-  width:100%;
-  margin:5px 0;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  background:#222;
-  color:#fff;
-  cursor:pointer;
-  font-weight:bold;
-}
-.sidebar button.active, .sidebar button:hover {
-  background:#ff6600;
-  color:#000;
-}
-
-.main {
-  margin-left:240px;
-  padding:20px;
-}
-
+body { margin:0; font-family:'Roboto',sans-serif; background:#0b0c17; color:#fff; min-height:100vh; padding:20px;}
 h1,h2 { color:#ff6600; }
-
-.list { margin-top:20px; max-width:900px; }
-
-.item {
-  background: rgba(17,17,17,0.7);
-  margin:10px 0;
-  padding:12px;
-  border-radius:8px;
-  display:flex;
-  flex-direction:column;
-}
-.item-actions button {
-  margin-left:6px;
-  padding:6px 12px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-weight:bold;
-}
+.sidebar { width:220px; background: rgba(17,17,17,0.85); padding:20px; position:fixed; height:100%; box-shadow:0 0 10px rgba(0,0,0,0.5);}
+.sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
+.sidebar button { display:block; width:100%; margin:5px 0; padding:10px; border:none; border-radius:8px; background:#222; color:#fff; cursor:pointer; font-weight:bold;}
+.sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000;}
+.main { margin-left:240px; padding:20px; }
+.list { max-width:900px; margin-top:20px; }
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; flex-direction:column; }
+.item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
 .accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
-
 .status { font-weight:bold; margin-left:10px; }
-
 select, input, textarea, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
 button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; }
 button:hover { background:#cc5200; }
-
 .tab { display:none; }
 .tab.active { display:block; }
-
-/* vizualizare membri cu absente */
 .member-item { display:flex; justify-content:space-between; align-items:center; padding:6px 12px; border-radius:6px; margin:4px 0; background:#222; }
 .member-item.absent { background:#330000; }
 .sanctions-list { margin-top:6px; padding-left:10px; border-left:2px solid #ff4444; }
@@ -104,7 +43,6 @@ button:hover { background:#cc5200; }
 <div class="main">
   <h1>Panel Poliție</h1>
 
-  <!-- Membri -->
   <div id="members" class="tab active">
     <h2>Lista Membri</h2>
     <form id="memberForm">
@@ -120,22 +58,19 @@ button:hover { background:#cc5200; }
     <div id="membersList" class="list"></div>
   </div>
 
-  <!-- Aplicații -->
   <div id="applications" class="tab">
     <h2>Aplicații Poliție</h2>
     <div id="applicationsList" class="list"></div>
   </div>
 
-  <!-- Sancțiuni -->
   <div id="sanctions" class="tab">
     <h2>Sancțiuni Membri</h2>
     <div id="sanctionsList" class="list"></div>
   </div>
-
 </div>
 
 <script>
-// --- TAB NAV ---
+// TAB NAV
 function showTab(tabId){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById(tabId).classList.add('active');
@@ -143,8 +78,12 @@ function showTab(tabId){
   event.target.classList.add('active');
 }
 
-// --- MEMBRI ---
+// LOCALSTORAGE
 let members = JSON.parse(localStorage.getItem("pdMembers")) || [];
+let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
+let sanctions = JSON.parse(localStorage.getItem("pdSanctions")) || [];
+
+// MEMBRI
 const membersForm = document.getElementById("memberForm");
 const membersDiv = document.getElementById("membersList");
 
@@ -159,7 +98,6 @@ function renderMembers(){
     if(absenteCount>0) div.classList.add("absent");
     div.innerHTML = `<div><strong>${m.name}</strong>, ${m.rank} - Status: <strong>${m.status}</strong></div>`;
 
-    // select status
     const statusSelect = document.createElement("select");
     ["Activ","Inactiv","Concediu"].forEach(s=>{
       const opt = document.createElement("option"); opt.value=s; opt.innerText=s;
@@ -168,7 +106,6 @@ function renderMembers(){
     });
     statusSelect.onchange = ()=>{ members[i].status=statusSelect.value; saveMembers(); };
 
-    // delete
     const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
     delBtn.onclick = ()=>{ members.splice(i,1); saveMembers(); renderSanctions(); };
 
@@ -196,9 +133,7 @@ function saveMembers(){
   renderMembers();
 }
 
-// --- APLICAȚII ---
-let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
-
+// APLICAȚII
 function renderApplications(){
   const container = document.getElementById("applicationsList");
   container.innerHTML="";
@@ -210,7 +145,7 @@ function renderApplications(){
     a.answers.forEach((ans,j)=>{
       content += `Întrebare ${j+1}: ${ans}<br>`;
     });
-    content += `Status: <span class="status">${a.status}</span>`;
+    content += `Status: <span class="status">${a.status||"În așteptare"}</span>`;
     div.innerHTML = content;
 
     const actions = document.createElement("div");
@@ -225,7 +160,9 @@ function renderApplications(){
     const del = document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge";
     del.onclick = ()=>{ aplicatii.splice(i,1); saveApplications(); };
 
-    actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
+    actions.appendChild(accept);
+    actions.appendChild(reject);
+    actions.appendChild(del);
     div.appendChild(actions);
     container.appendChild(div);
   });
@@ -236,13 +173,10 @@ function saveApplications(){
   renderApplications();
 }
 
-// --- SANCȚIUNI ---
-let sanctions = JSON.parse(localStorage.getItem("pdSanctions")) || [];
-
+// SANCȚIUNI
 function renderSanctions(){
   const container = document.getElementById("sanctionsList");
   container.innerHTML="";
-
   members.forEach((m)=>{
     const div = document.createElement("div");
     div.classList.add("item");
@@ -252,7 +186,6 @@ function renderSanctions(){
 
     div.innerHTML = `<strong>${m.name}</strong>, ${m.rank} - Absente: <strong>${absenteCount}</strong>`;
 
-    // input + select pentru adaugare sanctiune
     const input = document.createElement("input"); input.type="text"; input.placeholder="Sancțiune / Observație";
     const selectAbs = document.createElement("select");
     ["Prezent","Absent la ședință"].forEach(s=>{
@@ -266,10 +199,9 @@ function renderSanctions(){
       localStorage.setItem("pdSanctions",JSON.stringify(sanctions));
       input.value=""; selectAbs.selectedIndex=0;
       renderSanctions();
-      renderMembers(); // actualizează vizual absențe
+      renderMembers();
     };
 
-    // listarea sanctiunilor
     const sancList = document.createElement("div");
     sancList.className="sanctions-list";
     memberSanctions.forEach(s=>{
@@ -296,7 +228,7 @@ function renderSanctions(){
   });
 }
 
-// --- INIT ---
+// INIT
 renderMembers();
 renderApplications();
 renderSanctions();
