@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PanelPD - Poliție ECSTASY</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+.sidebar { width:220px; background: rgba(17,17,17,0.85); padding:20px; position:fixed; height:100%; box-shadow:0 0 10px rgba(0,0,0,0.5);}
+.sidebar h2 { text-align:center; color:#ff6600; margin-bottom:20px; }
+.sidebar button { display:block; width:100%; margin:5px 0; padding:10px; border:none; border-radius:8px; background:#222; color:#fff; cursor:pointer; font-weight:bold; }
+.sidebar button.active, .sidebar button:hover { background:#ff6600; color:#000; }
+.main { margin-left:240px; padding:20px; }
+h1,h2 { color:#ff6600; }
+.list { margin-top:20px; max-width:900px; }
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; flex-direction:column; }
+.item-actions { margin-top:8px; }
+.item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+.accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
+.reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
+.delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
+.status { font-weight:bold; margin-left:10px; }
+select, input, textarea, button { border-radius:8px; border:none; padding:8px; margin:5px 0; font-family:'Roboto',sans-serif; }
+button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s; } button:hover { background:#cc5200; }
+form textarea { width:100%; height:100px; padding:10px; border-radius:8px; border:none; background:#222; color:#fff; margin:5px 0; }
+form button.save-model { background:#ff6600; margin-top:10px; width:auto; padding:10px 20px; border:none; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; }
+form button.save-model:hover { background:#cc5200; }
+.tab { display:none; }
+.tab.active { display:block; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Panel Poliție</h2>
+  <button onclick="showTab('members')" class="active">Membri</button>
+  <button onclick="showTab('applications')">Aplicații</button>
+  <button onclick="showTab('sanctions')">Sancțiuni</button>
+  <button onclick="showTab('applicationModelCard')">Setare Model Aplicație</button>
+  <button onclick="showTab('reclamatiiPolitieTab')">Reclamații Poliție</button>
+</div>
+
+<div class="main">
+  <h1>Panel Poliție</h1>
+
+  <!-- Membri -->
+  <div id="members" class="tab active">
+    <h2>Lista Membri</h2>
+    <form id="memberForm">
+      <input type="text" id="memberName" placeholder="Nume membru" required>
+      <input type="text" id="memberRank" placeholder="Grad membru" required>
+      <select id="memberStatus">
+        <option value="Activ">Activ</option>
+        <option value="Inactiv">Inactiv</option>
+        <option value="Concediu">Concediu</option>
+      </select>
+      <button type="submit">Adaugă membru</button>
+    </form>
+    <div id="membersList" class="list"></div>
+  </div>
+
+  <!-- Aplicații -->
+  <div id="applications" class="tab">
+    <h2>Aplicații Poliție</h2>
+    <div id="applicationsList" class="list"></div>
+  </div>
+
+  <!-- Sancțiuni -->
+  <div id="sanctions" class="tab">
+    <h2>Sancțiuni Membri</h2>
+    <div id="sanctionsList" class="list"></div>
+  </div>
+
+  <!-- Setare Model Aplicație -->
+  <div id="applicationModelCard" class="tab">
+    <h2>Setează Model Aplicație Poliție</h2>
+    <form id="modelForm">
+      <textarea id="modelPolitieTextarea" placeholder="Scrie fiecare întrebare pe câte un rând..."></textarea>
+      <button type="submit" class="save-model">Salvează Model</button>
+    </form>
+  </div>
+
+  <!-- Reclamații Poliție -->
+  <div id="reclamatiiPolitieTab" class="tab">
+    <h2>Reclamații Poliție</h2>
+    <div id="reclamatiiPolitieList" class="list"></div>
+  </div>
+
+</div>
+
+<script>
+// --- TAB NAV ---
+function showTab(tabId){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// --- MEMBRI ---
+let members = JSON.parse(localStorage.getItem("pdMembers")) || [];
+const membersForm = document.getElementById("memberForm");
+const membersDiv = document.getElementById("membersList");
+
+function renderMembers(){
+  membersDiv.innerHTML="";
+  members.forEach((m,i)=>{
+    const div = document.createElement("div");
+    div.classList.add("item");
+    div.innerHTML = `<div>${m.name} - ${m.rank} - Status: <strong>${m.status}</strong></div>`;
+
+    const rankInput = document.createElement("input");
+    rankInput.type = "text";
+    rankInput.value = m.rank;
+    rankInput.style.marginTop = "5px";
+    rankInput.onchange = ()=>{ members[i].rank = rankInput.value.trim(); saveMembers(); };
+
+    const statusSelect = document.createElement("select");
+    ["Activ","Inactiv","Concediu"].forEach(s=>{
+      const opt = document.createElement("option"); opt.value=s; opt.innerText=s;
+      if(s===m.status) opt.selected=true;
+      statusSelect.appendChild(opt);
+    });
+    statusSelect.onchange = ()=>{ members[i].status=statusSelect.value; saveMembers(); };
+
+    const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
+    delBtn.onclick = ()=>{ members.splice(i,1); saveMembers(); renderSanctions(); };
+
+    div.appendChild(rankInput);
+    div.appendChild(statusSelect);
+    div.appendChild(delBtn);
+    membersDiv.appendChild(div);
+  });
+}
+
+membersForm.addEventListener("submit", e=>{
+  e.preventDefault();
+  const name = document.getElementById("memberName").value.trim();
+  const rank = document.getElementById("memberRank").value.trim();
+  const status = document.getElementById("memberStatus").value;
+  if(!name || !rank) return;
+  members.push({name, rank, status});
+  saveMembers();
+  membersForm.reset();
+  renderSanctions();
+});
+
+function saveMembers(){
+  localStorage.setItem("pdMembers",JSON.stringify(members));
+  renderMembers();
+}
+
+// --- RECLAMAȚII POLIȚIE ---
+let reclamatiiPolitie = JSON.parse(localStorage.getItem("reclamatiiPolitie")) || [];
+const reclamatiiPolitieList = document.getElementById("reclamatiiPolitieList");
+
+function renderReclamatiiPolitie(){
+  reclamatiiPolitieList.innerHTML = "";
+  reclamatiiPolitie.forEach((r,i)=>{
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `<strong>De la:</strong> ${r.from || "Necunoscut"}<br>${r.message || ""}`;
+    const delBtn = document.createElement("button");
+    delBtn.className = "delete-btn";
+    delBtn.innerText = "Șterge";
+    delBtn.onclick = ()=>{
+      reclamatiiPolitie.splice(i,1);
+      localStorage.setItem("reclamatiiPolitie", JSON.stringify(reclamatiiPolitie));
+      renderReclamatiiPolitie();
+    };
+    div.appendChild(delBtn);
+    reclamatiiPolitieList.appendChild(div);
+  });
+}
+
+// --- INIT ---
+renderMembers();
+renderReclamatiiPolitie();
+</script>
+
+</body>
+</html>
