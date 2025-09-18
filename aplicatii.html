@@ -92,16 +92,14 @@ let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
 
-  // dacă nu e populat încă, generăm formularul
   if(div.dataset.loaded !== "true"){
-
     // model default dacă nu există în localStorage
     let model = [];
     if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
-    if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici"))?.split("|") || ["Nume jucător","Motivație / Mesaj"];
-    if(tip==="staff") model = JSON.parse(localStorage.getItem("modelStaff"))?.split("|") || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="staff") model = JSON.parse(localStorage.getItem("modelStaff")) || ["Nume jucător","Motivație / Mesaj"]; // <--- corecție
 
-    div.innerHTML = ""; // golim înainte
+    div.innerHTML = "";
     model.forEach(field => {
       const card = document.createElement("div");
       card.className = "card";
@@ -122,7 +120,6 @@ function toggleForm(tip){
     div.dataset.loaded = "true";
   }
 
-  // arătăm/ascundem formularul
   div.style.display = (div.style.display==="block") ? "none" : "block";
 }
 
@@ -133,12 +130,11 @@ function trimiteAplicatie(tip){
   const values = inputs.map(i=>i.value.trim());
   if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  const message = values.join(" | "); // combinăm toate câmpurile
+  const message = values.join(" | ");
   aplicatii.push({type:tip, name:values[0], message:message, status:"În așteptare"});
   localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
   renderAplicatii();
 
-  // Resetează form
   inputs.forEach(i=>i.value="");
   div.style.display = "none";
 }
