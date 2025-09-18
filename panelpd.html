@@ -108,16 +108,30 @@ form button.save-model:hover { background:#cc5200; }
     </form>
   </div>
 
-  <!-- Reclamații Poliție -->
-  <div id="reclamatiiPolitie" class="tab">
-    <h2>Reclamații Poliție</h2>
-    <form id="reclamatiiForm">
-      <textarea id="reclamatiiMessage" placeholder="Mesaj reclamație"></textarea>
-      <input type="text" id="reclamatiiFrom" placeholder="De la jucător / persoană" required>
-      <button type="submit">Adaugă Reclamație</button>
-    </form>
-    <div id="reclamatiiList" class="list"></div>
-  </div>
+// --- RECLAMAȚII POLIȚIE ---
+let reclamatiiPolitie = JSON.parse(localStorage.getItem("reclamatiiPolitie")) || [];
+const reclamatiiList = document.getElementById("reclamatiiList");
+
+function renderReclamatii(){
+  reclamatiiList.innerHTML = "";
+  reclamatiiPolitie.forEach((r,i)=>{
+    const div = document.createElement("div");
+    div.classList.add("item");
+    div.innerHTML = `<strong>De la:</strong> ${r.from}<br>${r.message}`;
+    const delBtn = document.createElement("button");
+    delBtn.className = "delete-btn";
+    delBtn.innerText = "Șterge";
+    delBtn.onclick = ()=>{
+      reclamatiiPolitie.splice(i,1);
+      localStorage.setItem("reclamatiiPolitie", JSON.stringify(reclamatiiPolitie));
+      renderReclamatii();
+    };
+    div.appendChild(delBtn);
+    reclamatiiList.appendChild(div);
+  });
+}
+
+renderReclamatii();
 
 </div>
 
@@ -300,3 +314,4 @@ renderReclamatii();
 
 </body>
 </html>
+
