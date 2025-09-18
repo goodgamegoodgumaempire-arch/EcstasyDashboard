@@ -1,46 +1,103 @@
-<form id="reclamatiiForm">
-  <input type="text" id="reclamatiiFrom" placeholder="Nume persoană" required>
-  <textarea id="reclamatiiMessage" placeholder="Descrie reclamația" required></textarea>
-  <button type="submit">Trimite</button>
-</form>
-<div id="reclamatiiList" class="list"></div>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reclamații - G4A Romania</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0; 
+  font-family:'Roboto',sans-serif; 
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b1c17); 
+  background-size:400% 400%; 
+  animation: gradientBG 20s ease infinite; 
+  color:#fff; 
+  min-height:100vh;
+}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
+nav img { height:40px; margin-right:50px;}
+nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0;}
+nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s;}
+nav ul li a:hover, nav ul li.active a { color:#ff6600;}
+
+.form-card {
+  max-width:450px; 
+  margin:50px auto; 
+  background: rgba(17,17,17,0.85); 
+  padding:25px 30px; 
+  border-radius:12px; 
+  box-shadow:0 6px 20px rgba(0,0,0,0.6);
+}
+.form-card h2 { text-align:center; margin-bottom:20px; color:#ff6600; }
+.form-card input, .form-card textarea, .form-card button {
+  width:100%; 
+  padding:12px; 
+  margin:8px 0; 
+  border-radius:8px; 
+  border:none; 
+  font-family:'Roboto',sans-serif;
+}
+.form-card textarea { resize:none; height:100px; background:#222; color:#fff; }
+.form-card button { background:#ff6600; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; }
+.form-card button:hover { background:#cc5200; }
+</style>
+</head>
+<body>
+
+<nav>
+  <img src="logo.png" alt="G4A Logo">
+  <ul>
+    <li><a href="index.html">Acasă</a></li>
+    <li><a href="aplicatii.html">Aplicații</a></li>
+    <li class="active"><a href="reclamatii_politie.html">Reclamații</a></li>
+  </ul>
+</nav>
+
+<div class="form-card">
+  <h2>Trimite Reclamație</h2>
+  <form id="complaintForm">
+    <input type="text" id="complainantId" placeholder="ID reclamant" required>
+    <input type="text" id="userId" placeholder="ID tău" required>
+    <textarea id="reason" placeholder="Motivul reclamației" required></textarea>
+    <input type="text" id="link" placeholder="Link filmare YouTube" required>
+    <button type="submit">Trimite</button>
+  </form>
+</div>
 
 <script>
-const reclamatiiForm = document.getElementById("reclamatiiForm");
-const reclamatiiList = document.getElementById("reclamatiiList");
-
-// preluăm reclamațiile existente din localStorage sau inițializare goală
-let reclamatiiPolitie = JSON.parse(localStorage.getItem("reclamatiiPolitie")) || [];
-
-function renderReclamatii(){
-  reclamatiiList.innerHTML = "";
-  reclamatiiPolitie.forEach((r, i)=>{
-    const div = document.createElement("div");
-    div.classList.add("item");
-    div.innerHTML = `<strong>De la:</strong> ${r.from}<br>${r.message}`;
-    const delBtn = document.createElement("button");
-    delBtn.className = "delete-btn";
-    delBtn.innerText = "Șterge";
-    delBtn.onclick = ()=>{
-      reclamatiiPolitie.splice(i,1);
-      localStorage.setItem("reclamatiiPolitie", JSON.stringify(reclamatiiPolitie));
-      renderReclamatii();
-    };
-    div.appendChild(delBtn);
-    reclamatiiList.appendChild(div);
-  });
-}
-
-reclamatiiForm.addEventListener("submit", e=>{
+const form = document.getElementById("complaintForm");
+form.addEventListener("submit", e=>{
   e.preventDefault();
-  const from = document.getElementById("reclamatiiFrom").value.trim();
-  const message = document.getElementById("reclamatiiMessage").value.trim();
-  if(!from || !message) return; // validare
-  reclamatiiPolitie.push({from, message}); // salvăm exact cu proprietățile from și message
-  localStorage.setItem("reclamatiiPolitie", JSON.stringify(reclamatiiPolitie));
-  reclamatiiForm.reset();
-  renderReclamatii();
-});
+  
+  const complainantId = document.getElementById("complainantId").value.trim();
+  const userId = document.getElementById("userId").value.trim();
+  const reason = document.getElementById("reason").value.trim();
+  const link = document.getElementById("link").value.trim();
+  
+  if(!complainantId || !userId || !reason || !link) {
+    return alert("Completează toate câmpurile!");
+  }
 
-renderReclamatii();
+  let complaints = JSON.parse(localStorage.getItem("policeComplaints")) || [];
+  const newComplaint = {
+    id: complaints.length ? complaints[complaints.length-1].id + 1 : 1,
+    complainantId,
+    userId,
+    reason,
+    link,
+    status: "În așteptare"
+  };
+  
+  complaints.push(newComplaint);
+  localStorage.setItem("policeComplaints", JSON.stringify(complaints));
+
+  alert("Reclamația a fost trimisă!");
+  form.reset();
+});
 </script>
+
+</body>
+</html>
