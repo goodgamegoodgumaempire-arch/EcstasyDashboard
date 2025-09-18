@@ -9,7 +9,7 @@
 body { font-family:'Roboto',sans-serif; background:#0b0c17; color:#fff; min-height:100vh; padding:20px;}
 h1,h2 { color:#ff6600; }
 .list { max-width:900px; margin-top:20px;}
-.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;}
 .item-actions button { margin-left:6px; padding:6px 12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;}
 .accept-btn { background:#28a745; color:#fff; } .accept-btn:hover { background:#218838; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
@@ -24,9 +24,9 @@ form button:hover { background:#cc5200; }
 
 <h1>PanelPD - Poliție</h1>
 
-<h2>Setează Model Aplicație Poliție</h2>
+<h2>Setează Model Aplicație</h2>
 <form id="modelForm">
-    <textarea id="modelPolitieTextarea" placeholder="Scrie fiecare întrebare pe câte un rând..."></textarea>
+    <div id="modelFields"></div>
     <button type="submit">Salvează Model</button>
 </form>
 
@@ -34,18 +34,38 @@ form button:hover { background:#cc5200; }
 <div id="applications" class="list"></div>
 
 <script>
-// --- Preluare aplicații ---
+// --- Date inițiale ---
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
-
-// --- Preluare model ---
 let modelPolitie = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
-document.getElementById("modelPolitieTextarea").value = modelPolitie.join("\n");
+
+// --- Render inputuri model ---
+function renderModelInputs(){
+    const container = document.getElementById("modelFields");
+    container.innerHTML = "";
+    modelPolitie.forEach((field,index)=>{
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = field;
+        input.placeholder = "Întrebare " + (index+1);
+        input.id = `modelField_${index}`;
+        container.appendChild(input);
+    });
+
+    const addBtn = document.createElement("button");
+    addBtn.type = "button";
+    addBtn.innerText = "Adaugă întrebare";
+    addBtn.onclick = ()=>{
+        modelPolitie.push("");
+        renderModelInputs();
+    };
+    container.appendChild(addBtn);
+}
 
 // --- Salvează model ---
 document.getElementById("modelForm").addEventListener("submit", function(e){
     e.preventDefault();
-    const text = document.getElementById("modelPolitieTextarea").value.trim();
-    modelPolitie = text.split("\n").map(t=>t.trim()).filter(t=>t!=="");
+    const inputs = document.querySelectorAll("#modelFields input");
+    modelPolitie = Array.from(inputs).map(i=>i.value.trim()).filter(i=>i!=="");
     localStorage.setItem("modelPolitie", JSON.stringify(modelPolitie));
     alert("Modelul aplicației Poliție a fost salvat!");
 });
@@ -53,39 +73,32 @@ document.getElementById("modelForm").addEventListener("submit", function(e){
 // --- Render aplicații ---
 function renderAplicatii(){
     const container = document.getElementById("applications");
-    container.innerHTML="";
+    container.innerHTML = "";
     aplicatii.forEach((a,i)=>{
-        if(a.type!=="politie") return;
+        if(a.type !== "politie") return;
         const div = document.createElement("div");
         div.classList.add("item");
-
-        // Conținut aplicație
-        let content = `<div><strong>${a.name}</strong>`;
-        if(a.answers) {
-            a.answers.forEach((ans,j)=>{
-                content += `<br><strong>${modelPolitie[j] || "Întrebare "+(j+1)}:</strong> ${ans}`;
-            });
-        } else {
-            content += `<br>${a.message}`;
-        }
-        content += `<br><span class="status">${a.status||"În așteptare"}</span></div>`;
+        let content = `<div><strong>${a.name}</strong> - Status: ${a.status || "În așteptare"}<br>`;
+        a.answers.forEach((ans,j)=>{
+            content += `<strong>${modelPolitie[j] || "Întrebare "+(j+1)}:</strong> ${ans}<br>`;
+        });
+        content += `</div>`;
         div.innerHTML = content;
 
-        // Acțiuni
         const actions = document.createElement("div");
         actions.classList.add("item-actions");
 
         const accept = document.createElement("button");
-        accept.className="accept-btn"; accept.innerText="Acceptă"; 
-        accept.onclick=()=>{ a.status="Acceptat"; saveRender(); };
+        accept.className="accept-btn"; accept.innerText="Acceptă";
+        accept.onclick = ()=>{ a.status="Acceptat"; saveRender(); };
 
         const reject = document.createElement("button");
         reject.className="reject-btn"; reject.innerText="Respinge";
-        reject.onclick=()=>{ a.status="Respins"; saveRender(); };
+        reject.onclick = ()=>{ a.status="Respins"; saveRender(); };
 
         const del = document.createElement("button");
         del.className="delete-btn"; del.innerText="Șterge";
-        del.onclick=()=>{ aplicatii.splice(i,1); saveRender(); };
+        del.onclick = ()=>{ aplicatii.splice(i,1); saveRender(); };
 
         actions.appendChild(accept);
         actions.appendChild(reject);
@@ -95,13 +108,13 @@ function renderAplicatii(){
     });
 }
 
-// --- Salvează și rerandează ---
 function saveRender(){
     localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
     renderAplicatii();
 }
 
-// --- Init ---
+// --- Inițializare ---
+renderModelInputs();
 renderAplicatii();
 </script>
 
