@@ -23,60 +23,62 @@ h1,h2 { color:#ff6600; }
 <div id="applications" class="list"></div>
 
 <script>
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/YOUR_WEBHOOK_MD";
-let parolaCurenta = "";
-
-// Genereaza parola random
-function genereazaParola(length=12){
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?";
-  let parola = "";
-  for(let i=0;i<length;i++){ parola += chars.charAt(Math.floor(Math.random()*chars.length)); }
-  return parola;
-}
-
-// Trimite parola pe Discord
-function trimiteWebhook(parola){
-  fetch(DISCORD_WEBHOOK,{ method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({ content: `Noua parola PanelMD: ${parola}` }) });
-}
-
-// Actualizare parola la fiecare 30 minute
-function actualizeazaParola(){ parolaCurenta = genereazaParola(12); trimiteWebhook(parolaCurenta); console.log("Parola PanelMD:", parolaCurenta); }
-actualizeazaParola();
-setInterval(actualizeazaParola,30*60*1000);
-
-// --- LocalStorage ---
+// LocalStorage array
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
+// Render aplicațiile pentru medici
 function renderAplicatii() {
     const container = document.getElementById("applications");
-    container.innerHTML="";
-    aplicatii.forEach((a,i)=>{
-        if(a.type!=="medici") return;
-        const div=document.createElement("div");
+    container.innerHTML = "";
+    aplicatii.forEach((a, i) => {
+        if (a.type !== "medici") return; // doar medici
+        const div = document.createElement("div");
         div.classList.add("item");
-        div.innerHTML = `<div><strong>${a.name}</strong> - ${a.message} <span class="status">${a.status||"În așteptare"}</span></div>`;
-        const actions=document.createElement("div");
+        div.innerHTML = `<div><strong>${a.name}</strong> - ${a.message} <span class="status">${a.status || "În așteptare"}</span></div>`;
+        
+        const actions = document.createElement("div");
         actions.classList.add("item-actions");
-        const accept=document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă"; accept.onclick=()=>{a.status="Acceptat"; saveRender();}
-        const reject=document.createElement("button"); reject.className="reject-btn"; reject.innerText="Respinge"; reject.onclick=()=>{a.status="Respins"; saveRender();}
-        const del=document.createElement("button"); del.className="delete-btn"; del.innerText="Șterge"; del.onclick=()=>{aplicatii.splice(i,1); saveRender();}
-        actions.appendChild(accept); actions.appendChild(reject); actions.appendChild(del);
+
+        const accept = document.createElement("button");
+        accept.className = "accept-btn"; accept.innerText = "Acceptă";
+        accept.onclick = () => { a.status = "Acceptat"; saveRender(); };
+
+        const reject = document.createElement("button");
+        reject.className = "reject-btn"; reject.innerText = "Respinge";
+        reject.onclick = () => { a.status = "Respins"; saveRender(); };
+
+        const del = document.createElement("button");
+        del.className = "delete-btn"; del.innerText = "Șterge";
+        del.onclick = () => { aplicatii.splice(i, 1); saveRender(); };
+
+        actions.appendChild(accept);
+        actions.appendChild(reject);
+        actions.appendChild(del);
         div.appendChild(actions);
         container.appendChild(div);
     });
 }
 
-function saveRender(){ localStorage.setItem("aplicatii",JSON.stringify(aplicatii)); renderAplicatii(); }
+// Salvează în localStorage și rerandează
+function saveRender() {
+    localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
+    renderAplicatii();
+}
 
-// --- F9 pentru parola PanelMD ---
+// F3 sau F9 pentru a activa accesul (parola deja gestionată în index.html)
 document.addEventListener("keydown", function(e){
-    if(e.key==="F9"){
-        e.preventDefault();
-        const input=prompt("Introdu parola PanelMD:");
-        if(input===parolaCurenta){ renderAplicatii(); alert("Acces PanelMD activat."); }
-        else alert("Parola incorecta!");
+    if(e.key==="F3"){ // folosim F3 ca în index.html
+        const input = prompt("Introdu parola PanelMD:");
+        if(input === "parolaMDcorecta"){ // parola reală va fi trimisă prin webhook
+            renderAplicatii();
+            alert("Acces PanelMD activat.");
+        } else {
+            alert("Parola incorectă!");
+        }
     }
 });
+
+// La încărcare, nu afișăm nimic până nu introduci parola
 </script>
 
 </body>
