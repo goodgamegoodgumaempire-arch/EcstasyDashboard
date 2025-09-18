@@ -63,7 +63,7 @@ button:hover { background:#cc5200;}
     <!-- Card aplicații pentru admin -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
-      <button onclick="toggleAplicațiiPublice()">Vezi aplicații trimise</button>
+      <button onclick="toggleAplicatiiPublice()">Vezi aplicații trimise</button>
       <div id="aplicatiiList" class="hidden"></div>
     </div>
   </div>
@@ -125,18 +125,23 @@ function trimiteAplicatie(tip){
   const values = inputs.map(i=>i.value.trim());
   if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  const obj = {type:tip, name:values[0], answers: values, status:"În așteptare"};
+  // Asigură type corect
+  const obj = {type: tip.toLowerCase(), name: values[0], answers: values, status:"În așteptare"};
   aplicatii.push(obj);
+
+  // Salvează înainte de redirecționare
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
   alert("Aplicația a fost trimisă!");
 
-  // Redirecționare către panel corespunzător
-  if(tip==="politie") window.location.href="panelpd.html";
-  if(tip==="medici") window.location.href="panelmd.html";
-  if(tip==="staffNou") window.location.href="admin.html";
-
   inputs.forEach(i=>i.value="");
   div.style.display="none";
+
+  // Redirecționare către panel corespunzător
+  if(tip === "politie") window.location.href="panelpd.html";
+  if(tip === "medici") window.location.href="panelmd.html";
+  if(tip === "staffNou") window.location.href="admin.html";
+
+  // Re-render pentru listă
   renderAplicatiiPublice();
 }
 
@@ -152,7 +157,7 @@ function renderAplicatiiPublice(){
       let model = [];
       if(a.type==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
       if(a.type==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
-      if(a.type==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
+      if(a.type==="staffnou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
       a.answers.forEach((ans,i)=>{
         content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
       });
@@ -164,7 +169,7 @@ function renderAplicatiiPublice(){
 }
 
 // Toggle vizualizare aplicații publice
-function toggleAplicațiiPublice(){
+function toggleAplicatiiPublice(){
   const div = document.getElementById("aplicatiiList");
   div.classList.toggle("hidden");
 }
