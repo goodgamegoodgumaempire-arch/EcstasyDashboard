@@ -20,7 +20,7 @@ nav ul li a:hover, nav ul li.active a { color:#ff6600;}
 .card h2 { margin:0 0 10px; font-size:1.1em; color:#fff;}
 .item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px;}
 .status { font-weight:bold; margin-left:10px; color:#ffcc00;}
-input, textarea, select, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
+input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
 button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s;}
 button:hover { background:#cc5200;}
 .hidden { display:none; }
@@ -44,7 +44,28 @@ button:hover { background:#cc5200;}
 
 <div id="layout">
   <div id="main">
-    <div id="cardsContainer"></div>
+    <!-- Card aplicație Poliție -->
+    <div class="card">
+      <h2>Aplică pentru Poliție</h2>
+      <button onclick="toggleForm('politie')">Aplică</button>
+      <div id="formpolitie" class="hidden" data-loaded="false"></div>
+    </div>
+
+    <!-- Card aplicație Medici -->
+    <div class="card">
+      <h2>Aplică pentru Medici</h2>
+      <button onclick="toggleForm('medici')">Aplică</button>
+      <div id="formmedici" class="hidden" data-loaded="false"></div>
+    </div>
+
+    <!-- Card aplicație Staff -->
+    <div class="card">
+      <h2>Aplică pentru Staff</h2>
+      <button onclick="toggleForm('staff')">Aplică</button>
+      <div id="formstaff" class="hidden" data-loaded="false"></div>
+    </div>
+
+    <!-- Lista aplicații -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
       <div id="aplicatiiList"></div>
@@ -65,78 +86,63 @@ button:hover { background:#cc5200;}
 </div>
 
 <script>
-// --- Preluare aplicații și modele ---
-const aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
-const modele = JSON.parse(localStorage.getItem("modeleAplicatii")) || {
-  politie: ["Nume jucător","Motivație / Mesaj"],
-  medici: ["Nume jucător","Motivație / Mesaj"],
-  staff: ["Nume jucător","Motivație / Mesaj"]
-};
+let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// --- Generare carduri din model ---
-function renderCards() {
-  const container = document.getElementById("cardsContainer");
-  container.innerHTML="";
-  Object.keys(modele).forEach(tip=>{
-    const card = document.createElement("div");
-    card.className="card";
-    card.innerHTML=`<h2>Aplică pentru ${tip.charAt(0).toUpperCase()+tip.slice(1)}</h2>
-      <button onclick="toggleForm('${tip}')">Aplică</button>
-      <div id="form${tip}" class="hidden"></div>`;
-    container.appendChild(card);
-
-    const formDiv = card.querySelector(`#form${tip}`);
-    modele[tip].forEach(field=>{
-      const el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
-      el.placeholder = field;
-      el.dataset.field = field;
-      formDiv.appendChild(el);
-    });
-    const submitBtn = document.createElement("button");
-    submitBtn.innerText="Trimite aplicație";
-    submitBtn.onclick = ()=> trimiteAplicatie(tip);
-    formDiv.appendChild(submitBtn);
-  });
-}
-
-// --- Arată/ascunde formular ---
-function toggleForm(tip) {
-  const div = document.getElementById(`form${tip}`);
+// Toggle form și generează câmpuri din model
+function toggleForm(tip){
+  const div = document.getElementById("form"+tip);
   div.classList.toggle('hidden');
+
+  if(div.dataset.loaded === "true") return;
+
+  // Preia modelul din localStorage
+  const modele = JSON.parse(localStorage.getItem("modeleAplicatii")) || {};
+  const campuri = modele[tip] || ["Nume jucător","Motivație / Mesaj"];
+
+  campuri.forEach(field => {
+    const el = field.toLowerCase().includes("mesaj") ? document.createElement("textarea") : document.createElement("input");
+    el.placeholder = field;
+    el.dataset.field = field;
+    div.appendChild(el);
+  });
+
+  const submitBtn = document.createElement("button");
+  submitBtn.innerText = "Trimite aplicație";
+  submitBtn.onclick = () => trimiteAplicatie(tip);
+  div.appendChild(submitBtn);
+
+  div.dataset.loaded = "true";
 }
 
-// --- Trimite aplicație ---
+// Trimite aplicație
 function trimiteAplicatie(tip){
-  const formDiv = document.getElementById(`form${tip}`);
-  const inputs = Array.from(formDiv.querySelectorAll("input,textarea"));
-  const data = {};
-  for(let inp of inputs){
-    if(!inp.value.trim()){ alert("Completează toate câmpurile!"); return; }
-    data[inp.dataset.field] = inp.value.trim();
-  }
-  aplicatii.push({type:tip,data,status:"În așteptare"});
-  localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
+  const div = document.getElementById("form"+tip);
+  const inputs = Array.from(div.querySelectorAll("input,textarea"));
+  const values = inputs.map(i=>i.value.trim());
+  if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
+
+  const message = values.join(" | "); // combinăm toate câmpurile
+  aplicatii.push({type:tip, name:values[0], message:message, status:"În așteptare"});
+  localStorage.setItem("aplicatii",JSON.stringify(aplicatii));
   renderAplicatii();
+
+  // Resetează form
   inputs.forEach(i=>i.value="");
-  toggleForm(tip);
+  div.classList.add('hidden');
 }
 
-// --- Render aplicațiile tale ---
+// Render aplicații
 function renderAplicatii(){
   const container = document.getElementById("aplicatiiList");
-  container.innerHTML="";
+  container.innerHTML = "";
   aplicatii.forEach(a=>{
     const div = document.createElement("div");
-    div.className="item";
-    let content = `<strong>${a.type.toUpperCase()}</strong><br>`;
-    Object.keys(a.data).forEach(k=>{ content += `<strong>${k}:</strong> ${a.data[k]}<br>`; });
-    content += `<span class="status">${a.status}</span>`;
-    div.innerHTML = content;
+    div.className = "item";
+    div.innerHTML = `<strong>${a.name}</strong> [${a.type}]<br>${a.message}<br><span class="status">${a.status}</span>`;
     container.appendChild(div);
   });
 }
 
-renderCards();
 renderAplicatii();
 </script>
 
