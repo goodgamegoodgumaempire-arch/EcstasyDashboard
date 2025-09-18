@@ -36,7 +36,6 @@ form button:hover { background:#cc5200; }
   <h2>Admin Panel</h2>
   <button onclick="showTab('applicationsTab')" class="active">Aplicații Staff</button>
   <button onclick="showTab('staffTab')">Staff Manager</button>
-  <button onclick="resetAllData()">RESET ALL DATA</button>
   <button onclick="showTab('sanctionsTab')">Sancțiuni</button>
   <button onclick="showTab('modelTab')">Model Aplicație</button>
   <button onclick="showTab('updatesTab')">Update-uri</button>
@@ -355,28 +354,6 @@ renderModel();
 renderUpdates();
 renderSneaks();
 
-</script>
-// --- RESETARE DATE ---
-function resetAllData(){
-  if(!confirm("Ești sigur că vrei să ștergi toate datele?")) return;
-  localStorage.removeItem("staffMembers");
-  localStorage.removeItem("aplicatii");
-  localStorage.removeItem("updates");
-  localStorage.removeItem("sneakPeeks");
-  localStorage.removeItem("sanctions");
-  // Reinițializează toate listele vizuale
-  staffMembers = [];
-  aplicatii = [];
-  updates = [];
-  sneakPeeks = [];
-  sanctions = [];
-  renderStaff();
-  renderAplicatiiStaff();
-  renderUpdates();
-  renderSneaks();
-  renderSanctions();
-  alert("Toate datele au fost resetate!");
-}
 </script>
 </body>
 </html>
