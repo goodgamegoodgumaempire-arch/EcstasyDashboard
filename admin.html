@@ -43,11 +43,13 @@ form button:hover { background:#cc5200; }
   <button onclick="showTab('reclamatiiJucatori')">Reclamații Jucători</button>
   <button onclick="showTab('reclamatiiMafii')">Reclamații Mafii</button>
   <button onclick="showTab('reclamatiiStaff')">Reclamații Staff</button>
+  <button onclick="resetAllData()" style="margin-top:10px; background:#ff0000;">RESET ALL DATA</button>
 </div>
 
 <div class="main">
   <h1>Admin Panel</h1>
-
+  
+  <!-- toate taburile rămân la fel -->
   <!-- Aplicații Staff -->
   <div id="applicationsTab" class="tab active">
     <h2>Aplicații Staff</h2>
@@ -345,6 +347,27 @@ sneakForm.addEventListener("submit", e=>{
   sneakForm.reset();
   saveSneaks();
 });
+
+// --- RESET ALL DATA ---
+function resetAllData(){
+  if(!confirm("Ești sigur că vrei să ștergi toate datele?")) return;
+  localStorage.removeItem("staffMembers");
+  localStorage.removeItem("aplicatii");
+  localStorage.removeItem("updates");
+  localStorage.removeItem("sneakPeeks");
+  localStorage.removeItem("sanctions");
+  staffMembers = [];
+  aplicatii = [];
+  updates = [];
+  sneakPeeks = [];
+  sanctions = [];
+  renderStaff();
+  renderAplicatiiStaff();
+  renderUpdates();
+  renderSneaks();
+  renderSanctions();
+  alert("Toate datele au fost resetate!");
+}
 
 // --- INIT ---
 renderAplicatiiStaff();
