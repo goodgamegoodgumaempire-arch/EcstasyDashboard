@@ -15,67 +15,64 @@ h1,h2 { color:#ff6600; }
 .reject-btn { background:#dc3545; color:#fff; } .reject-btn:hover { background:#c82333; }
 .delete-btn { background:#ff4444; color:#fff; } .delete-btn:hover { background:#cc0000; }
 .status { font-weight:bold; margin-left:10px;}
-form { background: rgba(17,17,17,0.7); padding:20px; border-radius:12px; max-width:900px; margin:20px 0; }
-textarea { width:100%; height:100px; padding:10px; border-radius:8px; border:none; background:#222; color:#fff; }
-button.save-model { background:#ff6600; margin-top:10px; width:auto; padding:10px 20px; }
-button.save-model:hover { background:#cc5200; }
+form textarea { width:100%; height:100px; padding:10px; border-radius:8px; border:none; background:#222; color:#fff; margin:5px 0; }
+form button.save-model { background:#ff6600; margin-top:10px; width:auto; padding:10px 20px; border:none; border-radius:8px; color:#fff; font-weight:bold; cursor:pointer; }
+form button.save-model:hover { background:#cc5200; }
 </style>
 </head>
 <body>
 
 <h1>PanelMD - Medici</h1>
 
-<!-- Setează model aplicație -->
-<div class="card">
-  <h2>Setează model aplicație Medici</h2>
-  <form id="modelForm">
-    <textarea id="modelMediciTextarea" placeholder="Scrie modelul aplicației aici..."></textarea>
-    <button type="submit" class="save-model">Salvează model</button>
-  </form>
-</div>
+<h2>Setează Model Aplicație Medici</h2>
+<form id="modelForm">
+    <textarea id="modelMediciTextarea" placeholder="Scrie fiecare întrebare pe câte un rând..."></textarea>
+    <button type="submit" class="save-model">Salvează Model</button>
+</form>
 
+<h2>Aplicații Medici</h2>
 <div id="applications" class="list"></div>
 
 <script>
-// LocalStorage array
+// --- Preluare aplicații ---
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Preia modelul existent
-const modelMedici = localStorage.getItem("modelMedici") || "";
-document.getElementById("modelMediciTextarea").value = modelMedici;
+// --- Preluare model ---
+let modelMedici = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
+document.getElementById("modelMediciTextarea").value = modelMedici.join("\n");
 
-// Salvează modelul
+// --- Salvează model ---
 document.getElementById("modelForm").addEventListener("submit", function(e){
     e.preventDefault();
-    const model = document.getElementById("modelMediciTextarea").value.trim();
-    localStorage.setItem("modelMedici", model);
-    alert("Modelul aplicației pentru Medici a fost salvat!");
+    const text = document.getElementById("modelMediciTextarea").value.trim();
+    modelMedici = text.split("\n").map(t=>t.trim()).filter(t=>t!=="");
+    localStorage.setItem("modelMedici", JSON.stringify(modelMedici));
+    alert("Modelul aplicației Medici a fost salvat!");
 });
 
-// Render aplicațiile pentru medici
-function renderAplicatii() {
+// --- Render aplicații ---
+function renderAplicatii(){
     const container = document.getElementById("applications");
-    container.innerHTML = "";
-    aplicatii.forEach((a, i) => {
-        if (a.type !== "medici") return; // doar medici
+    container.innerHTML="";
+    aplicatii.forEach((a,i)=>{
+        if(a.type!=="medici") return;
         const div = document.createElement("div");
         div.classList.add("item");
-        div.innerHTML = `<div><strong>${a.name}</strong> - ${a.message} <span class="status">${a.status || "În așteptare"}</span></div>`;
-        
+        div.innerHTML = `<div><strong>${a.name}</strong> - ${a.message} <span class="status">${a.status||"În așteptare"}</span></div>`;
         const actions = document.createElement("div");
         actions.classList.add("item-actions");
 
         const accept = document.createElement("button");
-        accept.className = "accept-btn"; accept.innerText = "Acceptă";
-        accept.onclick = () => { a.status = "Acceptat"; saveRender(); };
+        accept.className="accept-btn"; accept.innerText="Acceptă"; 
+        accept.onclick=()=>{ a.status="Acceptat"; saveRender(); };
 
         const reject = document.createElement("button");
-        reject.className = "reject-btn"; reject.innerText = "Respinge";
-        reject.onclick = () => { a.status = "Respins"; saveRender(); };
+        reject.className="reject-btn"; reject.innerText="Respinge";
+        reject.onclick=()=>{ a.status="Respins"; saveRender(); };
 
         const del = document.createElement("button");
-        del.className = "delete-btn"; del.innerText = "Șterge";
-        del.onclick = () => { aplicatii.splice(i, 1); saveRender(); };
+        del.className="delete-btn"; del.innerText="Șterge";
+        del.onclick=()=>{ aplicatii.splice(i,1); saveRender(); };
 
         actions.appendChild(accept);
         actions.appendChild(reject);
@@ -85,26 +82,14 @@ function renderAplicatii() {
     });
 }
 
-// Salvează în localStorage și rerandează
-function saveRender() {
+// --- Salvează și rerandează ---
+function saveRender(){
     localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
     renderAplicatii();
 }
 
-// F3 sau F9 pentru a activa accesul (parola deja gestionată în index.html)
-document.addEventListener("keydown", function(e){
-    if(e.key==="F3"){ 
-        const input = prompt("Introdu parola PanelMD:");
-        if(input === "parolaMDcorecta"){ 
-            renderAplicatii();
-            alert("Acces PanelMD activat.");
-        } else {
-            alert("Parola incorectă!");
-        }
-    }
-});
-
-// Nu afișăm aplicațiile până nu introduci parola
+// --- Init ---
+renderAplicatii();
 </script>
 
 </body>
