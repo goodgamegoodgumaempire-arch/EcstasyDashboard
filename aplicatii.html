@@ -60,7 +60,7 @@ button:hover { background:#cc5200;}
       <div id="formstaffNou" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Card aplicații pentru admin -->
+    <!-- Card aplicații pentru utilizator -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
       <button onclick="toggleAplicatiiPublice()">Vezi aplicații trimise</button>
@@ -84,7 +84,7 @@ button:hover { background:#cc5200;}
 <script>
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Toggle form și generează carduri pentru fiecare întrebare
+// Toggle form și generează câmpuri în funcție de model
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
   if(div.dataset.loaded !== "true"){
@@ -92,7 +92,7 @@ function toggleForm(tip){
     let model = [];
     if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
     if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
-    if(tip==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
+    if(tip==="staffNou") model = JSON.parse(localStorage.getItem("applicationModel")) || ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
 
     div.innerHTML = "";
     model.forEach(field => {
@@ -125,24 +125,18 @@ function trimiteAplicatie(tip){
   const values = inputs.map(i=>i.value.trim());
   if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
 
-  let typeValue = "";
-  if(tip === "politie") typeValue = "politie";
-  if(tip === "medici") typeValue = "medici";
-  if(tip === "staffNou") typeValue = "staffNou";
-
-  const obj = {type: typeValue, name: values[0], answers: values, status:"În așteptare"};
+  const obj = {type: tip, name: values[0], answers: values, status:"În așteptare"};
   aplicatii.push(obj);
   localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
 
   alert("Aplicația a fost trimisă!");
-
   inputs.forEach(i=>i.value="");
   div.style.display="none";
 
   renderAplicatiiPublice();
 }
 
-// Render aplicații trimise
+// Afișează aplicațiile trimise
 function renderAplicatiiPublice(){
   const container = document.getElementById("aplicatiiList");
   container.innerHTML = "";
@@ -154,7 +148,7 @@ function renderAplicatiiPublice(){
       let model = [];
       if(a.type==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
       if(a.type==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
-      if(a.type==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
+      if(a.type==="staffNou") model = JSON.parse(localStorage.getItem("applicationModel")) || ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
       a.answers.forEach((ans,i)=>{
         content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
       });
@@ -165,7 +159,7 @@ function renderAplicatiiPublice(){
   });
 }
 
-// Toggle vizualizare aplicații publice
+// Toggle vizualizare aplicații
 function toggleAplicatiiPublice(){
   const div = document.getElementById("aplicatiiList");
   div.classList.toggle("hidden");
