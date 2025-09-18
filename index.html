@@ -91,23 +91,23 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
       <!-- CARD INVIZIBIL ADMIN -->
       <div class="card" id="adminCard" style="display:none;">
         <h2>ADMIN PANEL</h2>
-        <p>Zona rezervata administratorilor</p>
+        <p>Zona rezervată administratorilor.</p>
       </div>
 
       <!-- CARD INVIZIBIL PANEL PD -->
-      <div class="card" id="panelPD" style="display:none;">
-        <h2>PANEL PD</h2>
-        <p>Zona rezervată pentru departamentul de poliție.</p>
+      <div class="card" id="panelpdCard" style="display:none;">
+        <h2>PANEL POLIȚIE (PD)</h2>
+        <p>Zonă dedicată Poliției.</p>
       </div>
 
       <!-- CARD INVIZIBIL PANEL MD -->
-      <div class="card" id="panelMD" style="display:none;">
-        <h2>PANEL MD</h2>
-        <p>Zona rezervată pentru departamentul medical.</p>
+      <div class="card" id="panelmdCard" style="display:none;">
+        <h2>PANEL MEDICI (MD)</h2>
+        <p>Zonă dedicată Medicilor.</p>
       </div>
     </div>
 
-    <!-- CARD ZONĂ GENERALĂ -->
+    <!-- Zonă Generală -->
     <div class="section">
       <h1>ZONĂ GENERALĂ</h1>
       <div class="card">
@@ -187,7 +187,7 @@ auth.onAuthStateChanged(user => {
 
       let profileHtml = `<i class="fas fa-user"></i> ${user.displayName || user.email} <button onclick="logout()" style="margin-left:10px;">Logout</button>`;
       if(data && data.isAdmin){
-        profileHtml += ` | <a href="admin.html" style="color:#ff6600; margin-left:10px;">Admin Panel</a>`;
+        profileHtml += ` | <a href="#" style="color:#ff6600; margin-left:10px;">Admin Panel</a>`;
       }
       profileLi.innerHTML = profileHtml;
     });
@@ -220,11 +220,29 @@ document.getElementById("loginBtn").addEventListener("click", ()=>{
 
 function logout(){ auth.signOut(); }
 
-// ================= PAROLE & WEBHOOK =================
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1417765822352588894/ujtSBGE4sD532iOe31sQiJ9NWXBSZuwc8EpwcFYM2sJg60XDqhXPzaTb5DET0jWrT2bW";
-let parolaCurenta = "";
+// ================= SISTEM PAROLE SEPARATE =================
+const panels = {
+  admin: {
+    webhook: "https://discord.com/api/webhooks/1417765822352588894/ujtSBGE4sD532iOe31sQiJ9NWXBSZuwc8EpwcFYM2sJg60XDqhXPzaTb5DET0jWrT2bW",
+    parolaCurenta: "",
+    cardId: "adminCard",
+    key: "F9"
+  },
+  pd: {
+    webhook: "https://discord.com/api/webhooks/1417778936301092914/iIKjC7-P_kjJR0B_3GRV8SkwET3KNV0pcnexbaDaisFx504n4_MMQuQP4JyZuRbLUh8W",
+    parolaCurenta: "",
+    cardId: "panelpdCard",
+    key: "F2"
+  },
+  md: {
+    webhook: "https://discord.com/api/webhooks/1417781888323424286/aUXGofKS9VGsRerwePFLfgg9M42xs5lbuOG2zLCpd1itzKC79zA35Zr2wnAi-GRo_eJn",
+    parolaCurenta: "",
+    cardId: "panelmdCard",
+    key: "F3"
+  }
+};
 
-// Genereaza parola random
+// Generează parolă random
 function genereazaParola(length=12){
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?";
   let parola = "";
@@ -233,64 +251,42 @@ function genereazaParola(length=12){
 }
 
 // Trimite parola pe Discord
-function trimiteWebhook(parola){
-  fetch(DISCORD_WEBHOOK,{
+function trimiteWebhook(url, parola){
+  fetch(url,{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ content: `Noua parola secreta: ${parola}` })
+    body: JSON.stringify({ content: `Noua parola: ${parola}` })
   });
 }
 
-// Actualizare parola la fiecare 30 minute
-function actualizeazaParola(){
-  parolaCurenta = genereazaParola(12);
-  trimiteWebhook(parolaCurenta);
-  console.log("Parola actualizata:", parolaCurenta);
+// Actualizare parolă pentru fiecare panel
+function actualizeazaParola(panelName){
+  const panel = panels[panelName];
+  panel.parolaCurenta = genereazaParola(12);
+  trimiteWebhook(panel.webhook, panel.parolaCurenta);
+  console.log(`Parola ${panelName} actualizata:`, panel.parolaCurenta);
 }
-actualizeazaParola();
-setInterval(actualizeazaParola,30*60*1000);
 
-// ================= ADMIN (F9) =================
-document.addEventListener("keydown", function(e){
-  if(e.key === "F9"){
-    e.preventDefault();
-    const parolaIntrodu = prompt("Introdu parola de administrator:");
-    if(parolaIntrodu === null) return;
-    if(parolaIntrodu === parolaCurenta){
-      alert("Acces la Admin Panel activat.");
-      document.getElementById("adminCard").style.display="block";
-    } else {
-      alert("Parola incorecta!");
-    }
-  }
-});
+// Inițializează parolele
+for(const key in panels){
+  actualizeazaParola(key);
+  setInterval(()=>actualizeazaParola(key),30*60*1000);
+}
 
-// ================= PANEL PD (F2) =================
+// Ascultă tastele F2, F3, F9
 document.addEventListener("keydown", function(e){
-  if(e.key === "F2"){
-    e.preventDefault();
-    const parolaIntrodu = prompt("Introdu parola pentru Panel PD:");
-    if(parolaIntrodu === null) return;
-    if(parolaIntrodu === parolaCurenta){
-      alert("Acces Panel PD activat.");
-      document.getElementById("panelPD").style.display="block";
-    } else {
-      alert("Parola incorecta!");
-    }
-  }
-});
-
-// ================= PANEL MD (F3) =================
-document.addEventListener("keydown", function(e){
-  if(e.key === "F3"){
-    e.preventDefault();
-    const parolaIntrodu = prompt("Introdu parola pentru Panel MD:");
-    if(parolaIntrodu === null) return;
-    if(parolaIntrodu === parolaCurenta){
-      alert("Acces Panel MD activat.");
-      document.getElementById("panelMD").style.display="block";
-    } else {
-      alert("Parola incorecta!");
+  for(const key in panels){
+    const panel = panels[key];
+    if(e.key === panel.key){
+      e.preventDefault();
+      const parolaIntrodu = prompt(`Introdu parola pentru ${key.toUpperCase()}:`);
+      if(parolaIntrodu === null) return;
+      if(parolaIntrodu === panel.parolaCurenta){
+        alert("Parola corectă! Acces acordat.");
+        document.getElementById(panel.cardId).style.display="block";
+      } else {
+        alert("Parola incorectă!");
+      }
     }
   }
 });
