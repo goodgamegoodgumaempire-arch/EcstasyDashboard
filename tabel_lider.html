@@ -1,0 +1,34 @@
+<div id="lideriContainer"></div>
+
+<script>
+const lideriContainer = document.getElementById('lideriContainer');
+let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+
+const grupuri = ["Politie", "Medici", "Mafii"];
+grupuri.forEach(grup => {
+  const sectiune = document.createElement('div');
+  sectiune.innerHTML = `<h2>${grup}</h2>`;
+  const container = document.createElement('div');
+  container.style.display = 'flex';
+  container.style.flexWrap = 'wrap';
+  container.style.gap = '15px';
+
+  lideri.filter(l => l.grup === grup).forEach(l => {
+    const card = document.createElement('div');
+    card.style.background = 'rgba(17,17,17,0.85)';
+    card.style.border = '1px solid #333';
+    card.style.borderRadius = '10px';
+    card.style.padding = '10px';
+    card.style.textAlign = 'center';
+    card.innerHTML = `
+      <img src="${l.img}" alt="${l.nume}" style="width:80px; height:80px; border-radius:50%; object-fit:cover;">
+      <h3 style="color:#ff6600;">${l.nume}</h3>
+      <p style="color:#ccc;">${l.grad}</p>
+    `;
+    container.appendChild(card);
+  });
+
+  sectiune.appendChild(container);
+  lideriContainer.appendChild(sectiune);
+});
+</script>
