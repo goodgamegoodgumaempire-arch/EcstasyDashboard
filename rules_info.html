@@ -11,7 +11,14 @@ body {
   font-family:'Roboto',sans-serif;
   display:flex;
   height:100vh;
-  background:#f4f6f9;
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
+  background-size:400% 400%;
+  animation: gradientBG 20s ease infinite;
+}
+@keyframes gradientBG {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 /* Sidebar */
 .sidebar {
@@ -258,3 +265,4 @@ window.onload = ()=>{
 </script>
 </body>
 </html>
+
