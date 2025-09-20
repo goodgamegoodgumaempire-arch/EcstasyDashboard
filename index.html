@@ -155,6 +155,7 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+// ================= Firebase Config =================
 const firebaseConfig = {
   apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
   authDomain: "ecstassy-44277.firebaseapp.com",
@@ -278,8 +279,47 @@ document.addEventListener("keydown", function(e){
     }
   }
 });
-</script>
 
+// ================= Rules & Info Panel =================
+const RULES_PANEL = {
+  key: "F5",  // trigger la F5
+  webhook: "https://discord.com/api/webhooks/1418864292798795868/AWzb9Q7Uby2qgLOoIsXvfWEbkrqlpu2ST3q44SvpAcyyES-9qmPEEOigZd-rSikaHd1H",
+  url: "rules_info.html",
+  parola: ""
+};
+
+function genereazaParolaRules(length=12){
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?";
+  let parola = "";
+  for(let i=0;i<length;i++){ parola += chars.charAt(Math.floor(Math.random()*chars.length)); }
+  return parola;
+}
+
+function trimiteWebhookRules(webhookUrl, parola){
+  fetch(webhookUrl,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ content: `Noua parola Rules Panel: ${parola}` })
+  });
+}
+
+// Inițializare și trimitere webhook la încărcare
+RULES_PANEL.parola = genereazaParolaRules(12);
+trimiteWebhookRules(RULES_PANEL.webhook, RULES_PANEL.parola);
+
+// Detectare F5
+document.addEventListener("keydown", function(e){
+  if(e.key === RULES_PANEL.key){
+    e.preventDefault(); // împiedică refresh-ul
+    const parolaIntrodu = prompt("Introdu parola pentru Rules & Info Panel:");
+    if(parolaIntrodu === null) return;
+    if(parolaIntrodu === RULES_PANEL.parola){
+      window.location.href = RULES_PANEL.url;
+    } else {
+      alert("Parola incorecta!");
+    }
+  }
+});
+</script>
 </body>
 </html>
-
