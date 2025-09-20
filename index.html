@@ -1,287 +1,195 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Forum - G4A Romania</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
-@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-#authContainer { display:flex; flex-direction:column; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index:1000; padding:20px; box-sizing:border-box;}
-#authContainer input { padding:10px; margin:5px 0; border-radius:8px; border:none; width:250px; }
-#authContainer button { padding:10px 20px; margin:5px; border:none; border-radius:8px; font-weight:700; cursor:pointer; background:#4fc3f7; color:#0b0c17; }
-#authContainer button:hover { background:#ffdd57; }
-#content { display:none; }
-nav { display: flex; align-items: center; background: transparent; padding: 10px 40px; border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; }
-nav img { height: 40px; margin-right: 50px; }
-nav ul { display: flex; gap: 40px; list-style: none; margin: 0 auto; padding: 0; }
-nav ul li a { color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 0.85em; transition: 0.2s; }
-nav ul li a:hover { color: #ff6600; }
-nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-bottom: 4px; }
-#layout { display: flex; max-width: 1300px; margin: 20px auto; gap: 20px; padding: 0 20px; }
-#main { flex: 3; } #sidebar { flex: 1; }
-.section > h1 { font-size: 1.2em; color: #ff6600; border-bottom: 2px solid #222; padding: 8px 0; margin: 20px 0 10px; }
-.card { background: rgba(17,17,17,0.85); border-radius: 10px; padding: 20px; margin: 15px 0; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s; }
-.card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.7); }
-.card h2 { margin: 0 0 10px; font-size: 1.1em; color: #fff; }
-.card p { margin: 0 0 10px; color: #aaa; }
-.forum-links { display: flex; flex-wrap: wrap; gap: 15px; font-size: 0.9em; }
-.forum-links a { color: #ff6600; text-decoration: none; transition: 0.2s; }
-.forum-links a:hover { color: #fff; }
-.sidebar-box { background: rgba(17,17,17,0.85); border-radius: 10px; margin-bottom: 20px; padding: 15px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-.sidebar-box h3 { font-size: 1em; color: #ff6600; margin-bottom: 10px; border-bottom: 1px solid #222; padding-bottom: 5px; }
-.sidebar-box ul { list-style: none; margin: 0; padding: 0; }
-.sidebar-box ul li { padding: 8px 0; font-size: 0.9em; border-bottom: 1px solid #222; }
-.sidebar-box ul li:last-child { border-bottom: none; }
-.announcements li { padding: 12px; border-radius: 6px; margin-bottom: 8px; color: #fff; cursor: pointer; font-weight: 600; }
-.announcements li:nth-child(1) { background: #d2691e; }
-.announcements li:nth-child(2) { background: #a0522d; }
-.discord-box { text-align: center; }
-.discord-box a { display: inline-block; text-decoration: none; color: #fff; font-weight: bold; font-size: 1.2em; text-align: center; padding: 10px 0; transition: transform 0.3s; }
-.discord-box a:hover { color: #ff6600; }
-.discord-box img { max-width: 100%; border-radius: 8px; margin-top: 10px; }
-.marketplace-box p { color: #ccc; margin: 15px 0; }
-.marketplace-box button { background: #ff6600; border: none; color: #fff; padding: 12px 20px; font-size: 1em; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-.marketplace-box button:hover { background: #cc5200; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rules & Info Panel — rules-info.html</title>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; display: flex; height: 100vh; background: #f4f6f9; }
+    .sidebar { width: 260px; background: #2c3e50; color: white; display: flex; flex-direction: column; padding: 20px; }
+    .sidebar h2 { margin-bottom: 18px; font-size: 20px }
+    .sidebar button { background: none; border: none; color: white; text-align: left; padding: 10px 8px; margin: 6px 0; cursor: pointer; font-size: 15px; }
+    .sidebar button:hover { background: #34495e; border-radius: 6px; }
+    .content { flex: 1; padding: 22px; overflow-y: auto; }
+    .card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); padding: 18px; margin-bottom: 18px; }
+    .card h3 { margin-top: 0; }
+    textarea { width: 100%; min-height: 150px; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #ccc; resize: vertical; }
+    button.save { margin-top: 10px; padding: 8px 15px; border: none; background: #27ae60; color: white; border-radius: 6px; cursor: pointer; }
+    button.save:hover { background: #2ecc71; }
+    .top-actions { display:flex; gap:10px; align-items:center; margin-bottom: 12px }
+    .btn-secondary { padding:8px 12px; border-radius:6px; border:1px solid #ccc; background:white; cursor:pointer }
+
+    /* modal */
+    .modal-backdrop { position: fixed; inset:0; background: rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; }
+    .modal { background:white; border-radius:8px; padding:18px; width: 420px; max-width:90%; box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+    .modal h4 { margin:0 0 8px 0 }
+    .modal .actions { margin-top:12px; display:flex; gap:8px; justify-content:flex-end }
+
+    @media (max-width:800px){ .sidebar{display:none} }
+  </style>
 </head>
 <body>
-
-<div id="authContainer">
-  <h2>Autentificare / Înregistrare</h2>
-  <input type="text" id="displayName" placeholder="Nume de utilizator">
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Parola">
-  <div>
-    <button id="loginBtn">Loghează-te</button>
-    <button id="signupBtn">Înregistrează-te</button>
+  <div class="sidebar">
+    <h2>Rules & Info</h2>
+    <button onclick="showSection('politie')">Regulament Poliție</button>
+    <button onclick="showSection('medici')">Regulament Medici</button>
+    <button onclick="showSection('mafii')">Regulament Mafii</button>
+    <button onclick="showSection('staff')">Regulament Staff</button>
+    <button onclick="showSection('codpenal')">Cod Penal</button>
+    <button onclick="showSection('contacte')">Contacte Utile</button>
   </div>
-</div>
 
-<div id="content">
-<nav>
-  <img src="logo.png" alt="G4A Logo">
-  <ul>
-    <li class="active"><a href="#"><i class="fas fa-home"></i><span>Forumuri</span></a></li>
-    <li><a href="Staff.html"><i class="fas fa-users"></i><span>Staff</span></a></li>
-    <li><a href="#"><i class="fas fa-wifi"></i><span>Online</span></a></li>
-    <li><a href="#"><span>Tabel Lideri</span></a></li>
-    <li><a href="evidenta.html"><span>Evidența Servere</span></a></li>
-    <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
-    <li id="profile"></li>
-  </ul>
-</nav>
-
-<div id="layout">
-  <div id="main">
-    <div class="section">
-      <h1>ADMINISTRAȚIE ȘI DEZVOLTARE</h1>
-      <div class="card">
-        <h2>ZONA ADMINISTRATIVĂ</h2>
-        <p>Zonă pentru informații și știri despre forum, comunitate și parteneriate.</p>
-        <div class="forum-links">
-          <a href="rginf.html">Regulament & Informații</a>
-          <a href="anunturi.html">Anunțuri</a>
-          <a href="parteners.html">Parteneriate</a>
-        </div>
-      </div>
-
-      <!-- Panouri ascunse -->
-      <div class="card" id="adminCard" style="display:none;">
-        <h2>ADMIN PANEL</h2>
-        <p>Zona rezervată administratorilor</p>
-        <a href="admin.html" style="color:#ff6600;">Accesează Admin Panel</a>
-      </div>
-      <div class="card" id="pdCard" style="display:none;">
-        <h2>PANEL POLIȚIE</h2>
-        <p>Zonă dedicată Poliției</p>
-        <a href="panelpd.html" style="color:#ff6600;">Accesează Panel PD</a>
-      </div>
-      <div class="card" id="mdCard" style="display:none;">
-        <h2>PANEL MEDICI</h2>
-        <p>Zonă dedicată Medicilor</p>
-        <a href="panelmd.html" style="color:#ff6600;">Accesează Panel MD</a>
-      </div>
+  <div class="content" id="content">
+    <div class="top-actions">
+      <button class="btn-secondary" onclick="exportAll()">Descarcă (JSON)</button>
+      <button class="btn-secondary" onclick="openWebhookModal()">Trimite la Webhook</button>
+      <div style="margin-left:auto;font-size:13px;color:#666">Apasă <strong>F5</strong> pentru a deschide această pagină (dezactivează refresh)</div>
     </div>
 
-    <!-- Zonă Generală -->
-    <div class="section">
-      <h1>ZONĂ GENERALĂ</h1>
-      <div class="card">
-        <h2>Forumuri Publice</h2>
-        <div class="forum-links">
-          <a href="aplicatii.html">Aplicații</a>
-          <a href="reclamatii_staff.html">Reclamații Staff</a>
-          <a href="reclamatii_jucatori.html">Reclamații Jucători</a>
-          <a href="reclamatii_mafii.html">Reclamații Mafii</a>
-          <a href="reclamatii_politie.html">Reclamații Poliție</a>
-          <a href="reclamatii_medici.html">Reclamații Medici</a>
+    <div class="card" id="politie">
+      <h3>Regulament Poliție</h3>
+      <textarea placeholder="Adaugă regulamentul pentru poliție..."></textarea>
+      <button class="save" onclick="saveText('politie')">Salvează</button>
+    </div>
+
+    <div class="card" id="medici" style="display:none;">
+      <h3>Regulament Medici</h3>
+      <textarea placeholder="Adaugă regulamentul pentru medici..."></textarea>
+      <button class="save" onclick="saveText('medici')">Salvează</button>
+    </div>
+
+    <div class="card" id="mafii" style="display:none;">
+      <h3>Regulament Mafii</h3>
+      <textarea placeholder="Adaugă regulamentul pentru mafii..."></textarea>
+      <button class="save" onclick="saveText('mafii')">Salvează</button>
+    </div>
+
+    <div class="card" id="staff" style="display:none;">
+      <h3>Regulament Staff</h3>
+      <textarea placeholder="Adaugă regulamentul pentru staff..."></textarea>
+      <button class="save" onclick="saveText('staff')">Salvează</button>
+    </div>
+
+    <div class="card" id="codpenal" style="display:none;">
+      <h3>Cod Penal</h3>
+      <textarea placeholder="Adaugă Codul Penal..."></textarea>
+      <button class="save" onclick="saveText('codpenal')">Salvează</button>
+    </div>
+
+    <div class="card" id="contacte" style="display:none;">
+      <h3>Contacte Utile</h3>
+      <textarea placeholder="Adaugă contacte utile..."></textarea>
+      <button class="save" onclick="saveText('contacte')">Salvează</button>
+    </div>
+  </div>
+
+  <!-- modal (hidden by default) -->
+  <div id="webhookModal" style="display:none">
+    <div class="modal-backdrop">
+      <div class="modal">
+        <h4>Trimite la Webhook</h4>
+        <p style="margin:0 0 8px 0">Confirmă trimiterea textelor curente (Regulamente + Contacte) la webhook-ul configurat.</p>
+        <label style="font-size:13px;color:#444">Webhook URL:</label>
+        <input id="webhookUrl" style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc" value="https://discord.com/api/webhooks/1418864292798795868/AWzb9Q7Uby2qgLOoIsXvfWEbkrqlpu2ST3q44SvpAcyyES-9qmPEEOigZd-rSikaHd1H">
+        <div class="actions">
+          <button class="btn-secondary" onclick="closeWebhookModal()">Anulează</button>
+          <button class="save" onclick="sendToWebhook()">Trimite</button>
         </div>
       </div>
     </div>
-
-    <div class="section">
-      <h1>COMMUNITY SERVERS</h1>
-      <div class="card discord-box">
-        <a href="https://discord.gg/" target="_blank">DISCORD - CLICK ME! 💬</a>
-        <img src="discord.gif" alt="Discord GIF">
-      </div>
-    </div>
-
-    <div class="section">
-      <h1>MARKETPLACE</h1>
-      <div class="card marketplace-box">
-        <h2>The Marketplace on the G4A Community</h2>
-        <p>Schimb și vânzări între gameri în condiții sigure.</p>
-        <button>Buy</button>
-      </div>
-    </div>
   </div>
 
-  <div id="sidebar">
-    <div class="sidebar-box">
-      <h3>Announcements</h3>
-      <ul class="announcements">
-        <li><a href="updates.html" style="color: inherit; text-decoration: none;">🟠 Update-uri</a></li>
-        <li><a href="sneakpeaks.html" style="color: inherit; text-decoration: none;">🔍 Sneak Peaks</a></li>
-      </ul>
-    </div>
-  </div>
-</div>
-</div>
+  <script>
+    // --- IMPORTANT SAFETY NOTE ---
+    // This page will NOT collect or send passwords or other sensitive credentials.
+    // It only sends the text fields (regulamente/contacte) when you explicitly confirm.
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
-  authDomain: "ecstassy-44277.firebaseapp.com",
-  databaseURL: "https://ecstassy-44277-default-rtdb.firebaseio.com",
-  projectId: "ecstassy-44277",
-  storageBucket: "ecstassy-44277.firebasestorage.app",
-  messagingSenderId: "557171186889",
-  appId: "1:557171186889:web:0cae151137b761b2660118",
-  measurementId: "G-34Q8PVK8EH"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.database();
-
-const authContainer = document.getElementById("authContainer");
-const content = document.getElementById("content");
-const profileLi = document.getElementById("profile");
-
-auth.onAuthStateChanged(user => {
-  if(user){
-    db.ref('users/'+user.uid).once('value').then(snapshot=>{
-      const data = snapshot.val();
-      authContainer.style.display="none";
-      content.style.display="block";
-
-      let profileHtml = `<i class="fas fa-user"></i> ${user.displayName || user.email} <button onclick="logout()" style="margin-left:10px;">Logout</button>`;
-      if(data && data.isAdmin){
-        profileHtml += ` | <a href="admin.html" style="color:#ff6600; margin-left:10px;">Admin Panel</a>`;
+    // Intercept F5 so it doesn't refresh the page.
+    window.addEventListener('keydown', function(e){
+      if(e.key === 'F5'){
+        e.preventDefault();
+        // If already on rules-info.html, open the webhook modal for explicit action.
+        if(location.pathname.endsWith('rules-info.html') || location.pathname.endsWith('/')){
+          openWebhookModal();
+        } else {
+          // otherwise navigate to rules-info.html
+          location.href = 'rules-info.html';
+        }
       }
-      profileLi.innerHTML = profileHtml;
     });
-  } else {
-    authContainer.style.display="flex";
-    content.style.display="none";
-    profileLi.innerHTML="";
-  }
-});
 
-document.getElementById("signupBtn").addEventListener("click", ()=>{
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const displayName = document.getElementById("displayName").value.trim();
-  if(!displayName){ alert("Trebuie să introduci un nume!"); return; }
-  auth.createUserWithEmailAndPassword(email,password)
-    .then(userCredential=>{
-      return userCredential.user.updateProfile({displayName}).then(()=>{
-        db.ref('users/'+userCredential.user.uid).set({username:displayName,email});
-      });
-    })
-    .catch(e=>alert(e.message));
-});
-
-document.getElementById("loginBtn").addEventListener("click", ()=>{
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  auth.signInWithEmailAndPassword(email,password).catch(e=>alert(e.message));
-});
-
-function logout(){ auth.signOut(); }
-
-// ================= Panouri cu parole și webhooks =================
-const PANELS = {
-  admin: {
-    key: "F9",
-    webhook: "https://discord.com/api/webhooks/1417765822352588894/ujtSBGE4sD532iOe31sQiJ9NWXBSZuwc8EpwcFYM2sJg60XDqhXPzaTb5DET0jWrT2bW",
-    cardId: "adminCard",
-    parola: ""
-  },
-  pd: {
-    key: "F2",
-    webhook: "https://discord.com/api/webhooks/1417778936301092914/iIKjC7-P_kjJR0B_3GRV8SkwET3KNV0pcnexbaDaisFx504n4_MMQuQP4JyZuRbLUh8W",
-    cardId: "pdCard",
-    parola: ""
-  },
-  md: {
-    key: "F3",
-    webhook: "https://discord.com/api/webhooks/1417781888323424286/aUXGofKS9VGsRerwePFLfgg9M42xs5lbuOG2zLCpd1itzKC79zA35Zr2wnAi-GRo_eJn",
-    cardId: "mdCard",
-    parola: ""
-  }
-};
-
-function genereazaParola(length=12){
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?";
-  let parola = "";
-  for(let i=0;i<length;i++){ parola += chars.charAt(Math.floor(Math.random()*chars.length)); }
-  return parola;
-}
-
-function trimiteWebhook(url, parola){
-  fetch(url,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ content: `Noua parola: ${parola}` })
-  });
-}
-
-function actualizeazaParole(){
-  for(const key in PANELS){
-    PANELS[key].parola = genereazaParola(12);
-    trimiteWebhook(PANELS[key].webhook, PANELS[key].parola);
-    console.log(`Parola ${key} actualizata:`, PANELS[key].parola);
-  }
-}
-actualizeazaParole();
-setInterval(actualizeazaParole,30*60*1000);
-
-// Evenimente taste
-document.addEventListener("keydown", function(e){
-  for(const key in PANELS){
-    if(e.key === PANELS[key].key){
-      e.preventDefault();
-      const parolaIntrodu = prompt("Introdu parola:");
-      if(parolaIntrodu === null) return;
-      if(parolaIntrodu === PANELS[key].parola){
-        alert("Parola corecta! Acces activat.");
-        document.getElementById(PANELS[key].cardId).style.display="block";
-      } else {
-        alert("Parola incorecta!");
-      }
+    function showSection(id) {
+      document.querySelectorAll('.card').forEach(card => card.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
     }
-  }
-});
-</script>
 
+    function saveText(id) {
+      const textarea = document.querySelector(`#${id} textarea`);
+      localStorage.setItem(id, textarea.value);
+      alert('Salvat cu succes!');
+    }
+
+    // load saved texts
+    window.onload = () => {
+      document.querySelectorAll('.card').forEach(card => {
+        const id = card.id;
+        const savedText = localStorage.getItem(id);
+        if (savedText) {
+          card.querySelector('textarea').value = savedText;
+        }
+      });
+    }
+
+    // export all fields as JSON file
+    function exportAll(){
+      const data = {};
+      document.querySelectorAll('.card').forEach(card => {
+        const id = card.id;
+        data[id] = card.querySelector('textarea').value || '';
+      });
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'rules-info-backup.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Modal controls
+    function openWebhookModal(){ document.getElementById('webhookModal').style.display = 'block'; }
+    function closeWebhookModal(){ document.getElementById('webhookModal').style.display = 'none'; }
+
+    // Send to Discord webhook (only non-sensitive content)
+    async function sendToWebhook(){
+      const webhook = document.getElementById('webhookUrl').value.trim();
+      if(!webhook){ alert('Introdu un webhook URL valid.'); return; }
+
+      // collect texts
+      const payloadParts = [];
+      document.querySelectorAll('.card').forEach(card => {
+        const title = card.querySelector('h3').innerText;
+        const text = card.querySelector('textarea').value || '(gol)';
+        payloadParts.push('**' + title + '**
+' + text);
+      });
+
+      // Discord limits: we'll send as multiple messages if needed. Here we join into one.
+      const content = payloadParts.join('
+
+---
+
+');
+
+      try{
+        const res = await fetch(webhook, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json' },
+          body: JSON.stringify({ content })
+        });
+        if(res.ok){ alert('Trimis cu succes la webhook!'); closeWebhookModal(); }
+        else { const txt = await res.text(); alert('Eroare la trimitere: ' + res.status + ' — ' + txt); }
+      }catch(err){ alert('Eroare la trimitere: ' + err.message); }
+    }
+  </script>
 </body>
 </html>
