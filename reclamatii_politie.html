@@ -3,99 +3,57 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reclamații - G4A Romania</title>
+<title>Reclamații Poliție - ECSTASY</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body {
-  margin:0; 
-  font-family:'Roboto',sans-serif; 
-  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b1c17); 
-  background-size:400% 400%; 
-  animation: gradientBG 20s ease infinite; 
-  color:#fff; 
-  min-height:100vh;
-}
+body { margin:0; font-family:'Roboto',sans-serif; background:linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation:gradientBG 20s ease infinite; color:#fff; min-height:100vh; display:flex; justify-content:center; align-items:center;}
 @keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-
-nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
-nav img { height:40px; margin-right:50px;}
-nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0;}
-nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s;}
-nav ul li a:hover, nav ul li.active a { color:#ff6600;}
-
-.form-card {
-  max-width:450px; 
-  margin:50px auto; 
-  background: rgba(17,17,17,0.85); 
-  padding:25px 30px; 
-  border-radius:12px; 
-  box-shadow:0 6px 20px rgba(0,0,0,0.6);
-}
-.form-card h2 { text-align:center; margin-bottom:20px; color:#ff6600; }
-.form-card input, .form-card textarea, .form-card button {
-  width:100%; 
-  padding:12px; 
-  margin:8px 0; 
-  border-radius:8px; 
-  border:none; 
-  font-family:'Roboto',sans-serif;
-}
-.form-card textarea { resize:none; height:100px; background:#222; color:#fff; }
-.form-card button { background:#ff6600; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s; }
-.form-card button:hover { background:#cc5200; }
+.container { background:rgba(17,17,17,0.9); padding:30px; border-radius:12px; box-shadow:0 0 12px rgba(0,0,0,0.6); width:90%; max-width:500px;}
+h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
+label { font-weight:bold; display:block; margin-top:12px; }
+input { width:100%; padding:10px; margin-top:6px; border-radius:8px; border:none; background:#222; color:#fff; }
+button { margin-top:20px; width:100%; padding:12px; border:none; border-radius:8px; background:#ff6600; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s;}
+button:hover { background:#cc5200; }
+.success { margin-top:15px; color:#28a745; font-weight:bold; text-align:center; }
 </style>
 </head>
 <body>
 
-<nav>
-  <img src="logo.png" alt="G4A Logo">
-  <ul>
-    <li><a href="index.html">Acasă</a></li>
-    <li><a href="aplicatii.html">Aplicații</a></li>
-    <li class="active"><a href="reclamatii_politie.html">Reclamații</a></li>
-  </ul>
-</nav>
+<div class="container">
+  <h1>Reclamație Poliție</h1>
+  <form id="reclamatieForm">
+    <label for="idT">ID-ul Tău:</label>
+    <input type="text" id="idT" required>
 
-<div class="form-card">
-  <h2>Trimite Reclamație</h2>
-  <form id="complaintForm">
-    <input type="text" id="complainantId" placeholder="ID reclamant" required>
-    <input type="text" id="userId" placeholder="ID tău" required>
-    <textarea id="reason" placeholder="Motivul reclamației" required></textarea>
-    <input type="text" id="link" placeholder="Link filmare YouTube" required>
-    <button type="submit">Trimite</button>
+    <label for="idR">ID-ul Reclamantului:</label>
+    <input type="text" id="idR" required>
+
+    <label for="link">Link (filmare / dovadă):</label>
+    <input type="url" id="link" placeholder="https://..." required>
+
+    <button type="submit">Trimite Reclamația</button>
   </form>
+  <div id="successMsg" class="success" style="display:none;">Reclamația a fost trimisă!</div>
 </div>
 
 <script>
-const form = document.getElementById("complaintForm");
-form.addEventListener("submit", e=>{
+document.getElementById("reclamatieForm").addEventListener("submit", function(e){
   e.preventDefault();
-  
-  const complainantId = document.getElementById("complainantId").value.trim();
-  const userId = document.getElementById("userId").value.trim();
-  const reason = document.getElementById("reason").value.trim();
+
+  const idT = document.getElementById("idT").value.trim();
+  const idR = document.getElementById("idR").value.trim();
   const link = document.getElementById("link").value.trim();
-  
-  if(!complainantId || !userId || !reason || !link) {
-    return alert("Completează toate câmpurile!");
-  }
 
-  let complaints = JSON.parse(localStorage.getItem("policeComplaints")) || [];
-  const newComplaint = {
-    id: complaints.length ? complaints[complaints.length-1].id + 1 : 1,
-    complainantId,
-    userId,
-    reason,
-    link,
-    status: "În așteptare"
-  };
-  
-  complaints.push(newComplaint);
-  localStorage.setItem("policeComplaints", JSON.stringify(complaints));
+  if(!idT || !idR || !link) return;
 
-  alert("Reclamația a fost trimisă!");
-  form.reset();
+  let reclamatiiPolitie = JSON.parse(localStorage.getItem("reclamatiiPolitie")) || [];
+  reclamatiiPolitie.push({ idT, idR, link });
+  localStorage.setItem("reclamatiiPolitie", JSON.stringify(reclamatiiPolitie));
+
+  document.getElementById("reclamatieForm").reset();
+  document.getElementById("successMsg").style.display = "block";
+
+  setTimeout(()=>{ document.getElementById("successMsg").style.display="none"; }, 3000);
 });
 </script>
 
