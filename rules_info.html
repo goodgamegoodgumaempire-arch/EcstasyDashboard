@@ -48,26 +48,15 @@ body {
   margin-bottom:20px;
 }
 .card h3 { margin-top:0; }
-textarea {
-  width:100%;
-  min-height:150px;
-  margin-top:10px;
-  padding:10px;
-  border-radius:5px;
-  border:1px solid #ccc;
-  resize:vertical;
-}
-input, select { width:100%; padding:10px; margin-top:6px; border-radius:5px; border:1px solid #ccc; }
-button.save {
-  margin-top:10px;
-  padding:8px 15px;
-  border:none;
-  background:#27ae60;
-  color:white;
-  border-radius:5px;
-  cursor:pointer;
-}
+textarea, input, select { width:100%; padding:10px; margin-top:6px; border-radius:5px; border:1px solid #ccc; }
+textarea { min-height:100px; resize:vertical; }
+button.save { margin-top:10px; padding:8px 15px; border:none; background:#27ae60; color:white; border-radius:5px; cursor:pointer; }
 button.save:hover { background:#2ecc71; }
+table { width:100%; border-collapse:collapse; margin-top:10px; }
+th, td { padding:8px 10px; border:1px solid #ddd; text-align:left; }
+th { background:#2c3e50; color:white; }
+button.edit { background:#3498db; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer; }
+button.delete { background:#e74c3c; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -81,7 +70,7 @@ button.save:hover { background:#2ecc71; }
   <button onclick="showSection('regulament_server')">Regulament Server</button>
   <button onclick="showSection('codpenal')">Cod Penal</button>
   <button onclick="showSection('contacte')">Contacte Utile</button>
-  <button onclick="showSection('adauga_lider')">Adaugă Lider</button>
+  <button onclick="showSection('adauga_lider')">Gestionează Lideri</button>
 </div>
 
 <div class="content" id="content">
@@ -129,7 +118,7 @@ button.save:hover { background:#2ecc71; }
     <button class="save" onclick="saveText('contacte')">Salvează</button>
   </div>
 
-  <!-- Adaugă Lider -->
+  <!-- Gestionează Lideri -->
   <div class="card" id="adauga_lider" style="display:none;">
     <h3>Adaugă Lider</h3>
     <input type="text" id="lider_img" placeholder="URL poza / gif">
@@ -141,6 +130,22 @@ button.save:hover { background:#2ecc71; }
       <option value="Mafii">Mafii</option>
     </select>
     <button class="save" onclick="addLider()">Adaugă Lider</button>
+
+    <h3 style="margin-top:20px;">Lista Lideri</h3>
+    <table id="liderTable">
+      <thead>
+        <tr>
+          <th>Poza</th>
+          <th>Nume</th>
+          <th>Grad</th>
+          <th>Grup</th>
+          <th>Acțiuni</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Lideri vor fi încărcați aici -->
+      </tbody>
+    </table>
   </div>
 
 </div>
@@ -166,13 +171,80 @@ function addLider(){
   let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
   lideri.push({ img, nume, grad, grup });
   localStorage.setItem('lideri', JSON.stringify(lideri));
-  alert("Lider adăugat cu succes!");
   document.getElementById('lider_img').value='';
   document.getElementById('lider_nume').value='';
   document.getElementById('lider_grad').value='';
+  loadLideri();
 }
 
-// Reîncarcă textele salvate
+// Încarcă liderii în tabel
+function loadLideri(){
+  const lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+  const tbody = document.querySelector('#liderTable tbody');
+  tbody.innerHTML = '';
+  lideri.forEach((lider, index)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><img src="${lider.img}" alt="${lider.nume}" style="width:50px;height:50px;object-fit:cover;border-radius:50%;"></td>
+      <td>${lider.nume}</td>
+      <td>${lider.grad}</td>
+      <td>${lider.grup}</td>
+      <td>
+        <button class="edit" onclick="editLider(${index})">Editează</button>
+        <button class="delete" onclick="deleteLider(${index})">Șterge</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function deleteLider(index){
+  if(confirm("Ești sigur că vrei să ștergi acest lider?")){
+    let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+    lideri.splice(index,1);
+    localStorage.setItem('lideri', JSON.stringify(lideri));
+    loadLideri();
+  }
+}
+
+function editLider(index){
+  let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+  const lider = lideri[index];
+  const tbody = document.querySelector('#liderTable tbody');
+  const tr = tbody.children[index];
+  tr.innerHTML = `
+    <td><input type="text" value="${lider.img}"></td>
+    <td><input type="text" value="${lider.nume}"></td>
+    <td><input type="text" value="${lider.grad}"></td>
+    <td>
+      <select>
+        <option value="Politie" ${lider.grup==='Politie'?'selected':''}>Poliție</option>
+        <option value="Medici" ${lider.grup==='Medici'?'selected':''}>Medici</option>
+        <option value="Mafii" ${lider.grup==='Mafii'?'selected':''}>Mafii</option>
+      </select>
+    </td>
+    <td>
+      <button class="save" onclick="saveLider(${index})">Salvează</button>
+      <button class="delete" onclick="deleteLider(${index})">Șterge</button>
+    </td>
+  `;
+}
+
+function saveLider(index){
+  let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+  const tr = document.querySelector('#liderTable tbody').children[index];
+  const inputs = tr.querySelectorAll('input, select');
+  lideri[index] = {
+    img: inputs[0].value.trim(),
+    nume: inputs[1].value.trim(),
+    grad: inputs[2].value.trim(),
+    grup: inputs[3].value
+  };
+  localStorage.setItem('lideri', JSON.stringify(lideri));
+  loadLideri();
+}
+
+// Reîncarcă textele salvate și lista lideri
 window.onload = ()=>{
   document.querySelectorAll('.card').forEach(card=>{
     const id = card.id;
@@ -181,6 +253,7 @@ window.onload = ()=>{
       if(savedText){ card.querySelector('textarea').value = savedText; }
     }
   });
+  loadLideri();
 };
 </script>
 </body>
