@@ -13,10 +13,11 @@
     { "source": "/reclamatii_medici", "destination": "/reclamatii_medici.html" },
     { "source": "/reclamatii_staff", "destination": "/reclamatii_staff.html" },
     { "source": "/reclamatii_politie", "destination": "/reclamatii_politie.html" },
-    { "source": "/rginf", "destination": "/rginf.html" },
+    { "source": "/rules&info", "destination": "/rginf.html" },
     { "source": "/rules_info", "destination": "/rules_info.html" },
     { "source": "/sneakpeaks", "destination": "/sneakpeaks.html" },
     { "source": "/tabel_lider", "destination": "/tabel_lider.html" },
     { "source": "/updates", "destination": "/updates.html" }
   ]
 }
+
