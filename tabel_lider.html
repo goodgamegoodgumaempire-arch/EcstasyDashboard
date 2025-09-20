@@ -1,34 +1,143 @@
-<div id="lideriContainer"></div>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabel Lideri</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Roboto',sans-serif;
+  background:#f4f6f9;
+  padding:20px;
+}
+h1 { color:#2c3e50; text-align:center; margin-bottom:20px; }
+table {
+  width:100%;
+  border-collapse:collapse;
+  background:white;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+th, td {
+  padding:12px 15px;
+  border-bottom:1px solid #ddd;
+  text-align:left;
+}
+th { background:#2c3e50; color:white; }
+tr:hover { background:#f1f1f1; }
+button {
+  padding:5px 10px;
+  margin:2px;
+  border:none;
+  border-radius:5px;
+  cursor:pointer;
+  color:white;
+}
+button.edit { background:#3498db; }
+button.delete { background:#e74c3c; }
+button.save { background:#27ae60; }
+input[type="text"], select { width:100%; padding:5px; margin:2px 0; border:1px solid #ccc; border-radius:5px; }
+</style>
+</head>
+<body>
+
+<h1>Lista Lideri</h1>
+<table id="liderTable">
+  <thead>
+    <tr>
+      <th>Poza</th>
+      <th>Nume</th>
+      <th>Grad</th>
+      <th>Grup</th>
+      <th>Acțiuni</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Lideri vor fi adăugați aici -->
+  </tbody>
+</table>
 
 <script>
-const lideriContainer = document.getElementById('lideriContainer');
-let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+// Încarcă liderii din localStorage
+function loadLideri(){
+  const lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+  const tbody = document.querySelector('#liderTable tbody');
+  tbody.innerHTML = '';
 
-const grupuri = ["Politie", "Medici", "Mafii"];
-grupuri.forEach(grup => {
-  const sectiune = document.createElement('div');
-  sectiune.innerHTML = `<h2>${grup}</h2>`;
-  const container = document.createElement('div');
-  container.style.display = 'flex';
-  container.style.flexWrap = 'wrap';
-  container.style.gap = '15px';
-
-  lideri.filter(l => l.grup === grup).forEach(l => {
-    const card = document.createElement('div');
-    card.style.background = 'rgba(17,17,17,0.85)';
-    card.style.border = '1px solid #333';
-    card.style.borderRadius = '10px';
-    card.style.padding = '10px';
-    card.style.textAlign = 'center';
-    card.innerHTML = `
-      <img src="${l.img}" alt="${l.nume}" style="width:80px; height:80px; border-radius:50%; object-fit:cover;">
-      <h3 style="color:#ff6600;">${l.nume}</h3>
-      <p style="color:#ccc;">${l.grad}</p>
+  lideri.forEach((lider, index)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><img src="${lider.img}" alt="${lider.nume}" style="width:50px; height:50px; object-fit:cover; border-radius:50%;"></td>
+      <td>${lider.nume}</td>
+      <td>${lider.grad}</td>
+      <td>${lider.grup}</td>
+      <td>
+        <button class="edit" onclick="editLider(${index})">Editează</button>
+        <button class="delete" onclick="deleteLider(${index})">Șterge</button>
+      </td>
     `;
-    container.appendChild(card);
+    tbody.appendChild(tr);
   });
+}
 
-  sectiune.appendChild(container);
-  lideriContainer.appendChild(sectiune);
-});
+// Șterge lider
+function deleteLider(index){
+  if(confirm("Ești sigur că vrei să ștergi acest lider?")){
+    let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+    lideri.splice(index,1);
+    localStorage.setItem('lideri', JSON.stringify(lideri));
+    loadLideri();
+  }
+}
+
+// Editează lider
+function editLider(index){
+  let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+  const lider = lideri[index];
+  const tbody = document.querySelector('#liderTable tbody');
+  const tr = tbody.children[index];
+
+  tr.innerHTML = `
+    <td><input type="text" value="${lider.img}"></td>
+    <td><input type="text" value="${lider.nume}"></td>
+    <td><input type="text" value="${lider.grad}"></td>
+    <td>
+      <select>
+        <option value="Politie" ${lider.grup==='Politie'?'selected':''}>Poliție</option>
+        <option value="Medici" ${lider.grup==='Medici'?'selected':''}>Medici</option>
+        <option value="Mafii" ${lider.grup==='Mafii'?'selected':''}>Mafii</option>
+      </select>
+    </td>
+    <td>
+      <button class="save" onclick="saveLider(${index})">Salvează</button>
+      <button class="delete" onclick="deleteLider(${index})">Șterge</button>
+    </td>
+  `;
+}
+
+// Salvează modificările
+function saveLider(index){
+  let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+  const tr = document.querySelector('#liderTable tbody').children[index];
+  const inputs = tr.querySelectorAll('input, select');
+
+  lideri[index] = {
+    img: inputs[0].value.trim(),
+    nume: inputs[1].value.trim(),
+    grad: inputs[2].value.trim(),
+    grup: inputs[3].value
+  };
+
+  localStorage.setItem('lideri', JSON.stringify(lideri));
+  loadLideri();
+}
+
+// Initializează tabelul
+window.onload = loadLideri;
 </script>
+
+</body>
+</html>
