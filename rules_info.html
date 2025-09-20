@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rules & Info Panel</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      background: #f4f6f9;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: #2c3e50;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+    .sidebar h2 {
+      margin-bottom: 20px;
+    }
+    .sidebar button {
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      padding: 10px 5px;
+      margin: 5px 0;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .sidebar button:hover {
+      background: #34495e;
+      border-radius: 5px;
+    }
+    /* Content */
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card h3 {
+      margin-top: 0;
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+    button.save {
+      margin-top: 10px;
+      padding: 8px 15px;
+      border: none;
+      background: #27ae60;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.save:hover {
+      background: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Rules & Info</h2>
+    <button onclick="showSection('politie')">Regulament Poliție</button>
+    <button onclick="showSection('medici')">Regulament Medici</button>
+    <button onclick="showSection('mafii')">Regulament Mafii</button>
+    <button onclick="showSection('staff')">Regulament Staff</button>
+    <button onclick="showSection('codpenal')">Cod Penal</button>
+    <button onclick="showSection('contacte')">Contacte Utile</button>
+  </div>
+
+  <div class="content" id="content">
+    <div class="card" id="politie">
+      <h3>Regulament Poliție</h3>
+      <textarea placeholder="Adaugă regulamentul pentru poliție..."></textarea>
+      <button class="save" onclick="saveText('politie')">Salvează</button>
+    </div>
+
+    <div class="card" id="medici" style="display:none;">
+      <h3>Regulament Medici</h3>
+      <textarea placeholder="Adaugă regulamentul pentru medici..."></textarea>
+      <button class="save" onclick="saveText('medici')">Salvează</button>
+    </div>
+
+    <div class="card" id="mafii" style="display:none;">
+      <h3>Regulament Mafii</h3>
+      <textarea placeholder="Adaugă regulamentul pentru mafii..."></textarea>
+      <button class="save" onclick="saveText('mafii')">Salvează</button>
+    </div>
+
+    <div class="card" id="staff" style="display:none;">
+      <h3>Regulament Staff</h3>
+      <textarea placeholder="Adaugă regulamentul pentru staff..."></textarea>
+      <button class="save" onclick="saveText('staff')">Salvează</button>
+    </div>
+
+    <div class="card" id="codpenal" style="display:none;">
+      <h3>Cod Penal</h3>
+      <textarea placeholder="Adaugă Codul Penal..."></textarea>
+      <button class="save" onclick="saveText('codpenal')">Salvează</button>
+    </div>
+
+    <div class="card" id="contacte" style="display:none;">
+      <h3>Contacte Utile</h3>
+      <textarea placeholder="Adaugă contacte utile..."></textarea>
+      <button class="save" onclick="saveText('contacte')">Salvează</button>
+    </div>
+  </div>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.card').forEach(card => card.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    function saveText(id) {
+      const textarea = document.querySelector(`#${id} textarea`);
+      localStorage.setItem(id, textarea.value);
+      alert('Salvat cu succes!');
+    }
+
+    // Reîncarcă textele salvate
+    window.onload = () => {
+      document.querySelectorAll('.card').forEach(card => {
+        const id = card.id;
+        const savedText = localStorage.getItem(id);
+        if (savedText) {
+          card.querySelector('textarea').value = savedText;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
