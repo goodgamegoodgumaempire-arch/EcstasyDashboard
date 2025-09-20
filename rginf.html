@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regulament & Informații</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Roboto',sans-serif;
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b1c17);
+  background-size:400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color:#fff;
+  min-height:100vh;
+  display:flex;
+}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+/* Navbar */
+nav {
+  display:flex;
+  align-items:center;
+  background:transparent;
+  padding:10px 40px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:1000;
+}
+nav img { height:40px; margin-right:50px;}
+nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0;}
+nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s;}
+nav ul li a:hover, nav ul li.active a { color:#ff6600;}
+
+/* Sidebar */
+.sidebar {
+  width:250px;
+  background: rgba(0,0,0,0.5);
+  height:100vh;
+  position:fixed;
+  top:60px;
+  left:0;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  z-index:999;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.sidebar h2 { color:#ff6600; text-align:center; margin-bottom:20px; }
+.sidebar button {
+  background: rgba(34,34,34,0.6);
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  padding:12px 15px;
+  margin:5px 0;
+  cursor:pointer;
+  font-weight:bold;
+  text-align:left;
+  transition:0.3s;
+}
+.sidebar button:hover, .sidebar button.active { background:#ff6600; color:#000; }
+
+/* Main content */
+.main {
+  margin-left:270px;
+  padding:100px 30px 30px 30px;
+  width:100%;
+}
+h1 { text-align:center; color:#ff6600; margin-bottom:30px; font-size:2.2em; }
+
+/* Card */
+.card {
+  background: rgba(17,17,17,0.85);
+  border-radius:20px;
+  padding:25px;
+  cursor:pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow:0 6px 25px rgba(0,0,0,0.4);
+  margin-bottom:20px;
+  max-height:600px;
+  overflow:hidden;
+}
+.card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 15px 45px rgba(255,102,0,0.5);}
+.card h2 { margin:0 0 12px; color:#ff6600; }
+
+/* Accordion */
+.accordion-body { max-height:0; overflow-y:hidden; transition:max-height 0.5s ease, opacity 0.5s ease; padding:0; opacity:0;}
+.accordion-body p { margin:8px 0; line-height:1.6; }
+.accordion-header { display:flex; justify-content:space-between; align-items:center; font-weight:bold; cursor:pointer; background:#222; padding:14px 18px; border-radius:12px; margin-bottom:10px; transition:0.3s;}
+.accordion-header:hover { background:#ff6600; color:#000; }
+.accordion-header span { font-size:1.3em; transition: transform 0.3s ease; }
+
+/* Responsive */
+@media(max-width:900px){
+  .sidebar { width:100%; height:auto; position:relative; display:flex; flex-wrap:wrap; top:60px;}
+  .sidebar button { flex:1 1 45%; margin:5px; text-align:center; }
+  .main { margin-left:0; padding:120px 20px 20px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <img src="logo.png" alt="ECSTASY Logo">
+  <ul>
+    <li><a href="index.html">Acasă</a></li>
+    <li class="active"><a href="#">Regulament</a></li>
+  </ul>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h2>Secțiuni</h2>
+  <button class="active" data-section="politie">Regulament Poliție</button>
+  <button data-section="medici">Regulament Medici</button>
+  <button data-section="staff">Regulament Staff</button>
+  <button data-section="mafii">Regulament Mafii</button>
+  <button data-section="server">Regulament Server</button>
+  <button data-section="cod">Cod Penal</button>
+  <button data-section="contacte">Contacte Utile</button>
+</div>
+
+<!-- Main content -->
+<div class="main">
+  <h1>Regulament & Informații</h1>
+
+  <!-- Secțiunile vor fi încărcate din fișiere -->
+  <div id="politie" class="section"></div>
+  <div id="medici" class="section" style="display:none"></div>
+  <div id="staff" class="section" style="display:none"></div>
+  <div id="mafii" class="section" style="display:none"></div>
+  <div id="server" class="section" style="display:none"></div>
+  <div id="cod" class="section" style="display:none"></div>
+  <div id="contacte" class="section" style="display:none"></div>
+</div>
+
+<script>
+// Sidebar navigation
+document.querySelectorAll('.sidebar button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const section = btn.getAttribute('data-section');
+    document.querySelectorAll('.section').forEach(sec=>sec.style.display='none');
+    document.getElementById(section).style.display='block';
+  });
+});
+
+// Accordion functionality (se aplică și la fișierele încărcate)
+document.addEventListener("click", function(e) {
+  if(e.target.classList.contains("accordion-header")){
+    const header = e.target;
+    const body = header.nextElementSibling;
+    const span = header.querySelector("span");
+    if(body.style.maxHeight){
+      body.style.maxHeight = null;
+      body.style.opacity = 0;
+      span.textContent = '+';
+    } else {
+      body.style.maxHeight = body.scrollHeight + "px";
+      body.style.opacity = 1;
+      span.textContent = '−';
+    }
+  }
+});
+
+// Funcție pentru a încărca secțiuni externe
+function loadSection(sectionId, file) {
+  fetch(file)
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById(sectionId).innerHTML = data;
+    })
+    .catch(err => console.error("Eroare la încărcare:", file, err));
+}
+
+// Încarcă regulamentele
+loadSection("politie", "regulament_politie.html");
+loadSection("medici", "regulament_medici.html");
+loadSection("staff", "regulament_staff.html");
+loadSection("mafii", "regulament_mafii.html");
+loadSection("server", "regulament_server.html");
+loadSection("cod", "cod_penal.html");
+loadSection("contacte", "contacte.html");
+</script>
+
+</body>
+</html>
