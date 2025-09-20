@@ -1,153 +1,187 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rules & Info Panel</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      height: 100vh;
-      background: #f4f6f9;
-    }
-    /* Sidebar */
-    .sidebar {
-      width: 250px;
-      background: #2c3e50;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      padding: 20px;
-    }
-    .sidebar h2 {
-      margin-bottom: 20px;
-    }
-    .sidebar button {
-      background: none;
-      border: none;
-      color: white;
-      text-align: left;
-      padding: 10px 5px;
-      margin: 5px 0;
-      cursor: pointer;
-      font-size: 16px;
-    }
-    .sidebar button:hover {
-      background: #34495e;
-      border-radius: 5px;
-    }
-    /* Content */
-    .content {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
-    }
-    .card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-    .card h3 {
-      margin-top: 0;
-    }
-    textarea {
-      width: 100%;
-      min-height: 150px;
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      resize: vertical;
-    }
-    button.save {
-      margin-top: 10px;
-      padding: 8px 15px;
-      border: none;
-      background: #27ae60;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button.save:hover {
-      background: #2ecc71;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rules & Info Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Roboto',sans-serif;
+  display:flex;
+  height:100vh;
+  background:#f4f6f9;
+}
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background:#2c3e50;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  padding:20px;
+}
+.sidebar h2 { margin-bottom:20px; }
+.sidebar button {
+  background:none;
+  border:none;
+  color:white;
+  text-align:left;
+  padding:10px 5px;
+  margin:5px 0;
+  cursor:pointer;
+  font-size:16px;
+}
+.sidebar button:hover { background:#34495e; border-radius:5px; }
+/* Content */
+.content {
+  flex:1;
+  padding:20px;
+  overflow-y:auto;
+}
+.card {
+  background:white;
+  border-radius:10px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  padding:20px;
+  margin-bottom:20px;
+}
+.card h3 { margin-top:0; }
+textarea {
+  width:100%;
+  min-height:150px;
+  margin-top:10px;
+  padding:10px;
+  border-radius:5px;
+  border:1px solid #ccc;
+  resize:vertical;
+}
+input, select { width:100%; padding:10px; margin-top:6px; border-radius:5px; border:1px solid #ccc; }
+button.save {
+  margin-top:10px;
+  padding:8px 15px;
+  border:none;
+  background:#27ae60;
+  color:white;
+  border-radius:5px;
+  cursor:pointer;
+}
+button.save:hover { background:#2ecc71; }
+</style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Rules & Info</h2>
-    <button onclick="showSection('politie')">Regulament Poliție</button>
-    <button onclick="showSection('medici')">Regulament Medici</button>
-    <button onclick="showSection('mafii')">Regulament Mafii</button>
-    <button onclick="showSection('staff')">Regulament Staff</button>
-    <button onclick="showSection('codpenal')">Cod Penal</button>
-    <button onclick="showSection('contacte')">Contacte Utile</button>
+
+<div class="sidebar">
+  <h2>Rules & Info</h2>
+  <button onclick="showSection('politie')">Regulament Poliție</button>
+  <button onclick="showSection('medici')">Regulament Medici</button>
+  <button onclick="showSection('mafii')">Regulament Mafii</button>
+  <button onclick="showSection('staff')">Regulament Staff</button>
+  <button onclick="showSection('regulament_server')">Regulament Server</button>
+  <button onclick="showSection('codpenal')">Cod Penal</button>
+  <button onclick="showSection('contacte')">Contacte Utile</button>
+  <button onclick="showSection('adauga_lider')">Adaugă Lider</button>
+</div>
+
+<div class="content" id="content">
+
+  <!-- Regulamente -->
+  <div class="card" id="politie">
+    <h3>Regulament Poliție</h3>
+    <textarea placeholder="Adaugă regulamentul pentru poliție..."></textarea>
+    <button class="save" onclick="saveText('politie')">Salvează</button>
   </div>
 
-  <div class="content" id="content">
-    <div class="card" id="politie">
-      <h3>Regulament Poliție</h3>
-      <textarea placeholder="Adaugă regulamentul pentru poliție..."></textarea>
-      <button class="save" onclick="saveText('politie')">Salvează</button>
-    </div>
-
-    <div class="card" id="medici" style="display:none;">
-      <h3>Regulament Medici</h3>
-      <textarea placeholder="Adaugă regulamentul pentru medici..."></textarea>
-      <button class="save" onclick="saveText('medici')">Salvează</button>
-    </div>
-
-    <div class="card" id="mafii" style="display:none;">
-      <h3>Regulament Mafii</h3>
-      <textarea placeholder="Adaugă regulamentul pentru mafii..."></textarea>
-      <button class="save" onclick="saveText('mafii')">Salvează</button>
-    </div>
-
-    <div class="card" id="staff" style="display:none;">
-      <h3>Regulament Staff</h3>
-      <textarea placeholder="Adaugă regulamentul pentru staff..."></textarea>
-      <button class="save" onclick="saveText('staff')">Salvează</button>
-    </div>
-
-    <div class="card" id="codpenal" style="display:none;">
-      <h3>Cod Penal</h3>
-      <textarea placeholder="Adaugă Codul Penal..."></textarea>
-      <button class="save" onclick="saveText('codpenal')">Salvează</button>
-    </div>
-
-    <div class="card" id="contacte" style="display:none;">
-      <h3>Contacte Utile</h3>
-      <textarea placeholder="Adaugă contacte utile..."></textarea>
-      <button class="save" onclick="saveText('contacte')">Salvează</button>
-    </div>
+  <div class="card" id="medici" style="display:none;">
+    <h3>Regulament Medici</h3>
+    <textarea placeholder="Adaugă regulamentul pentru medici..."></textarea>
+    <button class="save" onclick="saveText('medici')">Salvează</button>
   </div>
 
-  <script>
-    function showSection(id) {
-      document.querySelectorAll('.card').forEach(card => card.style.display = 'none');
-      document.getElementById(id).style.display = 'block';
-    }
+  <div class="card" id="mafii" style="display:none;">
+    <h3>Regulament Mafii</h3>
+    <textarea placeholder="Adaugă regulamentul pentru mafii..."></textarea>
+    <button class="save" onclick="saveText('mafii')">Salvează</button>
+  </div>
 
-    function saveText(id) {
-      const textarea = document.querySelector(`#${id} textarea`);
-      localStorage.setItem(id, textarea.value);
-      alert('Salvat cu succes!');
-    }
+  <div class="card" id="staff" style="display:none;">
+    <h3>Regulament Staff</h3>
+    <textarea placeholder="Adaugă regulamentul pentru staff..."></textarea>
+    <button class="save" onclick="saveText('staff')">Salvează</button>
+  </div>
 
-    // Reîncarcă textele salvate
-    window.onload = () => {
-      document.querySelectorAll('.card').forEach(card => {
-        const id = card.id;
-        const savedText = localStorage.getItem(id);
-        if (savedText) {
-          card.querySelector('textarea').value = savedText;
-        }
-      });
+  <div class="card" id="regulament_server" style="display:none;">
+    <h3>Regulament Server</h3>
+    <textarea placeholder="Adaugă regulamentul general al serverului..."></textarea>
+    <button class="save" onclick="saveText('regulament_server')">Salvează</button>
+  </div>
+
+  <div class="card" id="codpenal" style="display:none;">
+    <h3>Cod Penal</h3>
+    <textarea placeholder="Adaugă Codul Penal..."></textarea>
+    <button class="save" onclick="saveText('codpenal')">Salvează</button>
+  </div>
+
+  <div class="card" id="contacte" style="display:none;">
+    <h3>Contacte Utile</h3>
+    <textarea placeholder="Adaugă contacte utile..."></textarea>
+    <button class="save" onclick="saveText('contacte')">Salvează</button>
+  </div>
+
+  <!-- Adaugă Lider -->
+  <div class="card" id="adauga_lider" style="display:none;">
+    <h3>Adaugă Lider</h3>
+    <input type="text" id="lider_img" placeholder="URL poza / gif">
+    <input type="text" id="lider_nume" placeholder="Nume lider">
+    <input type="text" id="lider_grad" placeholder="Grad">
+    <select id="lider_grup">
+      <option value="Politie">Poliție</option>
+      <option value="Medici">Medici</option>
+      <option value="Mafii">Mafii</option>
+    </select>
+    <button class="save" onclick="addLider()">Adaugă Lider</button>
+  </div>
+
+</div>
+
+<script>
+function showSection(id){
+  document.querySelectorAll('.card').forEach(card => card.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+function saveText(id){
+  const textarea = document.querySelector(`#${id} textarea`);
+  localStorage.setItem(id, textarea.value);
+  alert('Salvat cu succes!');
+}
+
+function addLider(){
+  const img = document.getElementById('lider_img').value.trim();
+  const nume = document.getElementById('lider_nume').value.trim();
+  const grad = document.getElementById('lider_grad').value.trim();
+  const grup = document.getElementById('lider_grup').value;
+  if(!img || !nume || !grad){ alert("Completează toate câmpurile!"); return; }
+  let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
+  lideri.push({ img, nume, grad, grup });
+  localStorage.setItem('lideri', JSON.stringify(lideri));
+  alert("Lider adăugat cu succes!");
+  document.getElementById('lider_img').value='';
+  document.getElementById('lider_nume').value='';
+  document.getElementById('lider_grad').value='';
+}
+
+// Reîncarcă textele salvate
+window.onload = ()=>{
+  document.querySelectorAll('.card').forEach(card=>{
+    const id = card.id;
+    if(card.querySelector('textarea')){
+      const savedText = localStorage.getItem(id);
+      if(savedText){ card.querySelector('textarea').value = savedText; }
     }
-  </script>
+  });
+};
+</script>
 </body>
 </html>
