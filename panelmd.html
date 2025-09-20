@@ -9,7 +9,7 @@
 body {
   margin:0;
   font-family:'Roboto',sans-serif;
-  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b1c17);
   background-size:400% 400%;
   animation: gradientBG 20s ease infinite;
   color:#fff;
@@ -75,6 +75,7 @@ form button.save-model:hover { background:#cc5200; }
   <button onclick="showTab('members')" class="active">Membri</button>
   <button onclick="showTab('applications')">Aplicații</button>
   <button onclick="showTab('sanctions')">Sancțiuni</button>
+  <button onclick="showTab('complaints')">Reclamații</button>
   <button onclick="showTab('applicationModelCard')">Setare Model</button>
 </div>
 
@@ -107,6 +108,12 @@ form button.save-model:hover { background:#cc5200; }
 <div id="sanctions" class="tab">
   <h2>Sancțiuni Medici</h2>
   <div id="sanctionsList" class="list"></div>
+</div>
+
+<!-- Reclamații -->
+<div id="complaints" class="tab">
+  <h2>Reclamații Medici</h2>
+  <div id="complaintsList" class="list"></div>
 </div>
 
 <!-- Setare Model Aplicație -->
@@ -154,11 +161,7 @@ function renderMembers(){
     statusSelect.onchange = ()=>{ members[i].status=statusSelect.value; saveMembers(); };
 
     const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
-    delBtn.onclick = ()=>{
-      members.splice(i,1);
-      saveMembers();
-      renderSanctions();
-    };
+    delBtn.onclick = ()=>{ members.splice(i,1); saveMembers(); renderSanctions(); };
 
     div.appendChild(rankInput);
     div.appendChild(statusSelect);
@@ -196,15 +199,12 @@ function renderApplications(){
     div.classList.add("item");
     let content = `<strong>${a.name}</strong><br>`;
     if(a.answers){
-      a.answers.forEach((ans,j)=>{
-        content += `Întrebare ${j+1}: ${ans}<br>`;
-      });
+      a.answers.forEach((ans,j)=>{ content += `Întrebare ${j+1}: ${ans}<br>`; });
     }
     content += `Status: <span class="status">${a.status||"În așteptare"}</span>`;
     div.innerHTML = content;
 
-    const actions = document.createElement("div");
-    actions.classList.add("item-actions");
+    const actions = document.createElement("div"); actions.classList.add("item-actions");
 
     const accept = document.createElement("button"); accept.className="accept-btn"; accept.innerText="Acceptă";
     accept.onclick = ()=>{ a.status="Acceptat"; saveApplications(); };
@@ -243,14 +243,11 @@ function renderSanctions() {
     div.innerHTML = `<strong>${m.name} (${m.rank})</strong> - Absențe: <span class="status">${absenteCount}</span>`;
 
     const input = document.createElement("input");
-    input.type = "text";
-    input.placeholder = "Sancțiune / Observație";
+    input.type = "text"; input.placeholder = "Sancțiune / Observație";
 
     const selectAbs = document.createElement("select");
     ["Prezent", "Absent la ședință"].forEach(s => {
-      const opt = document.createElement("option");
-      opt.value = s;
-      opt.innerText = s;
+      const opt = document.createElement("option"); opt.value = s; opt.innerText = s;
       selectAbs.appendChild(opt);
     });
 
@@ -258,23 +255,16 @@ function renderSanctions() {
     addBtn.className = "edit-btn"; addBtn.innerText = "Adaugă";
     addBtn.onclick = () => {
       if (!input.value.trim()) return;
-      sanctions.push({
-        member: m.name,
-        text: input.value.trim(),
-        absenta: selectAbs.value
-      });
+      sanctions.push({ member: m.name, text: input.value.trim(), absenta: selectAbs.value });
       localStorage.setItem("mdSanctions", JSON.stringify(sanctions));
-      input.value = "";
-      selectAbs.selectedIndex = 0;
+      input.value = ""; selectAbs.selectedIndex = 0;
       renderSanctions();
     };
 
     const sancList = document.createElement("div");
     memberSanctions.forEach((s) => {
       const sdiv = document.createElement("div");
-      sdiv.style.display = "flex";
-      sdiv.style.justifyContent = "space-between";
-      sdiv.style.marginTop = "4px";
+      sdiv.style.display = "flex"; sdiv.style.justifyContent = "space-between"; sdiv.style.marginTop = "4px";
       sdiv.innerHTML = `${s.text} (${s.absenta})`;
 
       const delBtn = document.createElement("button");
@@ -298,6 +288,29 @@ function renderSanctions() {
   });
 }
 
+// --- RECLAMAȚII ---
+function renderComplaints(){
+  const container = document.getElementById("complaintsList");
+  container.innerHTML = "";
+  let complaints = JSON.parse(localStorage.getItem("reclamatiiMedici")) || [];
+  complaints.forEach((c,i)=>{
+    const div = document.createElement("div");
+    div.classList.add("item");
+    div.innerHTML = `<strong>De la:</strong> ${c.from}<br><pre>${c.message}</pre>`;
+
+    const delBtn = document.createElement("button");
+    delBtn.className = "delete-btn"; delBtn.innerText = "Șterge";
+    delBtn.onclick = ()=>{
+      complaints.splice(i,1);
+      localStorage.setItem("reclamatiiMedici", JSON.stringify(complaints));
+      renderComplaints();
+    };
+
+    div.appendChild(delBtn);
+    container.appendChild(div);
+  });
+}
+
 // --- MODEL APLICAȚIE MEDICI ---
 let modelMedici = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
 document.getElementById("modelMediciTextarea").value = modelMedici.join("\n");
@@ -314,6 +327,7 @@ document.getElementById("modelForm").addEventListener("submit", function(e){
 renderMembers();
 renderApplications();
 renderSanctions();
+renderComplaints();
 </script>
 
 </body>
