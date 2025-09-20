@@ -2,21 +2,23 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/", "destination": "/index.html" },
-    { "source": "/admin", "destination": "/admin.html" },
-    { "source": "/aplicatii", "destination": "/aplicatii.html" },
-    { "source": "/evidenta", "destination": "/evidenta.html" },
-    { "source": "/panelpd", "destination": "/panelpd.html" },
-    { "source": "/panelmd", "destination": "/panelmd.html" },
-    { "source": "/reclamatii_jucatori", "destination": "/reclamatii_jucatori.html" },
-    { "source": "/reclamatii_mafii", "destination": "/reclamatii_mafii.html" },
-    { "source": "/reclamatii_medici", "destination": "/reclamatii_medici.html" },
-    { "source": "/reclamatii_staff", "destination": "/reclamatii_staff.html" },
-    { "source": "/reclamatii_politie", "destination": "/reclamatii_politie.html" },
-    { "source": "/rginf", "destination": "/rginf.html" },
-    { "source": "/rules_info", "destination": "/rules_info.html" },
-    { "source": "/sneakpeaks", "destination": "/sneakpeaks.html" },
-    { "source": "/tabel_lider", "destination": "/tabel_lider.html" },
-    { "source": "/updates", "destination": "/updates.html" }
+    { "source": "/ListaStaff", "destination": "/Staff.html" },
+    { "source": "/Admin", "destination": "/admin.html" },
+    { "source": "/Aplicatii", "destination": "/aplicatii.html" },
+    { "source": "/StatusServer", "destination": "/evidenta.html" },
+    { "source": "/Panelp", "destination": "/panelpd.html" },
+    { "source": "/Panelm", "destination": "/panelmd.html" },
+    { "source": "/Reclamatii_jucatori", "destination": "/reclamatii_jucatori.html" },
+    { "source": "/Reclamatii_mafii", "destination": "/reclamatii_mafii.html" },
+    { "source": "/Reclamatii_medici", "destination": "/reclamatii_medici.html" },
+    { "source": "/Reclamatii_staff", "destination": "/reclamatii_staff.html" },
+    { "source": "/Reclamatii_politie", "destination": "/reclamatii_politie.html" },
+    { "source": "/Rginf", "destination": "/rginf.html" },
+    { "source": "/Rules_info", "destination": "/rules_info.html" },
+    { "source": "/Sneakpeaks", "destination": "/sneakpeaks.html" },
+    { "source": "/Tabel_lider", "destination": "/tabel_lider.html" },
+    { "source": "/Updates", "destination": "/updates.html" }
   ]
 }
+
 v
