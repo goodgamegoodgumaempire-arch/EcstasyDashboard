@@ -1,100 +1,176 @@
+<!DOCTYPE html>
+<html lang="ro">
 <head>
-  ...
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<link rel="icon" type="image/png" href="logo.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aplicații - G4A Romania</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b1c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
+nav img { height:40px; margin-right:50px;}
+nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0;}
+nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s;}
+nav ul li a:hover, nav ul li.active a { color:#ff6600;}
+#layout { display:flex; max-width:1300px; margin:20px auto; gap:20px; padding:0 20px;}
+#main { flex:3;} #sidebar { flex:1;}
+.card { background: rgba(17,17,17,0.85); border-radius: 10px; padding:20px; margin:15px 0; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); transition: transform 0.3s, box-shadow 0.3s;}
+.card:hover { transform: translateY(-5px); box-shadow:0 8px 25px rgba(0,0,0,0.7);}
+.card h2 { margin:0 0 10px; font-size:1.1em; color:#fff;}
+.item { background: rgba(17,17,17,0.7); margin:10px 0; padding:12px; border-radius:8px;}
+.status { font-weight:bold; margin-left:10px; color:#ffcc00;}
+input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; border:none; padding:8px; margin:5px 0; width:100%;}
+button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s;}
+button:hover { background:#cc5200;}
+.hidden { display:none; }
+</style>
 </head>
 <body>
+
 <nav>
   <img src="logo.png" alt="G4A Logo">
   <ul>
     <li><a href="index.html">Acasă</a></li>
     <li class="active"><a href="aplicatii.html">Aplicații</a></li>
     <li><a href="reclamatii_staff.html">Reclamații Staff</a></li>
-    <li id="userStatus" style="margin-left:auto;color:#ff6600;"></li>
   </ul>
 </nav>
 
+<div id="layout">
+  <div id="main">
+    <!-- Card aplicație Poliție -->
+    <div class="card">
+      <h2>Aplică pentru Poliție</h2>
+      <button onclick="toggleForm('politie')">Aplică</button>
+      <div id="formpolitie" class="hidden" data-loaded="false"></div>
+    </div>
+
+    <!-- Card aplicație Medici -->
+    <div class="card">
+      <h2>Aplică pentru Medici</h2>
+      <button onclick="toggleForm('medici')">Aplică</button>
+      <div id="formmedici" class="hidden" data-loaded="false"></div>
+    </div>
+
+    <!-- Card aplicație Staff -->
+    <div class="card">
+      <h2>Aplică pentru Staff</h2>
+      <button onclick="toggleForm('staffNou')">Aplică</button>
+      <div id="formstaffNou" class="hidden" data-loaded="false"></div>
+    </div>
+
+    <!-- Card aplicații pentru utilizator -->
+    <div class="card">
+      <h2>Aplicațiile tale</h2>
+      <button onclick="toggleAplicatiiPublice()">Vezi aplicații trimise</button>
+      <div id="aplicatiiList" class="hidden"></div>
+    </div>
+  </div>
+
+  <div id="sidebar">
+    <div class="card">
+      <h2>Info</h2>
+      <p>Aplicațiile vor fi gestionate de staff prin panourile dedicate:</p>
+      <ul>
+        <li>👮 Poliție → PanelPD</li>
+        <li>💉 Medici → PanelMD</li>
+        <li>⚙️ Staff → Admin Panel</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Config Firebase
-  const firebaseConfig = {
-    apiKey: "API_KEY",
-    authDomain: "PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://PROJECT_ID.firebaseio.com",
-    projectId: "PROJECT_ID",
-    storageBucket: "PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
-  };
+let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-  firebase.initializeApp(firebaseConfig);
+// Toggle form și generează câmpuri în funcție de model
+function toggleForm(tip){
+  const div = document.getElementById("form"+tip);
+  if(div.dataset.loaded !== "true"){
 
-  const auth = firebase.auth();
-  const db = firebase.database();
-  const userStatus = document.getElementById('userStatus');
-  let currentUser = null;
+    let model = [];
+    if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
+    if(tip==="staffNou") model = JSON.parse(localStorage.getItem("applicationModel")) || ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
 
-  // Ascultă schimbarea autentificării
-  auth.onAuthStateChanged(user => {
-    if(user){
-      currentUser = user;
-      userStatus.textContent = `Salut, ${user.email}`;
-      loadAplicatiiFirebase();
-    } else {
-      currentUser = null;
-      userStatus.textContent = 'Nu ești logat';
-    }
-  });
-
-  // Trimite aplicație în Firebase
-  function trimiteAplicatie(tip){
-    if(!currentUser){
-      alert("Trebuie să fii logat pentru a trimite aplicații!");
-      return;
-    }
-
-    const div = document.getElementById("form"+tip);
-    const inputs = Array.from(div.querySelectorAll("input,textarea"));
-    const values = inputs.map(i=>i.value.trim());
-    if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
-
-    const obj = {type: tip, name: values[0], answers: values, status:"În așteptare"};
-
-    db.ref('aplicatii/' + currentUser.uid).push(obj)
-      .then(()=>{
-        alert("Aplicația a fost trimisă!");
-        inputs.forEach(i=>i.value="");
-        div.style.display="none";
-        loadAplicatiiFirebase();
-      })
-      .catch(err=>alert("Eroare: "+err.message));
-  }
-
-  // Încarcă aplicațiile din Firebase
-  function loadAplicatiiFirebase(){
-    if(!currentUser) return;
-    const container = document.getElementById("aplicatiiList");
-    container.innerHTML = "";
-    db.ref('aplicatii/' + currentUser.uid).once('value', snapshot=>{
-      snapshot.forEach(child=>{
-        const a = child.val();
-        const div = document.createElement("div");
-        div.className = "item";
-        let content = `<strong>${a.name}</strong> [${a.type}]<br>`;
-        if(a.answers){
-          let model = [];
-          if(a.type==="politie") model = ["Nume jucător","Motivație / Mesaj"];
-          if(a.type==="medici") model = ["Nume jucător","Motivație / Mesaj"];
-          if(a.type==="staffNou") model = ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
-          a.answers.forEach((ans,i)=>{
-            content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
-          });
-        }
-        content += `<span class="status">${a.status}</span>`;
-        div.innerHTML = content;
-        container.appendChild(div);
-      });
+    div.innerHTML = "";
+    model.forEach(field => {
+      const card = document.createElement("div");
+      card.className = "card";
+      const label = document.createElement("label");
+      label.innerText = field;
+      let el = field.toLowerCase().includes("mesaj") || field.toLowerCase().includes("experiență") ? document.createElement("textarea") : document.createElement("input");
+      el.dataset.field = field;
+      card.appendChild(label);
+      card.appendChild(el);
+      div.appendChild(card);
     });
+
+    const submitBtn = document.createElement("button");
+    submitBtn.innerText = "Trimite aplicație";
+    submitBtn.onclick = ()=> trimiteAplicatie(tip);
+    div.appendChild(submitBtn);
+
+    div.dataset.loaded = "true";
   }
+
+  div.style.display = (div.style.display==="block") ? "none" : "block";
+}
+
+// Trimite aplicație
+function trimiteAplicatie(tip){
+  const div = document.getElementById("form"+tip);
+  const inputs = Array.from(div.querySelectorAll("input,textarea"));
+  const values = inputs.map(i=>i.value.trim());
+  if(values.some(v=>v==="")) { alert("Completează toate câmpurile!"); return; }
+
+  const obj = {type: tip, name: values[0], answers: values, status:"În așteptare"};
+  aplicatii.push(obj);
+  localStorage.setItem("aplicatii", JSON.stringify(aplicatii));
+
+  alert("Aplicația a fost trimisă!");
+  inputs.forEach(i=>i.value="");
+  div.style.display="none";
+
+  renderAplicatiiPublice();
+}
+
+// Afișează aplicațiile trimise
+function renderAplicatiiPublice(){
+  const container = document.getElementById("aplicatiiList");
+  container.innerHTML = "";
+  aplicatii.forEach(a=>{
+    const div = document.createElement("div");
+    div.className = "item";
+    let content = `<strong>${a.name}</strong> [${a.type}]<br>`;
+    if(a.answers){
+      let model = [];
+      if(a.type==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
+      if(a.type==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
+      if(a.type==="staffNou") model = JSON.parse(localStorage.getItem("applicationModel")) || ["Nume jucător","Motivație / Mesaj","Experiență relevantă"];
+      a.answers.forEach((ans,i)=>{
+        content += `<strong>${model[i] || "Întrebare "+(i+1)}:</strong> ${ans}<br>`;
+      });
+    }
+    content += `<span class="status">${a.status}</span>`;
+    div.innerHTML = content;
+    container.appendChild(div);
+  });
+}
+
+// Toggle vizualizare aplicații
+function toggleAplicatiiPublice(){
+  const div = document.getElementById("aplicatiiList");
+  div.classList.toggle("hidden");
+}
+
+// Inițializare
+renderAplicatiiPublice();
 </script>
+
+</body>
+</html>
+
+
