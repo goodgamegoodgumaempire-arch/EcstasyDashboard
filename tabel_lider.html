@@ -3,87 +3,160 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tabel Lideri</title>
+<title>Tabel Lideri - ECSTASY Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
 body {
-  margin:0;
   font-family:'Roboto',sans-serif;
-  background:#f4f6f9;
-  padding:20px;
+  margin:0;
+  padding:0;
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
+  background-size:400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color:#fff;
+  min-height:100vh;
 }
-h1 { color:#2c3e50; text-align:center; margin-bottom:20px; }
+@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+.navbar-principal {
+  display:flex;
+  justify-content:center;
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding:10px 0;
+  position: sticky;
+  top:0;
+  z-index:100;
+}
+.navbar-principal li { list-style:none; margin:0 15px; }
+.navbar-principal a {
+  color:#fff;
+  text-decoration:none;
+  font-size:16px;
+  padding:5px 10px;
+  transition:0.2s;
+}
+.navbar-principal a:hover { color:#ff6600; }
+
+.navbar-secundar {
+  display:flex;
+  justify-content:center;
+  margin:10px 0 20px 0;
+  gap:10px;
+}
+.navbar-secundar button {
+  background:none;
+  border:1px solid #fff;
+  color:#fff;
+  padding:8px 15px;
+  font-size:16px;
+  cursor:pointer;
+  border-radius:5px;
+  transition:0.2s;
+}
+.navbar-secundar button.active, .navbar-secundar button:hover {
+  background:#fff;
+  color:#0b0c17;
+}
+
+.content {
+  padding:0 20px 40px 20px;
+}
 table {
   width:100%;
   border-collapse:collapse;
-  background:white;
-  border-radius:10px;
+  margin-top:10px;
+  background: rgba(17,17,17,0.85);
+  border-radius:8px;
   overflow:hidden;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+  color:#fff;
 }
-th, td {
-  padding:12px 15px;
-  border-bottom:1px solid #ddd;
-  text-align:left;
-}
-th { background:#2c3e50; color:white; }
-tr:hover { background:#f1f1f1; }
-button {
-  padding:5px 10px;
-  margin:2px;
-  border:none;
-  border-radius:5px;
-  cursor:pointer;
-  color:white;
-}
-button.edit { background:#3498db; }
-button.delete { background:#e74c3c; }
-button.save { background:#27ae60; }
-input[type="text"], select { width:100%; padding:5px; margin:2px 0; border:1px solid #ccc; border-radius:5px; }
+th, td { padding:10px; text-align:left; border-bottom:1px solid #333; }
+th { background: #222; }
+img { width:50px; height:50px; object-fit:cover; border-radius:50%; }
+button.edit { background:#3498db; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer; }
+button.delete { background:#e74c3c; color:white; border:none; padding:5px 8px; border-radius:5px; cursor:pointer; }
+input, select { width:100%; padding:5px; margin:2px 0; border-radius:5px; border:1px solid #ccc; color:#000; }
+.hidden { display:none; }
 </style>
 </head>
 <body>
 
-<h1>Lista Lideri</h1>
-<table id="liderTable">
-  <thead>
-    <tr>
-      <th>Poza</th>
-      <th>Nume</th>
-      <th>Grad</th>
-      <th>Grup</th>
-      <th>Acțiuni</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- Lideri vor fi adăugați aici -->
-  </tbody>
-</table>
+<!-- Navbar principal -->
+<ul class="navbar-principal">
+  <li><a href="index.html">Forumuri</a></li>
+  <li><a href="tabel_lider.html">Lista Lideri</a></li>
+  <li><a href="evidenta.html">Evidența Servere</a></li>
+</ul>
+
+<!-- Navbar secundar sub navbar principal -->
+<div class="navbar-secundar">
+  <button class="tab-btn active" onclick="showTab('Politie')">Poliție</button>
+  <button class="tab-btn" onclick="showTab('Medici')">Medici</button>
+  <button class="tab-btn" onclick="showTab('Mafii')">Mafii</button>
+</div>
+
+<div class="content">
+  <div id="Politie" class="tab-content">
+    <h2>TABEL POLIȚIE</h2>
+    <table id="table_politie">
+      <thead><tr><th>Poza</th><th>Nume</th><th>Grad</th><th>Acțiuni</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="Medici" class="tab-content hidden">
+    <h2>TABEL MEDICI</h2>
+    <table id="table_medici">
+      <thead><tr><th>Poza</th><th>Nume</th><th>Grad</th><th>Acțiuni</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div id="Mafii" class="tab-content hidden">
+    <h2>TABEL MAFII</h2>
+    <table id="table_mafii">
+      <thead><tr><th>Poza</th><th>Nume</th><th>Grad</th><th>Acțiuni</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
 
 <script>
-// Încarcă liderii din localStorage
+function showTab(grup){
+  document.querySelectorAll('.tab-content').forEach(div=>div.classList.add('hidden'));
+  document.getElementById(grup).classList.remove('hidden');
+
+  document.querySelectorAll('.tab-btn').forEach(btn=>btn.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick="showTab('${grup}')"]`).classList.add('active');
+}
+
+// Încarcă liderii în tabele
 function loadLideri(){
   const lideri = JSON.parse(localStorage.getItem('lideri')) || [];
-  const tbody = document.querySelector('#liderTable tbody');
-  tbody.innerHTML = '';
+  const tables = {
+    Politie: document.querySelector('#table_politie tbody'),
+    Medici: document.querySelector('#table_medici tbody'),
+    Mafii: document.querySelector('#table_mafii tbody')
+  };
+  Object.values(tables).forEach(tbody=>tbody.innerHTML='');
 
-  lideri.forEach((lider, index)=>{
+  lideri.forEach((lider,index)=>{
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><img src="${lider.img}" alt="${lider.nume}" style="width:50px; height:50px; object-fit:cover; border-radius:50%;"></td>
+      <td><img src="${lider.img}" alt="${lider.nume}"></td>
       <td>${lider.nume}</td>
       <td>${lider.grad}</td>
-      <td>${lider.grup}</td>
       <td>
         <button class="edit" onclick="editLider(${index})">Editează</button>
         <button class="delete" onclick="deleteLider(${index})">Șterge</button>
       </td>
     `;
-    tbody.appendChild(tr);
+    tables[lider.grup].appendChild(tr);
   });
 }
 
-// Șterge lider
 function deleteLider(index){
   if(confirm("Ești sigur că vrei să ștergi acest lider?")){
     let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
@@ -93,13 +166,12 @@ function deleteLider(index){
   }
 }
 
-// Editează lider
 function editLider(index){
   let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
   const lider = lideri[index];
-  const tbody = document.querySelector('#liderTable tbody');
-  const tr = tbody.children[index];
-
+  const tables = {Politie:'#table_politie tbody', Medici:'#table_medici tbody', Mafii:'#table_mafii tbody'};
+  const tbody = document.querySelector(tables[lider.grup]);
+  const tr = tbody.children[Array.from(tbody.children).findIndex(r=>r.querySelector('td:nth-child(2)').innerText===lider.nume)];
   tr.innerHTML = `
     <td><input type="text" value="${lider.img}"></td>
     <td><input type="text" value="${lider.nume}"></td>
@@ -110,33 +182,37 @@ function editLider(index){
         <option value="Medici" ${lider.grup==='Medici'?'selected':''}>Medici</option>
         <option value="Mafii" ${lider.grup==='Mafii'?'selected':''}>Mafii</option>
       </select>
-    </td>
-    <td>
-      <button class="save" onclick="saveLider(${index})">Salvează</button>
-      <button class="delete" onclick="deleteLider(${index})">Șterge</button>
+      <button onclick="saveLider(${index})">Salvează</button>
+      <button onclick="deleteLider(${index})">Șterge</button>
     </td>
   `;
 }
 
-// Salvează modificările
 function saveLider(index){
   let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
-  const tr = document.querySelector('#liderTable tbody').children[index];
-  const inputs = tr.querySelectorAll('input, select');
-
+  const tables = {Politie:'#table_politie tbody', Medici:'#table_medici tbody', Mafii:'#table_mafii tbody'};
+  let tr;
+  for(const t in tables){
+    tr = document.querySelector(tables[t]).querySelector('tr input');
+    if(tr) break;
+  }
+  const trRow = tr.closest('tr');
+  const inputs = trRow.querySelectorAll('input, select');
   lideri[index] = {
     img: inputs[0].value.trim(),
     nume: inputs[1].value.trim(),
     grad: inputs[2].value.trim(),
     grup: inputs[3].value
   };
-
   localStorage.setItem('lideri', JSON.stringify(lideri));
   loadLideri();
 }
 
-// Initializează tabelul
-window.onload = loadLideri;
+// La start
+window.onload = ()=>{ 
+  loadLideri();
+  showTab('Politie');
+};
 </script>
 
 </body>
