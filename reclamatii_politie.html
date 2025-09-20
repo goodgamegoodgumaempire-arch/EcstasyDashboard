@@ -6,19 +6,100 @@
 <title>Reclamații Poliție - ECSTASY</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-body { margin:0; font-family:'Roboto',sans-serif; background:linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); background-size:400% 400%; animation:gradientBG 20s ease infinite; color:#fff; min-height:100vh; display:flex; justify-content:center; align-items:center;}
-@keyframes gradientBG {0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-.container { background:rgba(17,17,17,0.9); padding:30px; border-radius:12px; box-shadow:0 0 12px rgba(0,0,0,0.6); width:90%; max-width:500px;}
+body { 
+  margin:0; 
+  font-family:'Roboto',sans-serif; 
+  background:linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17); 
+  background-size:400% 400%; 
+  animation:gradientBG 20s ease infinite; 
+  color:#fff; 
+  min-height:100vh; 
+}
+@keyframes gradientBG {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* === NAVBAR === */
+nav { 
+  display: flex; 
+  align-items: center; 
+  background: transparent; 
+  padding: 10px 40px; 
+  border-bottom: 1px solid rgba(255,255,255,0.1); 
+  position: sticky; 
+  top: 0; 
+  z-index: 100; 
+}
+nav img { height: 40px; margin-right: 50px; }
+nav ul { 
+  display: flex; 
+  gap: 40px; 
+  list-style: none; 
+  margin: 0 auto; 
+  padding: 0; 
+}
+nav ul li a { 
+  color: #fff; 
+  text-decoration: none; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  font-size: 0.85em; 
+}
+nav ul li a:hover { color: #ff6600; }
+
+/* === FORM === */
+.container { 
+  background:rgba(17,17,17,0.9); 
+  padding:30px; 
+  border-radius:12px; 
+  box-shadow:0 0 12px rgba(0,0,0,0.6); 
+  width:90%; 
+  max-width:500px; 
+  margin:80px auto; /* pus margin ca sa nu fie lipit sub navbar */
+}
 h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
 label { font-weight:bold; display:block; margin-top:12px; }
-input { width:100%; padding:10px; margin-top:6px; border-radius:8px; border:none; background:#222; color:#fff; }
-button { margin-top:20px; width:100%; padding:12px; border:none; border-radius:8px; background:#ff6600; color:#fff; font-weight:bold; cursor:pointer; transition:0.3s;}
+input { 
+  width:100%; 
+  padding:10px; 
+  margin-top:6px; 
+  border-radius:8px; 
+  border:none; 
+  background:#222; 
+  color:#fff; 
+}
+button { 
+  margin-top:20px; 
+  width:100%; 
+  padding:12px; 
+  border:none; 
+  border-radius:8px; 
+  background:#ff6600; 
+  color:#fff; 
+  font-weight:bold; 
+  cursor:pointer; 
+  transition:0.3s;
+}
 button:hover { background:#cc5200; }
 .success { margin-top:15px; color:#28a745; font-weight:bold; text-align:center; }
 </style>
 </head>
 <body>
 
+<!-- === NAVBAR === -->
+<nav>
+  <img src="logo.png" alt="Logo">
+  <ul>
+    <li><a href="index.html">Forumuri</a></li>
+    <li><a href="Staff.html">Staff</a></li>
+    <li><a href="evidenta.html">Evidența Servere</a></li>
+  </ul>
+</nav>
+
+<!-- === FORM CONTAINER === -->
 <div class="container">
   <h1>Reclamație Poliție</h1>
   <form id="reclamatieForm">
