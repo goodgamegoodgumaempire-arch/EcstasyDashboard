@@ -1,22 +1,153 @@
-<!-- În interiorul div#content, înainte de card-uri -->
-<div style="margin-bottom: 20px; display:flex; gap:10px;">
-  <select id="selectRegulament" style="padding:10px; border-radius:5px; background:#222; color:#fff; border:1px solid #333;">
-    <option value="server">Regulament Server</option>
-    <option value="politie">Regulament Poliție</option>
-    <option value="medici">Regulament Medici</option>
-    <option value="mafii">Regulament Mafii</option>
-    <option value="staff">Regulament Staff</option>
-    <option value="codpenal">Cod Penal</option>
-    <option value="contacte">Contacte Utile</option>
-  </select>
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regulamente & Informații - ECSTASY Romania</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  font-family:'Roboto',sans-serif;
+  background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7);
+  background-size:400% 400%;
+  animation: gradientBG 20s ease infinite;
+  color:#fff;
+  min-height:100vh;
+}
+@keyframes gradientBG {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100; }
+nav img { height:40px; margin-right:50px; }
+nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0; }
+nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s; }
+nav ul li a:hover { color:#ff6600; }
+nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bottom:4px; }
+
+#layout {
+  display: flex;
+  max-width: 1200px;
+  margin: 20px auto;
+  gap: 20px;
+  padding: 0 20px;
+  align-items: flex-start;
+}
+
+.sidebar {
+  width: 250px;
+  background: rgba(17,17,17,0.95);
+  border-radius: 10px;
+  padding: 20px;
+  border: 1px solid #333;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.sidebar h2 {
+  color: #ff6600;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #222;
+  padding-bottom: 5px;
+  font-size: 1.2em;
+}
+
+.sidebar button {
+  width: 100%;
+  background: rgba(34,34,34,0.6);
+  border: none;
+  color: #fff;
+  padding: 12px 15px;
+  margin: 6px 0;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 0.95em;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.sidebar button:hover,
+.sidebar button.active {
+  background: #ff6600;
+  color: #111;
+  transform: translateX(3px);
+}
+
+.main-content {
+  flex: 1;
+}
+
+.section {
+  background: rgba(17,17,17,0.85);
+  border-radius: 10px;
+  padding:20px;
+  margin-bottom:20px;
+  border:1px solid #333;
+  box-shadow:0 4px 15px rgba(0,0,0,0.5);
+}
+
+.section h2 { color:#ff6600; margin-bottom:15px; border-bottom:2px solid #222; padding-bottom:5px; }
+.section p { color:#ccc; line-height:1.5; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+
+<nav>
+  <img src="logo.png" alt="ECSTASY Logo">
+  <ul>
+    <li class="active"><a href="#"><span>Acasă</span></a></li>
+    <li><a href="Staff.html"><span>Staff</span></a></li>
+    <li><a href="index.html"><span>Forum</span></a></li>
+  </ul>
+</nav>
+
+<div id="layout">
+  <div class="sidebar" id="sidebar">
+    <h2>Regulamente & Info</h2>
+    <button onclick="showRule('politie', this)">Regulament Poliție</button>
+    <button onclick="showRule('medici', this)">Regulament Medici</button>
+    <button onclick="showRule('mafii', this)">Regulament Mafii</button>
+    <button onclick="showRule('staff', this)">Regulament Staff</button>
+    <button onclick="showRule('regulament_server', this)">Regulament Server</button>
+    <button onclick="showRule('codpenal', this)">Cod Penal</button>
+    <button onclick="showRule('contacte', this)">Contacte Utile</button>
+  </div>
+
+  <div class="main-content" id="rulesContainer">
+    <div class="section" id="contentArea">
+      <h2>Bine ai venit!</h2>
+      <p>Selectează un regulament din partea stângă pentru a-l vizualiza.</p>
+    </div>
+  </div>
 </div>
 
 <script>
-const select = document.getElementById('selectRegulament');
-select.addEventListener('change', ()=> {
-  const val = select.value;
-  document.querySelectorAll('.card').forEach(c => c.style.display='none');
-  const card = document.getElementById(val);
-  if(card) card.style.display='block';
-});
+const rulesData = {
+  politie: localStorage.getItem('politie') || "Nu există informații adăugate încă.",
+  medici: localStorage.getItem('medici') || "Nu există informații adăugate încă.",
+  mafii: localStorage.getItem('mafii') || "Nu există informații adăugate încă.",
+  staff: localStorage.getItem('staff') || "Nu există informații adăugate încă.",
+  regulament_server: localStorage.getItem('regulament_server') || "Nu există informații adăugate încă.",
+  codpenal: localStorage.getItem('codpenal') || "Nu există informații adăugate încă.",
+  contacte: localStorage.getItem('contacte') || "Nu există informații adăugate încă."
+};
+
+function showRule(ruleId, btn){
+  const contentArea = document.getElementById('contentArea');
+  contentArea.innerHTML = `<h2>${ruleId.replace(/_/g,' ').toUpperCase()}</h2><p>${rulesData[ruleId]}</p>`;
+
+  // Evidențiază butonul activ
+  document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
 </script>
+
+</body>
+</html>
