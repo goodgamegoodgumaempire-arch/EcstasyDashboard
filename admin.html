@@ -48,8 +48,7 @@ form button:hover { background:#cc5200; }
 
 <div class="main">
   <h1>Admin Panel</h1>
-  
-  <!-- toate taburile rămân la fel -->
+
   <!-- Aplicații Staff -->
   <div id="applicationsTab" class="tab active">
     <h2>Aplicații Staff</h2>
@@ -158,7 +157,6 @@ let staffMembers = JSON.parse(localStorage.getItem("staffMembers")) || [];
 const staffForm = document.getElementById("staffForm");
 const staffList = document.getElementById("staffList");
 let editIndex = null;
-
 function renderStaff() {
   staffList.innerHTML="";
   staffMembers.forEach((m,i)=>{
@@ -182,13 +180,11 @@ function renderStaff() {
     staffList.appendChild(div);
   });
 }
-
 function saveStaff(){
   localStorage.setItem("staffMembers",JSON.stringify(staffMembers));
   renderStaff();
   renderSanctions();
 }
-
 staffForm.addEventListener("submit",(e)=>{
   e.preventDefault();
   const name=document.getElementById("staffName").value.trim();
@@ -280,27 +276,17 @@ function saveAplicatiiStaff(){ localStorage.setItem("aplicatii",JSON.stringify(a
 let updates = JSON.parse(localStorage.getItem("updates")) || [];
 const updateForm = document.getElementById("updateForm");
 const updatesList = document.getElementById("updatesList");
-
 function renderUpdates(){
   updatesList.innerHTML = "";
   updates.forEach((u,i)=>{
-    const div = document.createElement("div");
-    div.className="item";
+    const div = document.createElement("div"); div.className="item";
     div.innerHTML=`<strong>${u.title}</strong><br>${u.message}<br>${u.img||""}`;
-    const delBtn = document.createElement("button");
-    delBtn.className="delete-btn";
-    delBtn.innerText="Șterge";
+    const delBtn = document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
     delBtn.onclick=()=>{ updates.splice(i,1); saveUpdates(); };
-    div.appendChild(delBtn);
-    updatesList.appendChild(div);
+    div.appendChild(delBtn); updatesList.appendChild(div);
   });
 }
-
-function saveUpdates(){
-  localStorage.setItem("updates", JSON.stringify(updates));
-  renderUpdates();
-}
-
+function saveUpdates(){ localStorage.setItem("updates", JSON.stringify(updates)); renderUpdates(); }
 updateForm.addEventListener("submit", e=>{
   e.preventDefault();
   const title=document.getElementById("updateTitle").value.trim();
@@ -308,35 +294,24 @@ updateForm.addEventListener("submit", e=>{
   const img=document.getElementById("updateImg").value.trim();
   if(!title||!message) return;
   updates.push({title,message,img});
-  updateForm.reset();
-  saveUpdates();
+  updateForm.reset(); saveUpdates();
 });
 
 // --- SNEAK PEEKS ---
 let sneakPeeks = JSON.parse(localStorage.getItem("sneakPeeks")) || [];
 const sneakForm = document.getElementById("sneakForm");
 const sneakList = document.getElementById("sneakList");
-
 function renderSneaks(){
   sneakList.innerHTML="";
   sneakPeeks.forEach((sp,i)=>{
-    const div=document.createElement("div");
-    div.className="item";
+    const div=document.createElement("div"); div.className="item";
     div.innerHTML=`<strong>${sp.type.toUpperCase()}</strong><br>${sp.message}<br>${sp.url||""}`;
-    const delBtn=document.createElement("button");
-    delBtn.className="delete-btn";
-    delBtn.innerText="Șterge";
+    const delBtn=document.createElement("button"); delBtn.className="delete-btn"; delBtn.innerText="Șterge";
     delBtn.onclick=()=>{ sneakPeeks.splice(i,1); saveSneaks(); };
-    div.appendChild(delBtn);
-    sneakList.appendChild(div);
+    div.appendChild(delBtn); sneakList.appendChild(div);
   });
 }
-
-function saveSneaks(){
-  localStorage.setItem("sneakPeeks", JSON.stringify(sneakPeeks));
-  renderSneaks();
-}
-
+function saveSneaks(){ localStorage.setItem("sneakPeeks", JSON.stringify(sneakPeeks)); renderSneaks(); }
 sneakForm.addEventListener("submit", e=>{
   e.preventDefault();
   const message=document.getElementById("sneakMessage").value.trim();
@@ -344,9 +319,51 @@ sneakForm.addEventListener("submit", e=>{
   const type=document.getElementById("sneakType").value;
   if(!message && !url) return;
   sneakPeeks.push({message,url,type});
-  sneakForm.reset();
-  saveSneaks();
+  sneakForm.reset(); saveSneaks();
 });
+
+// --- RECLAMAȚII ---
+// Jucători
+let reclamatiiJucatori = JSON.parse(localStorage.getItem("reclamatiiJucatori")) || [];
+const reclamatiiJucList = document.getElementById("reclamatiiJucList");
+function renderReclamatiiJucatori(){
+  reclamatiiJucList.innerHTML = "";
+  reclamatiiJucatori.forEach((r,i)=>{
+    const div = document.createElement("div"); div.className = "item";
+    div.innerHTML = `<strong>De la:</strong> ${r.from || "Necunoscut"}<br>${r.message || ""}`;
+    const delBtn = document.createElement("button"); delBtn.className = "delete-btn"; delBtn.innerText = "Șterge";
+    delBtn.onclick = () => { reclamatiiJucatori.splice(i,1); localStorage.setItem("reclamatiiJucatori", JSON.stringify(reclamatiiJucatori)); renderReclamatiiJucatori(); };
+    div.appendChild(delBtn); reclamatiiJucList.appendChild(div);
+  });
+}
+
+// Mafii
+let reclamatiiMafii = JSON.parse(localStorage.getItem("reclamatiiMafii")) || [];
+const reclamatiiMafList = document.getElementById("reclamatiiMafList");
+function renderReclamatiiMafii(){
+  reclamatiiMafList.innerHTML = "";
+  reclamatiiMafii.forEach((r,i)=>{
+    const div = document.createElement("div"); div.className = "item";
+    div.innerHTML = `<strong>De la:</strong> ${r.from || "Necunoscut"}<br>${r.message || ""}`;
+    const delBtn = document.createElement("button"); delBtn.className = "delete-btn"; delBtn.innerText = "Șterge";
+    delBtn.onclick = () => { reclamatiiMafii.splice(i,1); localStorage.setItem("reclamatiiMafii", JSON.stringify(reclamatiiMafii)); renderReclamatiiMafii(); };
+    div.appendChild(delBtn); reclamatiiMafList.appendChild(div);
+  });
+}
+
+// Staff
+let reclamatiiStaff = JSON.parse(localStorage.getItem("reclamatiiStaff")) || [];
+const reclamatiiStaffList = document.getElementById("reclamatiiStaffList");
+function renderReclamatiiStaff(){
+  reclamatiiStaffList.innerHTML = "";
+  reclamatiiStaff.forEach((r,i)=>{
+    const div = document.createElement("div"); div.className = "item";
+    div.innerHTML = `<strong>De la:</strong> ${r.from || "Necunoscut"}<br>${r.message || ""}`;
+    const delBtn = document.createElement("button"); delBtn.className = "delete-btn"; delBtn.innerText = "Șterge";
+    delBtn.onclick = () => { reclamatiiStaff.splice(i,1); localStorage.setItem("reclamatiiStaff", JSON.stringify(reclamatiiStaff)); renderReclamatiiStaff(); };
+    div.appendChild(delBtn); reclamatiiStaffList.appendChild(div);
+  });
+}
 
 // --- RESET ALL DATA ---
 function resetAllData(){
@@ -356,16 +373,13 @@ function resetAllData(){
   localStorage.removeItem("updates");
   localStorage.removeItem("sneakPeeks");
   localStorage.removeItem("sanctions");
-  staffMembers = [];
-  aplicatii = [];
-  updates = [];
-  sneakPeeks = [];
-  sanctions = [];
-  renderStaff();
-  renderAplicatiiStaff();
-  renderUpdates();
-  renderSneaks();
-  renderSanctions();
+  localStorage.removeItem("reclamatiiJucatori");
+  localStorage.removeItem("reclamatiiMafii");
+  localStorage.removeItem("reclamatiiStaff");
+  staffMembers = []; aplicatii = []; updates = []; sneakPeeks = []; sanctions = [];
+  reclamatiiJucatori = []; reclamatiiMafii = []; reclamatiiStaff = [];
+  renderStaff(); renderAplicatiiStaff(); renderUpdates(); renderSneaks(); renderSanctions();
+  renderReclamatiiJucatori(); renderReclamatiiMafii(); renderReclamatiiStaff();
   alert("Toate datele au fost resetate!");
 }
 
@@ -376,8 +390,9 @@ renderSanctions();
 renderModel();
 renderUpdates();
 renderSneaks();
-
+renderReclamatiiJucatori();
+renderReclamatiiMafii();
+renderReclamatiiStaff();
 </script>
 </body>
 </html>
-
