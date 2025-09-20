@@ -1,130 +1,22 @@
-<!DOCTYPE html>
-<html lang="ro">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Regulamente & Informații - ECSTASY Romania</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b0c17);
-    background-size: 400% 400%;
-    animation: gradientBG 20s ease infinite;
-    color: #fff;
-    min-height: 100vh;
-}
-@keyframes gradientBG {
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-nav { display:flex; align-items:center; background: transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100;}
-nav img { height:40px; margin-right:50px; }
-nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0; }
-nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s;}
-nav ul li a:hover { color:#ff6600; }
-nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bottom:4px; }
-
-/* Layout */
-#layout { display:flex; max-width:1200px; margin:20px auto; gap:20px; padding:0 20px; }
-#sidebar { flex:1; }
-#main { flex:3; }
-
-.card { background: rgba(17,17,17,0.85); border-radius:10px; padding:20px; margin-bottom:20px; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5);}
-.card h2 { color:#ff6600; margin-bottom:10px; }
-textarea { width:100%; min-height:150px; margin-top:10px; padding:10px; border-radius:5px; border:1px solid #ccc; resize:vertical; background:#222; color:#fff;}
-button.save { margin-top:10px; padding:8px 15px; border:none; background:#27ae60; color:white; border-radius:5px; cursor:pointer; }
-button.save:hover { background:#2ecc71; }
-.sidebar-box { background: rgba(17,17,17,0.85); border-radius:10px; padding:15px; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); margin-bottom:20px;}
-.sidebar-box button { display:block; width:100%; margin:5px 0; padding:10px; border:none; border-radius:5px; background:#4fc3f7; color:#0b0c17; cursor:pointer; font-weight:bold; }
-.sidebar-box button:hover { background:#ff6600; color:#fff; }
-</style>
-</head>
-<body>
-
-<nav>
-  <img src="logo.png" alt="ECSTASY Logo">
-  <ul>
-    <li><a href="index.html"><i class="fas fa-home"></i><span>Acasă</span></a></li>
-    <li class="active"><a href="#"><i class="fas fa-book"></i><span>Regulamente</span></a></li>
-  </ul>
-</nav>
-
-<div id="layout">
-  <div id="sidebar" class="sidebar-box">
-    <button onclick="showSection('server')">Regulament Server</button>
-    <button onclick="showSection('politie')">Regulament Poliție</button>
-    <button onclick="showSection('medici')">Regulament Medici</button>
-    <button onclick="showSection('mafii')">Regulament Mafii</button>
-    <button onclick="showSection('staff')">Regulament Staff</button>
-    <button onclick="showSection('codpenal')">Cod Penal</button>
-    <button onclick="showSection('contacte')">Contacte Utile</button>
-  </div>
-
-  <div id="main">
-    <div class="card" id="server">
-      <h2>Regulament Server</h2>
-      <textarea placeholder="Regulament general al serverului..."></textarea>
-      <button class="save" onclick="saveText('server')">Salvează</button>
-    </div>
-    <div class="card" id="politie" style="display:none;">
-      <h2>Regulament Poliție</h2>
-      <textarea placeholder="Regulament Poliție..."></textarea>
-      <button class="save" onclick="saveText('politie')">Salvează</button>
-    </div>
-    <div class="card" id="medici" style="display:none;">
-      <h2>Regulament Medici</h2>
-      <textarea placeholder="Regulament Medici..."></textarea>
-      <button class="save" onclick="saveText('medici')">Salvează</button>
-    </div>
-    <div class="card" id="mafii" style="display:none;">
-      <h2>Regulament Mafii</h2>
-      <textarea placeholder="Regulament Mafii..."></textarea>
-      <button class="save" onclick="saveText('mafii')">Salvează</button>
-    </div>
-    <div class="card" id="staff" style="display:none;">
-      <h2>Regulament Staff</h2>
-      <textarea placeholder="Regulament Staff..."></textarea>
-      <button class="save" onclick="saveText('staff')">Salvează</button>
-    </div>
-    <div class="card" id="codpenal" style="display:none;">
-      <h2>Cod Penal</h2>
-      <textarea placeholder="Cod Penal..."></textarea>
-      <button class="save" onclick="saveText('codpenal')">Salvează</button>
-    </div>
-    <div class="card" id="contacte" style="display:none;">
-      <h2>Contacte Utile</h2>
-      <textarea placeholder="Contacte utile..."></textarea>
-      <button class="save" onclick="saveText('contacte')">Salvează</button>
-    </div>
-  </div>
+<!-- În interiorul div#content, înainte de card-uri -->
+<div style="margin-bottom: 20px; display:flex; gap:10px;">
+  <select id="selectRegulament" style="padding:10px; border-radius:5px; background:#222; color:#fff; border:1px solid #333;">
+    <option value="server">Regulament Server</option>
+    <option value="politie">Regulament Poliție</option>
+    <option value="medici">Regulament Medici</option>
+    <option value="mafii">Regulament Mafii</option>
+    <option value="staff">Regulament Staff</option>
+    <option value="codpenal">Cod Penal</option>
+    <option value="contacte">Contacte Utile</option>
+  </select>
 </div>
 
 <script>
-// afișează secțiunea selectată
-function showSection(id){
-  document.querySelectorAll('#main .card').forEach(c=>c.style.display='none');
-  document.getElementById(id).style.display='block';
-}
-
-// salvare localStorage
-function saveText(id){
-  const textarea = document.querySelector(`#${id} textarea`);
-  localStorage.setItem(id, textarea.value);
-  alert("Salvat cu succes!");
-}
-
-// încarcă textele salvate la încărcare
-window.onload = ()=>{
-  document.querySelectorAll('#main .card').forEach(c=>{
-    const saved = localStorage.getItem(c.id);
-    if(saved) c.querySelector('textarea').value = saved;
-  });
-}
+const select = document.getElementById('selectRegulament');
+select.addEventListener('change', ()=> {
+  const val = select.value;
+  document.querySelectorAll('.card').forEach(c => c.style.display='none');
+  const card = document.getElementById(val);
+  if(card) card.style.display='block';
+});
 </script>
-
-</body>
-</html>
