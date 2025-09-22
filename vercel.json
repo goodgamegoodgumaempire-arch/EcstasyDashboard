@@ -1,7 +1,6 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/ecstasy", "destination": "/index.html" },
+    { "source": "/ecstasy", "destination": "/index.html" }
   ]
 }
-
