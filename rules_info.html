@@ -84,33 +84,6 @@ button.delete { background:#e74c3c; color:white; border:none; padding:5px 8px; b
 
 <div class="content" id="content">
 
-  <!-- Shop -->
-<div class="card" id="shop" style="display:none;">
-  <h3>Adaugă Produs</h3>
-  <input type="text" id="produs_nume" placeholder="Nume Produs">
-  <input type="text" id="produs_img" placeholder="URL poză (opțional)">
-  <textarea id="produs_detalii" placeholder="Detalii Produs"></textarea>
-  <input type="number" id="produs_pret" placeholder="Preț Produs">
-  <button class="save" onclick="addProdus()">Adaugă Produs</button>
-
-  <h3 style="margin-top:20px;">Lista Produse</h3>
-  <table id="shopTable">
-    <thead>
-      <tr>
-        <th>Poza</th>
-        <th>Nume</th>
-        <th>Detalii</th>
-        <th>Preț</th>
-        <th>Acțiuni</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Produse vor fi încărcate aici -->
-    </tbody>
-  </table>
-</div>
-
-
   <!-- Regulamente -->
   <div class="card" id="politie">
     <h3>Regulament Poliție</h3>
@@ -178,9 +151,31 @@ button.delete { background:#e74c3c; color:white; border:none; padding:5px 8px; b
           <th>Acțiuni</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Lideri vor fi încărcați aici -->
-      </tbody>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Shop -->
+  <div class="card" id="shop" style="display:none;">
+    <h3>Adaugă Produs</h3>
+    <input type="text" id="produs_nume" placeholder="Nume Produs">
+    <input type="text" id="produs_img" placeholder="URL poză (opțional)">
+    <textarea id="produs_detalii" placeholder="Detalii Produs"></textarea>
+    <input type="number" id="produs_pret" placeholder="Preț Produs">
+    <button class="save" onclick="addProdus()">Adaugă Produs</button>
+
+    <h3 style="margin-top:20px;">Lista Produse</h3>
+    <table id="shopTable">
+      <thead>
+        <tr>
+          <th>Poza</th>
+          <th>Nume</th>
+          <th>Detalii</th>
+          <th>Preț</th>
+          <th>Acțiuni</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
     </table>
   </div>
 
@@ -198,6 +193,7 @@ function saveText(id){
   alert('Salvat cu succes!');
 }
 
+// ================= Lideri ==================
 function addLider(){
   const img = document.getElementById('lider_img').value.trim();
   const nume = document.getElementById('lider_nume').value.trim();
@@ -212,8 +208,6 @@ function addLider(){
   document.getElementById('lider_grad').value='';
   loadLideri();
 }
-
-// Încarcă liderii în tabel
 function loadLideri(){
   const lideri = JSON.parse(localStorage.getItem('lideri')) || [];
   const tbody = document.querySelector('#liderTable tbody');
@@ -233,7 +227,6 @@ function loadLideri(){
     tbody.appendChild(tr);
   });
 }
-
 function deleteLider(index){
   if(confirm("Ești sigur că vrei să ștergi acest lider?")){
     let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
@@ -242,7 +235,6 @@ function deleteLider(index){
     loadLideri();
   }
 }
-
 function editLider(index){
   let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
   const lider = lideri[index];
@@ -265,7 +257,6 @@ function editLider(index){
     </td>
   `;
 }
-
 function saveLider(index){
   let lideri = JSON.parse(localStorage.getItem('lideri')) || [];
   const tr = document.querySelector('#liderTable tbody').children[index];
@@ -279,7 +270,8 @@ function saveLider(index){
   localStorage.setItem('lideri', JSON.stringify(lideri));
   loadLideri();
 }
-  
+
+// ================= Shop ==================
 function addProdus(){
   const nume = document.getElementById('produs_nume').value.trim();
   const img = document.getElementById('produs_img').value.trim();
@@ -295,7 +287,6 @@ function addProdus(){
   document.getElementById('produs_pret').value='';
   loadProduse();
 }
-
 function loadProduse(){
   const produse = JSON.parse(localStorage.getItem('produse')) || [];
   const tbody = document.querySelector('#shopTable tbody');
@@ -315,7 +306,6 @@ function loadProduse(){
     tbody.appendChild(tr);
   });
 }
-
 function deleteProdus(index){
   if(confirm("Ești sigur că vrei să ștergi acest produs?")){
     let produse = JSON.parse(localStorage.getItem('produse')) || [];
@@ -324,7 +314,6 @@ function deleteProdus(index){
     loadProduse();
   }
 }
-
 function editProdus(index){
   let produse = JSON.parse(localStorage.getItem('produse')) || [];
   const produs = produse[index];
@@ -341,7 +330,6 @@ function editProdus(index){
     </td>
   `;
 }
-
 function saveProdus(index){
   let produse = JSON.parse(localStorage.getItem('produse')) || [];
   const tr = document.querySelector('#shopTable tbody').children[index];
@@ -356,8 +344,7 @@ function saveProdus(index){
   loadProduse();
 }
 
-
-// Reîncarcă textele salvate și lista lideri
+// ================= On Load =================
 window.onload = ()=>{
   document.querySelectorAll('.card').forEach(card=>{
     const id = card.id;
@@ -367,13 +354,8 @@ window.onload = ()=>{
     }
   });
   loadLideri();
+  loadProduse();
 };
-loadProduse();
 </script>
 </body>
 </html>
-
-
-
-
-
