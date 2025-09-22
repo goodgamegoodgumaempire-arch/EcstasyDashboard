@@ -4,7 +4,7 @@
 <link rel="icon" type="image/png" href="logo.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Aplicații - G4A Romania</title>
+<title>Aplicații - ECSTASY Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
 body { margin:0; font-family:'Roboto',sans-serif; background: linear-gradient(135deg,#0b0c17,#1b1f38,#4fc3f7,#0b1c17); background-size:400% 400%; animation: gradientBG 20s ease infinite; color:#fff; min-height:100vh;}
@@ -87,7 +87,6 @@ button:hover { background:#cc5200;}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ================= Firebase Config =================
 const firebaseConfig = {
   apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
   authDomain: "ecstassy-44277.firebaseapp.com",
@@ -104,7 +103,6 @@ const db = firebase.database();
 
 const profileLi = document.getElementById("profile");
 
-// ================= Auth și profil =================
 auth.onAuthStateChanged(user => {
   if(user){
     db.ref('users/'+user.uid).once('value').then(snapshot=>{
@@ -119,7 +117,6 @@ auth.onAuthStateChanged(user => {
 
 function logout(){ auth.signOut(); }
 
-// ================= Aplicații =================
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
 function toggleForm(tip){
@@ -203,3 +200,4 @@ renderAplicatiiPublice();
 
 </body>
 </html>
+
