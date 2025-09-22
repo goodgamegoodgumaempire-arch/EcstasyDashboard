@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reclamații Poliție - ECSTASY</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 body { 
   margin:0; 
@@ -22,7 +23,6 @@ body {
   100%{background-position:0% 50%;}
 }
 
-/* === NAVBAR === */
 nav { 
   display: flex; 
   align-items: center; 
@@ -40,6 +40,7 @@ nav ul {
   list-style: none; 
   margin: 0 auto; 
   padding: 0; 
+  align-items: center;
 }
 nav ul li a { 
   color: #fff; 
@@ -48,10 +49,12 @@ nav ul li a {
   flex-direction: column; 
   align-items: center; 
   font-size: 0.85em; 
+  transition:0.2s;
 }
 nav ul li a:hover { color: #ff6600; }
+#profile { display:flex; align-items:center; gap:8px; font-weight:700; color:#fff; }
+#profile span.logout { color:#ff6600; cursor:pointer; font-weight:700; }
 
-/* === FORM === */
 .container { 
   background:rgba(17,17,17,0.9); 
   padding:30px; 
@@ -59,7 +62,7 @@ nav ul li a:hover { color: #ff6600; }
   box-shadow:0 0 12px rgba(0,0,0,0.6); 
   width:90%; 
   max-width:500px; 
-  margin:80px auto; /* pus margin ca sa nu fie lipit sub navbar */
+  margin:80px auto; 
 }
 h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
 label { font-weight:bold; display:block; margin-top:12px; }
@@ -90,17 +93,16 @@ button:hover { background:#cc5200; }
 </head>
 <body>
 
-<!-- === NAVBAR === -->
 <nav>
   <img src="logo.png" alt="Logo">
   <ul>
     <li><a href="index.html">Forumuri</a></li>
     <li><a href="Staff.html">Staff</a></li>
     <li><a href="evidenta.html">Evidența Servere</a></li>
+    <li id="profile"></li>
   </ul>
 </nav>
 
-<!-- === FORM CONTAINER === -->
 <div class="container">
   <h1>Reclamație Poliție</h1>
   <form id="reclamatieForm">
@@ -118,7 +120,39 @@ button:hover { background:#cc5200; }
   <div id="successMsg" class="success" style="display:none;">Reclamația a fost trimisă!</div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
+  authDomain: "ecstassy-44277.firebaseapp.com",
+  databaseURL: "https://ecstassy-44277-default-rtdb.firebaseio.com",
+  projectId: "ecstassy-44277",
+  storageBucket: "ecstassy-44277.firebasestorage.app",
+  messagingSenderId: "557171186889",
+  appId: "1:557171186889:web:0cae151137b761b2660118",
+  measurementId: "G-34Q8PVK8EH"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const profileLi = document.getElementById("profile");
+
+auth.onAuthStateChanged(user => {
+  if(user){
+    db.ref('users/'+user.uid).once('value').then(snapshot=>{
+      const data = snapshot.val();
+      profileLi.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <span class="logout" onclick="logout()">Logout</span>`;
+    });
+  } else {
+    profileLi.innerHTML = '';
+  }
+});
+
+function logout(){ auth.signOut(); }
+
 document.getElementById("reclamatieForm").addEventListener("submit", function(e){
   e.preventDefault();
 
@@ -141,4 +175,3 @@ document.getElementById("reclamatieForm").addEventListener("submit", function(e)
 
 </body>
 </html>
-
