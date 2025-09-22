@@ -40,6 +40,10 @@ nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:col
 nav ul li a:hover { color:#ff6600; }
 nav ul li.active a { color:#ff6600; border-bottom: 2px solid #ff6600; padding-bottom:4px; }
 
+/* Profil utilizator */
+#profile { display:flex; align-items:center; gap:8px; font-weight:700; color:#fff; }
+#profile span.logout { color:#ff6600; cursor:pointer; font-weight:700; }
+
 /* Sneak Peeks */
 h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
 .peek {
@@ -80,13 +84,46 @@ h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
     <li><a href="#"><i class="fas fa-users"></i><span>Staff</span></a></li>
     <li><a href="#"><span>Tabel Lideri</span></a></li>
     <li><a href="#"><span>Evidența Servere</span></a></li>
-    <li><a href="#"><i class="fas fa-search"></i><span>Search</span></a></li>
+    <li id="profile"></li>
   </ul>
 </nav>
 
-
 <h1>Sneak Peeks</h1>
 <div id="peeks"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
+  authDomain: "ecstassy-44277.firebaseapp.com",
+  databaseURL: "https://ecstassy-44277-default-rtdb.firebaseio.com",
+  projectId: "ecstassy-44277",
+  storageBucket: "ecstassy-44277.firebasestorage.app",
+  messagingSenderId: "557171186889",
+  appId: "1:557171186889:web:0cae151137b761b2660118",
+  measurementId: "G-34Q8PVK8EH"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const profileLi = document.getElementById("profile");
+
+auth.onAuthStateChanged(user => {
+  if(user){
+    db.ref('users/'+user.uid).once('value').then(snapshot=>{
+      const data = snapshot.val();
+      profileLi.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <span class="logout" onclick="logout()">Logout</span>`;
+    });
+  } else {
+    profileLi.innerHTML = '';
+  }
+});
+
+function logout(){ auth.signOut(); }
+</script>
 
 <script>
 let peeksData = JSON.parse(localStorage.getItem("sneakPeeks")) || [];
