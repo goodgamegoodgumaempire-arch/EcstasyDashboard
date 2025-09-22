@@ -279,6 +279,83 @@ function saveLider(index){
   localStorage.setItem('lideri', JSON.stringify(lideri));
   loadLideri();
 }
+  
+function addProdus(){
+  const nume = document.getElementById('produs_nume').value.trim();
+  const img = document.getElementById('produs_img').value.trim();
+  const detalii = document.getElementById('produs_detalii').value.trim();
+  const pret = document.getElementById('produs_pret').value.trim();
+  if(!nume || !pret){ alert("Completează cel puțin nume și preț!"); return; }
+  let produse = JSON.parse(localStorage.getItem('produse')) || [];
+  produse.push({ nume, img, detalii, pret });
+  localStorage.setItem('produse', JSON.stringify(produse));
+  document.getElementById('produs_nume').value='';
+  document.getElementById('produs_img').value='';
+  document.getElementById('produs_detalii').value='';
+  document.getElementById('produs_pret').value='';
+  loadProduse();
+}
+
+function loadProduse(){
+  const produse = JSON.parse(localStorage.getItem('produse')) || [];
+  const tbody = document.querySelector('#shopTable tbody');
+  tbody.innerHTML = '';
+  produse.forEach((produs, index)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${produs.img ? `<img src="${produs.img}" style="width:50px;height:50px;object-fit:cover;border-radius:5px;">` : '—'}</td>
+      <td>${produs.nume}</td>
+      <td>${produs.detalii}</td>
+      <td>${produs.pret} RON</td>
+      <td>
+        <button class="edit" onclick="editProdus(${index})">Editează</button>
+        <button class="delete" onclick="deleteProdus(${index})">Șterge</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function deleteProdus(index){
+  if(confirm("Ești sigur că vrei să ștergi acest produs?")){
+    let produse = JSON.parse(localStorage.getItem('produse')) || [];
+    produse.splice(index,1);
+    localStorage.setItem('produse', JSON.stringify(produse));
+    loadProduse();
+  }
+}
+
+function editProdus(index){
+  let produse = JSON.parse(localStorage.getItem('produse')) || [];
+  const produs = produse[index];
+  const tbody = document.querySelector('#shopTable tbody');
+  const tr = tbody.children[index];
+  tr.innerHTML = `
+    <td><input type="text" value="${produs.img}"></td>
+    <td><input type="text" value="${produs.nume}"></td>
+    <td><textarea>${produs.detalii}</textarea></td>
+    <td><input type="number" value="${produs.pret}"></td>
+    <td>
+      <button class="save" onclick="saveProdus(${index})">Salvează</button>
+      <button class="delete" onclick="deleteProdus(${index})">Șterge</button>
+    </td>
+  `;
+}
+
+function saveProdus(index){
+  let produse = JSON.parse(localStorage.getItem('produse')) || [];
+  const tr = document.querySelector('#shopTable tbody').children[index];
+  const inputs = tr.querySelectorAll('input, textarea');
+  produse[index] = {
+    img: inputs[0].value.trim(),
+    nume: inputs[1].value.trim(),
+    detalii: inputs[2].value.trim(),
+    pret: inputs[3].value.trim()
+  };
+  localStorage.setItem('produse', JSON.stringify(produse));
+  loadProduse();
+}
+
 
 // Reîncarcă textele salvate și lista lideri
 window.onload = ()=>{
@@ -294,6 +371,7 @@ window.onload = ()=>{
 </script>
 </body>
 </html>
+
 
 
 
