@@ -34,7 +34,7 @@ nav {
     z-index:100; 
 }
 nav img { height:40px; margin-right:50px; }
-nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0; }
+nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0; align-items:center; }
 nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s; }
 nav ul li a:hover { color:#ff6600; }
 nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bottom:4px; }
@@ -62,62 +62,55 @@ nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bot
 
 <nav>
   <img src="logo.png" alt="Logo Ecstasy">
-  <ul>
+  <ul id="navbar-links">
     <li><a href="index.html">Forumuri</a></li>
     <li class="active"><a href="Staff.html">Staff</a></li>
     <li><a href="evidenta.html">Evidența Servere</a></li>
+    <!-- Conectare / Nume utilizator se va insera aici -->
   </ul>
 </nav>
 
 <div id="staff-container"></div>
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-  const firebaseConfig = {
-    apiKey: "API_KEY",
-    authDomain: "PROJECT_ID.firebaseapp.com",
-    projectId: "PROJECT_ID",
-    storageBucket: "PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
-  };
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+const navbar = document.getElementById("navbar-links");
 
-  const staffContainer = document.getElementById("staff-container");
-  const groups = ["COMMUNITY OWNERS","CO FOUNDERS","MANAGER STAFF","ADMINISTRATORS","MODERATORS","HELPERS","TRYAL HELPERS"];
+const userLogged = JSON.parse(localStorage.getItem("loggedUser")); 
 
-  function renderStaff(staffMembers) {
-      staffContainer.innerHTML = "";
-      groups.forEach(group => {
-          const section = document.createElement("div");
-          section.classList.add("staff-section");
-          section.innerHTML = `<h2>${group}</h2><div class="staff-cards"></div>`;
-          const cardsContainer = section.querySelector(".staff-cards");
+if(userLogged && userLogged.name){
+    const li = document.createElement("li");
+    li.innerHTML = `<span style="color:#ff6600;">Conectat ca ${userLogged.name}</span>`;
+    navbar.appendChild(li);
+}
 
-          staffMembers.filter(member => member.group === group).forEach(member => {
-              const card = document.createElement("div");
-              card.classList.add("staff-card");
-              card.innerHTML = `
-                  <img src="${member.img || 'default.png'}" alt="${member.name}">
-                  <h3>${member.name}</h3>
-                  <p>Grad: ${member.rank}</p>
-              `;
-              cardsContainer.appendChild(card);
-          });
+const staffContainer = document.getElementById("staff-container");
+let staffMembers = JSON.parse(localStorage.getItem("staffMembers")) || [];
+const groups = ["COMMUNITY OWNERS","CO FOUNDERS","MANAGER STAFF","ADMINISTRATORS","MODERATORS","HELPERS","TRYAL HELPERS"];
 
-          staffContainer.appendChild(section);
-      });
-  }
+function renderStaff() {
+    staffContainer.innerHTML = "";
+    groups.forEach(group => {
+        const section = document.createElement("div");
+        section.classList.add("staff-section");
+        section.innerHTML = `<h2>${group}</h2><div class="staff-cards"></div>`;
+        const cardsContainer = section.querySelector(".staff-cards");
 
-  db.collection("staffMembers").get().then(snapshot => {
-      const staffMembers = [];
-      snapshot.forEach(doc => {
-          staffMembers.push(doc.data());
-      });
-      renderStaff(staffMembers);
-  }).catch(err => console.error(err));
+        staffMembers.filter(member => member.group === group).forEach(member => {
+            const card = document.createElement("div");
+            card.classList.add("staff-card");
+            card.innerHTML = `
+                <img src="${member.img || 'default.png'}" alt="${member.name}">
+                <h3>${member.name}</h3>
+                <p>Grad: ${member.rank}</p>
+            `;
+            cardsContainer.appendChild(card);
+        });
+
+        staffContainer.appendChild(section);
+    });
+}
+
+renderStaff();
 </script>
 
 </body>
