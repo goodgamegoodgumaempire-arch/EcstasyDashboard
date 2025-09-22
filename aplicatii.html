@@ -35,33 +35,30 @@ button:hover { background:#cc5200;}
     <li><a href="index.html">Acasă</a></li>
     <li class="active"><a href="aplicatii.html">Aplicații</a></li>
     <li><a href="reclamatii_staff.html">Reclamații Staff</a></li>
+    <li id="profile"></li>
   </ul>
 </nav>
 
 <div id="layout">
   <div id="main">
-    <!-- Card aplicație Poliție -->
     <div class="card">
       <h2>Aplică pentru Poliție</h2>
       <button onclick="toggleForm('politie')">Aplică</button>
       <div id="formpolitie" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Card aplicație Medici -->
     <div class="card">
       <h2>Aplică pentru Medici</h2>
       <button onclick="toggleForm('medici')">Aplică</button>
       <div id="formmedici" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Card aplicație Staff -->
     <div class="card">
       <h2>Aplică pentru Staff</h2>
       <button onclick="toggleForm('staffNou')">Aplică</button>
       <div id="formstaffNou" class="hidden" data-loaded="false"></div>
     </div>
 
-    <!-- Card aplicații pentru utilizator -->
     <div class="card">
       <h2>Aplicațiile tale</h2>
       <button onclick="toggleAplicatiiPublice()">Vezi aplicații trimise</button>
@@ -82,14 +79,41 @@ button:hover { background:#cc5200;}
   </div>
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
+  authDomain: "ecstassy-44277.firebaseapp.com",
+  databaseURL: "https://ecstassy-44277-default-rtdb.firebaseio.com",
+  projectId: "ecstassy-44277",
+  storageBucket: "ecstassy-44277.appspot.com",
+  messagingSenderId: "557171186889",
+  appId: "1:557171186889:web:0cae151137b761b2660118"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const profileLi = document.getElementById("profile");
+
+auth.onAuthStateChanged(user => {
+  if(user){
+    profileLi.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <button onclick="logout()" style="margin-left:10px;">Logout</button>`;
+  } else {
+    profileLi.innerHTML = `<a href="index.html">Conectează-te</a>`;
+  }
+});
+
+function logout(){ auth.signOut(); }
+
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
-// Toggle form și generează câmpuri în funcție de model
 function toggleForm(tip){
   const div = document.getElementById("form"+tip);
   if(div.dataset.loaded !== "true"){
-
     let model = [];
     if(tip==="politie") model = JSON.parse(localStorage.getItem("modelPolitie")) || ["Nume jucător","Motivație / Mesaj"];
     if(tip==="medici") model = JSON.parse(localStorage.getItem("modelMedici")) || ["Nume jucător","Motivație / Mesaj"];
@@ -119,7 +143,6 @@ function toggleForm(tip){
   div.style.display = (div.style.display==="block") ? "none" : "block";
 }
 
-// Trimite aplicație
 function trimiteAplicatie(tip){
   const div = document.getElementById("form"+tip);
   const inputs = Array.from(div.querySelectorAll("input,textarea"));
@@ -137,7 +160,6 @@ function trimiteAplicatie(tip){
   renderAplicatiiPublice();
 }
 
-// Afișează aplicațiile trimise
 function renderAplicatiiPublice(){
   const container = document.getElementById("aplicatiiList");
   container.innerHTML = "";
@@ -160,17 +182,13 @@ function renderAplicatiiPublice(){
   });
 }
 
-// Toggle vizualizare aplicații
 function toggleAplicatiiPublice(){
   const div = document.getElementById("aplicatiiList");
   div.classList.toggle("hidden");
 }
 
-// Inițializare
 renderAplicatiiPublice();
 </script>
 
 </body>
 </html>
-
-
