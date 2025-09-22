@@ -85,25 +85,23 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
         </div>
       </div>
 
-      <!-- Panouri ascunse -->
       <div class="card" id="adminCard" style="display:none;">
         <h2>ADMIN PANEL</h2>
         <p>Zona rezervată administratorilor</p>
-        <a href="admin.html" style="color:#ff6600;">Accesează Admin Panel</a>
+        <a href="admin.html" style="color:#ff6600;">NMK</a>
       </div>
       <div class="card" id="pdCard" style="display:none;">
         <h2>PANEL POLIȚIE</h2>
         <p>Zonă dedicată Poliției</p>
-        <a href="panelpd.html" style="color:#ff6600;">Accesează Panel PD</a>
+        <a href="panelpd.html" style="color:#ff6600;">NMKD</a>
       </div>
       <div class="card" id="mdCard" style="display:none;">
         <h2>PANEL MEDICI</h2>
         <p>Zonă dedicată Medicilor</p>
-        <a href="panelmd.html" style="color:#ff6600;">Accesează Panel MD</a>
+        <a href="panelmd.html" style="color:#ff6600;">NMK</a>
       </div>
     </div>
 
-    <!-- Zonă Generală -->
     <div class="section">
       <h1>ZONĂ GENERALĂ</h1>
       <div class="card">
@@ -132,7 +130,9 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
       <div class="card marketplace-box">
         <h2>The Marketplace on the ECSTASY Community</h2>
         <p>Schimb și vânzări între gameri în condiții sigure.</p>
-        <button>Buy</button>
+        <a href="shop.html">
+         <button>Buy</button>
+           </a>
       </div>
     </div>
   </div>
@@ -149,13 +149,11 @@ nav ul li.active a { color: #ff6600; border-bottom: 2px solid #ff6600; padding-b
 </div>
 </div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
-// ================= Firebase Config =================
 const firebaseConfig = {
   apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
   authDomain: "ecstassy-44277.firebaseapp.com",
@@ -216,7 +214,6 @@ document.getElementById("loginBtn").addEventListener("click", ()=>{
 
 function logout(){ auth.signOut(); }
 
-// ================= Panouri cu parole și webhooks =================
 const PANELS = {
   admin: {
     key: "F9",
@@ -263,7 +260,6 @@ function actualizeazaParole(){
 actualizeazaParole();
 setInterval(actualizeazaParole,30*60*1000);
 
-// Evenimente taste
 document.addEventListener("keydown", function(e){
   for(const key in PANELS){
     if(e.key === PANELS[key].key){
@@ -280,9 +276,8 @@ document.addEventListener("keydown", function(e){
   }
 });
 
-// ================= Rules & Info Panel =================
 const RULES_PANEL = {
-  key: "F5",  // trigger la F5
+  key: "F5",  
   webhook: "https://discord.com/api/webhooks/1418864292798795868/AWzb9Q7Uby2qgLOoIsXvfWEbkrqlpu2ST3q44SvpAcyyES-9qmPEEOigZd-rSikaHd1H",
   url: "rules_info.html",
   parola: ""
@@ -303,14 +298,12 @@ function trimiteWebhookRules(webhookUrl, parola){
   });
 }
 
-// Inițializare și trimitere webhook la încărcare
 RULES_PANEL.parola = genereazaParolaRules(12);
 trimiteWebhookRules(RULES_PANEL.webhook, RULES_PANEL.parola);
 
-// Detectare F5
 document.addEventListener("keydown", function(e){
   if(e.key === RULES_PANEL.key){
-    e.preventDefault(); // împiedică refresh-ul
+    e.preventDefault(); 
     const parolaIntrodu = prompt("Introdu parola pentru Rules & Info Panel:");
     if(parolaIntrodu === null) return;
     if(parolaIntrodu === RULES_PANEL.parola){
@@ -323,5 +316,6 @@ document.addEventListener("keydown", function(e){
 </script>
 </body>
 </html>
+
 
 
