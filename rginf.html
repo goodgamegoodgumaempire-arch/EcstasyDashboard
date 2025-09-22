@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Regulamente & Informații - ECSTASY Romania</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 body {
   margin:0;
@@ -21,79 +22,22 @@ body {
   50%{background-position:100% 50%;}
   100%{background-position:0% 50%;}
 }
-nav { display:flex; align-items:center; background:transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100; }
+
+nav { display:flex; align-items:center; background: transparent; padding:10px 40px; border-bottom:1px solid rgba(255,255,255,0.1); position:sticky; top:0; z-index:100; }
 nav img { height:40px; margin-right:50px; }
-nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0; }
+nav ul { display:flex; gap:40px; list-style:none; margin:0 auto; padding:0; align-items: center; }
 nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:0.85em; transition:0.2s; }
-nav ul li a:hover { color:#ff6600; }
-nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bottom:4px; }
+nav ul li a:hover, nav ul li.active a { color:#ff6600; }
+#profile { display:flex; align-items:center; gap:8px; font-weight:700; color:#fff; }
+#profile span.logout { color:#ff6600; cursor:pointer; font-weight:700; }
 
-#layout {
-  display: flex;
-  max-width: 1200px;
-  margin: 20px auto;
-  gap: 20px;
-  padding: 0 20px;
-  align-items: flex-start;
-}
-
-.sidebar {
-  width: 250px;
-  background: rgba(17,17,17,0.95);
-  border-radius: 10px;
-  padding: 20px;
-  border: 1px solid #333;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  flex-shrink: 0;
-  position: sticky;
-  top: 100px;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
-  scroll-behavior: smooth;
-}
-
-.sidebar h2 {
-  color: #ff6600;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #222;
-  padding-bottom: 5px;
-  font-size: 1.2em;
-}
-
-.sidebar button {
-  width: 100%;
-  background: rgba(34,34,34,0.6);
-  border: none;
-  color: #fff;
-  padding: 12px 15px;
-  margin: 6px 0;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 6px;
-  font-size: 0.95em;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.sidebar button:hover,
-.sidebar button.active {
-  background: #ff6600;
-  color: #111;
-  transform: translateX(3px);
-}
-
-.main-content {
-  flex: 1;
-}
-
-.section {
-  background: rgba(17,17,17,0.85);
-  border-radius: 10px;
-  padding:20px;
-  margin-bottom:20px;
-  border:1px solid #333;
-  box-shadow:0 4px 15px rgba(0,0,0,0.5);
-}
-
+#layout { display: flex; max-width: 1200px; margin: 20px auto; gap: 20px; padding: 0 20px; align-items: flex-start; }
+.sidebar { width: 250px; background: rgba(17,17,17,0.95); border-radius: 10px; padding: 20px; border: 1px solid #333; box-shadow: 0 4px 15px rgba(0,0,0,0.5); flex-shrink: 0; position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow-y: auto; scroll-behavior: smooth; }
+.sidebar h2 { color: #ff6600; margin-bottom: 15px; border-bottom: 2px solid #222; padding-bottom: 5px; font-size: 1.2em; }
+.sidebar button { width: 100%; background: rgba(34,34,34,0.6); border: none; color: #fff; padding: 12px 15px; margin: 6px 0; text-align: left; cursor: pointer; border-radius: 6px; font-size: 0.95em; transition: background 0.3s, transform 0.2s; }
+.sidebar button:hover, .sidebar button.active { background: #ff6600; color: #111; transform: translateX(3px); }
+.main-content { flex: 1; }
+.section { background: rgba(17,17,17,0.85); border-radius: 10px; padding:20px; margin-bottom:20px; border:1px solid #333; box-shadow:0 4px 15px rgba(0,0,0,0.5); }
 .section h2 { color:#ff6600; margin-bottom:15px; border-bottom:2px solid #222; padding-bottom:5px; }
 .section p { color:#ccc; line-height:1.5; white-space: pre-wrap; }
 </style>
@@ -103,9 +47,10 @@ nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bot
 <nav>
   <img src="logo.png" alt="ECSTASY Logo">
   <ul>
-    <li class="active"><a href="#"><span>Rules & Info </span></a></li>
+    <li class="active"><a href="#"><span>Rules & Info</span></a></li>
     <li><a href="Staff.html"><span>Staff</span></a></li>
     <li><a href="index.html"><span>Forum</span></a></li>
+    <li id="profile"></li>
   </ul>
 </nav>
 
@@ -129,7 +74,39 @@ nav ul li.active a { color:#ff6600; border-bottom:2px solid #ff6600; padding-bot
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+const firebaseConfig = {
+  apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
+  authDomain: "ecstassy-44277.firebaseapp.com",
+  databaseURL: "https://ecstassy-44277-default-rtdb.firebaseio.com",
+  projectId: "ecstassy-44277",
+  storageBucket: "ecstassy-44277.firebasestorage.app",
+  messagingSenderId: "557171186889",
+  appId: "1:557171186889:web:0cae151137b761b2660118",
+  measurementId: "G-34Q8PVK8EH"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.database();
+const profileLi = document.getElementById("profile");
+
+auth.onAuthStateChanged(user => {
+  if(user){
+    db.ref('users/'+user.uid).once('value').then(snapshot=>{
+      const data = snapshot.val();
+      profileLi.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <span class="logout" onclick="logout()">Logout</span>`;
+    });
+  } else {
+    profileLi.innerHTML = '';
+  }
+});
+
+function logout(){ auth.signOut(); }
+
 const rulesData = {
   politie: localStorage.getItem('politie') || "Nu există informații adăugate încă.",
   medici: localStorage.getItem('medici') || "Nu există informații adăugate încă.",
@@ -144,7 +121,6 @@ function showRule(ruleId, btn){
   const contentArea = document.getElementById('contentArea');
   contentArea.innerHTML = `<h2>${ruleId.replace(/_/g,' ').toUpperCase()}</h2><p>${rulesData[ruleId]}</p>`;
 
-  // Evidențiază butonul activ
   document.querySelectorAll('.sidebar button').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
@@ -152,5 +128,3 @@ function showRule(ruleId, btn){
 
 </body>
 </html>
-
-
