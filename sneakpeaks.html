@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
+ <link rel="icon" type="image/png" href="logo.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sneak Peeks - ECSTASY ROMANIA</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-/* Body & Background */
 body {
   margin:0;
   font-family:'Roboto',sans-serif;
@@ -23,7 +23,6 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* Navbar */
 nav {
   display: flex;
   align-items: center;
@@ -40,11 +39,9 @@ nav ul li a { color:#fff; text-decoration:none; display:flex; flex-direction:col
 nav ul li a:hover { color:#ff6600; }
 nav ul li.active a { color:#ff6600; border-bottom: 2px solid #ff6600; padding-bottom:4px; }
 
-/* Profil utilizator */
 #profile { display:flex; align-items:center; gap:8px; font-weight:700; color:#fff; }
 #profile span.logout { color:#ff6600; cursor:pointer; font-weight:700; }
 
-/* Sneak Peeks */
 h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
 .peek {
   background:rgba(17,17,17,0.85);
@@ -76,7 +73,6 @@ h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav>
   <img src="logo.png" alt="ECSTASY Logo">
   <ul>
@@ -95,7 +91,6 @@ h1 { text-align:center; color:#ff6600; margin-bottom:20px; }
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
-// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
   authDomain: "ecstassy-44277.firebaseapp.com",
@@ -157,3 +152,4 @@ renderPeeks();
 
 </body>
 </html>
+
