@@ -79,9 +79,37 @@ button.delete { background:#e74c3c; color:white; border:none; padding:5px 8px; b
   <button onclick="showSection('codpenal')">Cod Penal</button>
   <button onclick="showSection('contacte')">Contacte Utile</button>
   <button onclick="showSection('adauga_lider')">Gestionează Lideri</button>
+  <button onclick="showSection('shop')">Shop</button>
 </div>
 
 <div class="content" id="content">
+
+  <!-- Shop -->
+<div class="card" id="shop" style="display:none;">
+  <h3>Adaugă Produs</h3>
+  <input type="text" id="produs_nume" placeholder="Nume Produs">
+  <input type="text" id="produs_img" placeholder="URL poză (opțional)">
+  <textarea id="produs_detalii" placeholder="Detalii Produs"></textarea>
+  <input type="number" id="produs_pret" placeholder="Preț Produs">
+  <button class="save" onclick="addProdus()">Adaugă Produs</button>
+
+  <h3 style="margin-top:20px;">Lista Produse</h3>
+  <table id="shopTable">
+    <thead>
+      <tr>
+        <th>Poza</th>
+        <th>Nume</th>
+        <th>Detalii</th>
+        <th>Preț</th>
+        <th>Acțiuni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Produse vor fi încărcate aici -->
+    </tbody>
+  </table>
+</div>
+
 
   <!-- Regulamente -->
   <div class="card" id="politie">
@@ -266,5 +294,6 @@ window.onload = ()=>{
 </script>
 </body>
 </html>
+
 
 
