@@ -25,6 +25,8 @@ input, textarea, button { font-family:'Roboto',sans-serif; border-radius:8px; bo
 button { background:#ff6600; color:#fff; cursor:pointer; transition:0.3s;}
 button:hover { background:#cc5200;}
 .hidden { display:none; }
+#profile { color:#fff; display:flex; align-items:center; gap:8px; font-weight:700; cursor:pointer; }
+#profile span.logout { color:#ff6600; cursor:pointer; font-weight:700; }
 </style>
 </head>
 <body>
@@ -85,30 +87,39 @@ button:hover { background:#cc5200;}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
+// ================= Firebase Config =================
 const firebaseConfig = {
   apiKey: "AIzaSyA40DfthDKIy812oujRj2JLLg1Y_dCvJvI",
   authDomain: "ecstassy-44277.firebaseapp.com",
   databaseURL: "https://ecstassy-44277-default-rtdb.firebaseio.com",
   projectId: "ecstassy-44277",
-  storageBucket: "ecstassy-44277.appspot.com",
+  storageBucket: "ecstassy-44277.firebasestorage.app",
   messagingSenderId: "557171186889",
-  appId: "1:557171186889:web:0cae151137b761b2660118"
+  appId: "1:557171186889:web:0cae151137b761b2660118",
+  measurementId: "G-34Q8PVK8EH"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
+
 const profileLi = document.getElementById("profile");
 
+// ================= Auth și profil =================
 auth.onAuthStateChanged(user => {
   if(user){
-    profileLi.innerHTML = `<i class="fas fa-user"></i> ${user.displayName || user.email} <button onclick="logout()" style="margin-left:10px;">Logout</button>`;
+    db.ref('users/'+user.uid).once('value').then(snapshot=>{
+      const data = snapshot.val();
+      let profileHtml = `<i class="fas fa-user"></i> ${user.displayName || user.email} <span class="logout" onclick="logout()">Logout</span>`;
+      profileLi.innerHTML = profileHtml;
+    });
   } else {
-    profileLi.innerHTML = `<a href="index.html">Conectează-te</a>`;
+    profileLi.innerHTML = '';
   }
 });
 
 function logout(){ auth.signOut(); }
 
+// ================= Aplicații =================
 let aplicatii = JSON.parse(localStorage.getItem("aplicatii")) || [];
 
 function toggleForm(tip){
